@@ -70,11 +70,20 @@ Filename: "{app}\QT Suite.exe"; Description: "Open QT Suite now"; Flags: nowait 
 
 [UninstallRun]
 ; ask a running hub to quit (it stops its tray icon), then stop anything still running from the install folder
-Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command ""try {{ Invoke-WebRequest -UseBasicParsing -Method POST -Headers @{{Origin='http://127.0.0.1:7800'}} http://127.0.0.1:7800/api/quit -TimeoutSec 3 | Out-Null }} catch {{}}; Start-Sleep 1; Get-CimInstance Win32_Process | Where-Object {{ $_.ExecutablePath -like '{app}\runtime\*' }} | ForEach-Object {{ Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }}"""; Flags: runhidden waituntilterminated; RunOnceId: "StopQT"
+Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command ""try {{ Invoke-WebRequest -UseBasicParsing -Method POST -Headers @{{Origin='http://127.0.0.1:7800'} http://127.0.0.1:7800/api/quit -TimeoutSec 3 | Out-Null } catch {{}; Start-Sleep 1; Get-CimInstance Win32_Process | Where-Object {{ $_.ExecutablePath -like '{app}\runtime\*' } | ForEach-Object {{ Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }"""; Flags: runhidden waituntilterminated; RunOnceId: "StopQT"
 
 [UninstallDelete]
 ; files the tools made inside the install folder (caches, compiled Python, Launchpad's window profile)
 Type: filesandordirs; Name: "{app}\launcher\data"
+Type: filesandordirs; Name: "{app}\suite\__pycache__"
+Type: filesandordirs; Name: "{app}\daily\__pycache__"
+Type: filesandordirs; Name: "{app}\beam\__pycache__"
+Type: filesandordirs; Name: "{app}\launcher\__pycache__"
+Type: filesandordirs; Name: "{app}\volt\__pycache__"
+Type: filesandordirs; Name: "{app}\burrow\__pycache__"
+Type: filesandordirs; Name: "{app}\lens-pc\__pycache__"
+Type: filesandordirs; Name: "{app}\soundboard\__pycache__"
+Type: filesandordirs; Name: "{app}\space-manager\__pycache__"
 Type: filesandordirs; Name: "{app}\runtime"
 Type: filesandordirs; Name: "{app}\suite\defaults"
 Type: files; Name: "{userstartup}\QT Suite.lnk"
