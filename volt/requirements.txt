@@ -1,0 +1,5 @@
+yt-dlp[default]
+flask
+gallery-dl
+imageio-ffmpeg
+curl_cffi

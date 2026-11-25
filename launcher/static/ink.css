@@ -1,0 +1,248 @@
+/* Launchpad in the QT Suite "Ink Arcade" look. Loads after style.css and qt.css.
+   The focused game's art still tints --a1 / --a2; ink outlines and hard shadows frame everything. */
+:root {
+  --bg: var(--qt-bg); --bg2: var(--qt-well);
+  --glass: var(--qt-card); --glass2: var(--qt-chip);
+  --line: var(--qt-ink); --line2: var(--qt-ink);
+  --text: var(--qt-fg); --muted: var(--qt-muted); --dim: var(--qt-dim);
+  --ok: var(--qt-ok); --bad: var(--qt-bad);
+  --r: 14px; --ease: var(--qt-ease); --spring: var(--qt-spring);
+  --font: var(--qt-font); --display: var(--qt-display);
+  --B: var(--qt-border); --S: var(--qt-shadow); --s: var(--qt-shadow-sm);
+}
+body { background: var(--qt-bg); }
+.aurora, .grain { display: none; }
+.main { background-image: radial-gradient(#ffffff0d 1.2px, transparent 1.3px); background-size: 16px 16px; }
+
+/* rail */
+.rail { background: var(--qt-bg2); border-right: var(--B); backdrop-filter: none; }
+.brand { filter: none; }
+.rail-btn { font-weight: 700; }
+.rail-btn.active { color: var(--qt-on-accent); }
+.rail-pill { background: var(--qt-launchpad); border: var(--B); box-shadow: var(--s); border-radius: 14px; }
+.rail-pill::before { display: none; }
+
+/* top bar */
+.main.scrolled .topbar { background: var(--qt-bg2); backdrop-filter: none; border-bottom: var(--B); }
+#greet-text { font: 400 22px/1.15 var(--display); letter-spacing: 0; }
+.search { background: var(--qt-well); border: var(--B); border-radius: 11px; }
+.search:focus-within { border-color: var(--qt-ink); background: var(--qt-well); box-shadow: var(--s); transform: translate(-1px, -1px); }
+kbd { border: 2px solid var(--qt-dim); font-family: var(--qt-mono); }
+.clock { font: 600 15px var(--qt-mono); }
+.now-playing { background: var(--qt-ok); color: var(--qt-on-accent); border: var(--B); box-shadow: var(--s); font-weight: 700; }
+.now-playing .dot { background: var(--qt-on-accent); }
+.view-title { font: 400 38px/1.05 var(--display); letter-spacing: 0; }
+@keyframes view-in { from { opacity: 0; transform: translateY(18px); } }
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+
+/* hero */
+.hero { border: var(--B); box-shadow: 8px 8px 0 var(--qt-ink); border-radius: 20px; }
+.hero-title h1 { font: 400 clamp(38px, 4.8vw, 66px)/1 var(--display); letter-spacing: 0; -webkit-text-stroke: 2px var(--qt-ink); paint-order: stroke fill; }
+.hero-source { font-family: var(--qt-mono); font-weight: 600; }
+.play { border: var(--B); border-radius: 13px; background: var(--a1); color: var(--qt-on-accent); box-shadow: 5px 5px 0 var(--qt-ink); font: 400 18px var(--display);
+  transition: transform var(--qt-fast) var(--qt-spring), box-shadow var(--qt-fast); }
+.play:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--qt-ink); }
+.play:active { transform: translate(4px, 4px) scale(.98) !important; box-shadow: 0 0 0 var(--qt-ink); }
+.play-shine { background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,.55) 50%, transparent 65%); }
+.play.running { background: var(--qt-ok); }
+.icon-btn { background: var(--qt-card); border: var(--B); box-shadow: var(--s); backdrop-filter: none; border-radius: 12px; }
+.icon-btn:hover { background: var(--qt-chip); transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--qt-ink); }
+.icon-btn:active { transform: translate(2px, 2px) scale(.94); box-shadow: none; }
+.hstat { background: var(--qt-card); border: var(--B); box-shadow: var(--s); backdrop-filter: none; border-radius: 12px; }
+.hstat b { font: 400 22px/1.1 var(--display); }
+
+/* shelf */
+.chips { background: var(--qt-card); border: var(--B); box-shadow: var(--s); border-radius: 13px; }
+.chip { font-weight: 700; }
+.chip-ink { background: var(--qt-launchpad); border: var(--B); box-shadow: none; border-radius: 9px; top: 2px; height: 38px; }
+.sort-btn { background: var(--qt-card); border: var(--B); box-shadow: var(--s); font-weight: 700; color: var(--qt-fg); }
+.sort-btn:hover { background: var(--qt-chip); transform: translate(-1px, -1px); }
+
+/* game cards */
+.card-inner { border: var(--B); box-shadow: 5px 5px 0 var(--qt-ink); background: var(--qt-well); }
+.card:hover .card-inner, .card:focus-visible .card-inner { box-shadow: 9px 9px 0 var(--qt-ink), 0 0 0 0 transparent; }
+.card.selected .card-inner { border-color: var(--qt-fg); box-shadow: 7px 7px 0 var(--cc, var(--a1)); }
+.card:hover, .card:focus-visible { transform: translate(-4px, -6px) rotate(-.6deg); }
+.card:active { transform: translate(2px, 2px) scale(.97); }
+.card-name { font: 400 15px/1.15 var(--display); }
+.card .fav-mark { background: var(--qt-soundboard); color: var(--qt-on-accent); border: 2px solid var(--qt-ink); backdrop-filter: none; }
+.card .run-mark { background: var(--qt-ok); color: var(--qt-on-accent); border: 2px solid var(--qt-ink); backdrop-filter: none; }
+.card-play { background: var(--a1); color: var(--qt-on-accent); border: var(--B); box-shadow: var(--s); }
+.gen-cover .gen-title { font: 400 26px/1 var(--display); letter-spacing: 0; }
+.gen-cover .gen-icon { border: 2px solid var(--qt-ink); }
+.card.drop .card-inner { box-shadow: 0 0 0 3px var(--qt-launchpad), 8px 8px 0 var(--qt-ink); }
+
+/* stats */
+.kpi, .panel, .tool { background: var(--qt-card); border: var(--B); box-shadow: var(--S); backdrop-filter: none; border-radius: 14px; }
+.kpi:hover, .tool:hover { transform: translate(-2px, -3px); box-shadow: 8px 8px 0 var(--qt-ink); border-color: var(--qt-ink); background: var(--qt-card); }
+.kpi::before { background: radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--a1) 14%, transparent), transparent 60%); }
+.kpi .val { font: 400 32px/1.15 var(--display); letter-spacing: 0; }
+.kpi .lbl { font-family: var(--qt-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; }
+.panel-head h2 { font: 400 17px var(--display); }
+.chart .tip { background: var(--qt-fg); color: var(--qt-on-accent); border: var(--B); box-shadow: var(--s); font-weight: 600; }
+.chart text { font-family: var(--qt-mono); }
+.trow .track { height: 10px; border: 2px solid var(--qt-ink); background: var(--qt-well); }
+.trow .thumb { border: 2px solid var(--qt-ink); }
+.trow .hrs { font: 600 14px var(--qt-mono); }
+.heat .cell { border-radius: 3px; }
+.tool .ti { border: var(--B); box-shadow: var(--s); }
+.tool b { font: 400 17px var(--display); }
+.tool .go { border: 2px solid var(--qt-ink); background: var(--qt-chip); }
+.tool:hover .go { background: var(--qt-launchpad); }
+
+/* drawer, menus, toasts */
+.scrim { background: rgba(10, 8, 14, .65); backdrop-filter: none; }
+.drawer { background: var(--qt-card); border: var(--B); box-shadow: -8px 8px 0 var(--qt-ink); backdrop-filter: none; border-radius: 18px; }
+.drawer-head h2 { font: 400 24px var(--display); }
+.group { border-bottom: 2px dashed var(--qt-chip); }
+.group h3 { font: 700 15px var(--qt-font); }
+.row input { background: var(--qt-well); border: var(--B); }
+.row input:focus { border-color: var(--qt-ink); box-shadow: var(--s); }
+.btn { background: var(--qt-launchpad); color: var(--qt-on-accent); border: var(--B); box-shadow: var(--s); font-weight: 700; border-radius: 10px;
+  transition: transform var(--qt-fast) var(--qt-spring), box-shadow var(--qt-fast); }
+.btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--qt-ink); }
+.btn:active { transform: translate(3px, 3px); box-shadow: none; }
+.btn.ghost { background: var(--qt-chip); color: var(--qt-fg); border: var(--B); }
+.btn.danger { background: var(--qt-bad); color: var(--qt-on-accent); border: var(--B); }
+.toggle .sw { background: var(--qt-well); border: var(--B); height: 28px; width: 48px; }
+.toggle .sw::after { background: var(--qt-fg); border: 2px solid var(--qt-ink); box-shadow: none; width: 14px; height: 14px; }
+.toggle input:checked + .sw { background: var(--qt-launchpad); }
+.toggle input:checked + .sw::after { transform: translateX(20px); background: var(--qt-on-accent); }
+.toggle:active .sw::after { width: 20px; }
+.toggle:active input:checked + .sw::after { transform: translateX(14px); }
+.menu { background: var(--qt-card); border: var(--B); box-shadow: 6px 6px 0 var(--qt-ink); backdrop-filter: none; border-radius: 12px; }
+.menu button { font-weight: 600; }
+.menu button:hover { background: var(--qt-launchpad); color: var(--qt-on-accent); }
+.menu hr { border-top: 2px dashed var(--qt-chip); }
+.toast { background: var(--qt-fg); color: var(--qt-on-accent); border: var(--B); box-shadow: var(--s); font-weight: 700; font-size: 14px; }
+.toast.bad { background: var(--qt-bad); border-color: var(--qt-ink); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(24px) rotate(-4deg) scale(.9); } }
+.launch h2 { font: 400 44px/1.05 var(--display); letter-spacing: 0; -webkit-text-stroke: 2px var(--qt-ink); paint-order: stroke fill; }
+.skel { background: linear-gradient(100deg, var(--qt-well) 30%, var(--qt-chip) 50%, var(--qt-well) 70%); background-size: 200% 100%; }
+
+/* ================= Launchpad 1.1: new features ================= */
+/* smart search hint */
+.search-hint { flex: none; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 600 11px var(--qt-mono);
+  padding: 3px 8px; border: 2px solid var(--qt-ink); border-radius: 7px; background: var(--qt-launchpad); color: var(--qt-on-accent);
+  animation: hint-pop .32s var(--qt-spring); }
+.search-hint b { font-weight: 800; margin-right: 4px; opacity: .75; }
+@keyframes hint-pop { from { transform: scale(.6) rotate(-6deg); opacity: 0; } }
+.search:focus-within svg { animation: wiggle .5s var(--qt-spring); }
+@keyframes wiggle { 30% { transform: rotate(-14deg) scale(1.15); } 60% { transform: rotate(8deg); } }
+
+/* shelf buttons */
+.sort { display: flex; gap: 10px; }
+#dice-btn svg { transition: transform .4s var(--qt-spring); }
+#dice-btn:hover svg { transform: rotate(-20deg) scale(1.1); }
+#dice-btn.rolling svg { animation: dice .32s linear infinite; }
+@keyframes dice { 0% { transform: rotate(0) translateY(0); } 50% { transform: rotate(180deg) translateY(-3px); } 100% { transform: rotate(360deg) translateY(0); } }
+.card.roll .card-inner { box-shadow: 0 0 0 4px var(--qt-launchpad), 9px 9px 0 var(--qt-ink); }
+.card.roll { transform: translate(-3px, -6px) rotate(-1.5deg); z-index: 3; transition-duration: .08s; }
+
+/* toasts with an action */
+.toast.has-action { padding-right: 6px; }
+.toast-act { margin-left: 4px; height: 30px; padding: 0 12px; border-radius: 8px; background: var(--qt-launchpad); color: var(--qt-on-accent);
+  border: 2px solid var(--qt-ink); font-weight: 800; pointer-events: auto; transition: transform var(--qt-fast) var(--qt-spring); }
+.toast-act:hover { transform: translate(-1px, -2px) rotate(-2deg); }
+.toast-act:active { transform: translate(1px, 1px) scale(.95); }
+.toasts .toast { pointer-events: auto; }
+
+/* in-app dialog */
+.dlg-wrap { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; background: rgba(10, 8, 14, .6); animation: fade .2s; }
+.dlg-wrap.out { animation: fade .2s reverse forwards; }
+.dlg { width: min(420px, calc(100vw - 32px)); padding: 22px; border-radius: 16px; background: var(--qt-card); border: var(--B); box-shadow: 8px 8px 0 var(--qt-ink);
+  animation: dlg-in .42s var(--qt-spring); }
+.dlg-wrap.out .dlg { animation: dlg-out .2s ease forwards; }
+@keyframes dlg-in { from { transform: translateY(30px) rotate(-3deg) scale(.9); opacity: 0; } }
+@keyframes dlg-out { to { transform: translateY(14px) rotate(2deg) scale(.95); opacity: 0; } }
+.dlg h3 { margin: 0 0 6px; font: 400 24px var(--display); }
+.dlg p { margin: 0 0 14px; font-size: 13px; word-break: break-word; }
+.dlg-in { width: 100%; height: 42px; padding: 0 12px; margin-bottom: 14px; border-radius: 10px; background: var(--qt-well); border: var(--B); outline: 0; }
+.dlg-in:focus { box-shadow: var(--s); }
+.dlg-row { display: flex; justify-content: flex-end; gap: 10px; }
+
+/* stats range switch + settings select */
+.panel-chart .panel-head { flex-wrap: wrap; }
+.range { display: flex; gap: 4px; margin-left: auto; padding: 3px; border: 2px solid var(--qt-ink); border-radius: 10px; background: var(--qt-well); }
+.range button { height: 26px; padding: 0 10px; border-radius: 7px; font: 600 12px var(--qt-mono); color: var(--qt-muted); transition: background .2s, color .2s, transform .3s var(--qt-spring); }
+.range button:hover { color: var(--qt-fg); transform: translateY(-1px); }
+.range button.on { background: var(--qt-launchpad); color: var(--qt-on-accent); box-shadow: 2px 2px 0 var(--qt-ink); }
+.pick { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; }
+.pick select { height: 36px; padding: 0 10px; border-radius: 10px; background: var(--qt-well); color: var(--qt-fg); border: var(--B); font: inherit; font-weight: 600; outline: 0; cursor: pointer; }
+.pick select:focus { box-shadow: var(--s); }
+
+/* ================= Ink Arcade motion ================= */
+/* cards drop in like stickers, with a little overshoot */
+@keyframes card-in { 0% { opacity: 0; transform: translateY(-34px) rotate(-5deg) scale(.9); } 60% { opacity: 1; transform: translateY(5px) rotate(1deg) scale(1.02, .97); } 100% { transform: none; } }
+.card.enter { animation: card-in .62s var(--qt-spring) backwards; animation-delay: calc(var(--i, 0) * 45ms); }
+.card.stamp .card-inner { animation: stamp .55s var(--qt-spring); }
+@keyframes stamp { 0% { transform: scale(1); } 25% { transform: scale(1.1, .88) rotate(-2deg); } 55% { transform: scale(.95, 1.06) rotate(1deg); } 100% { transform: scale(1); } }
+.card .fav-mark { animation: slap .45s var(--qt-spring); }
+@keyframes slap { from { transform: scale(2.2) rotate(-30deg); opacity: 0; } 60% { transform: scale(.9) rotate(6deg); opacity: 1; } }
+.card:hover .fav-mark { animation: wobble .6s ease; }
+@keyframes wobble { 25% { transform: rotate(-12deg); } 50% { transform: rotate(9deg); } 75% { transform: rotate(-4deg); } }
+.card-play { transform: scale(.3) rotate(-25deg); }
+.card:hover .card-play { transform: scale(1) rotate(0); transition: transform .45s var(--qt-spring) .05s, opacity .2s; }
+.card-play:hover { transform: scale(1.14) rotate(-6deg) !important; box-shadow: 4px 4px 0 var(--qt-ink); }
+.card .run-mark .live-dot { animation: pulse 1.8s infinite, blink 1.2s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .35; } }
+
+/* view switch ink wipe */
+.ink-wipe { position: fixed; z-index: 30; pointer-events: none; background: var(--qt-launchpad);
+  background-image: radial-gradient(rgba(0,0,0,.18) 1.4px, transparent 1.6px); background-size: 10px 10px;
+  box-shadow: inset 0 0 0 3px var(--qt-ink); }
+
+/* hero: letters pop in, border flashes the game colour */
+.hero-title h1 .w { white-space: nowrap; }
+.hero-title h1 .ch { display: inline-block; animation: letter .55s var(--qt-spring) backwards; animation-delay: calc(var(--k) * 28ms + 60ms); }
+@keyframes letter { from { opacity: 0; transform: translateY(26px) rotate(-12deg) scale(.6); } }
+.hero.flash { animation: hero-flash .7s ease; }
+@keyframes hero-flash { 0% { box-shadow: 8px 8px 0 var(--qt-ink); } 30% { box-shadow: 12px 12px 0 var(--a1); } 100% { box-shadow: 8px 8px 0 var(--qt-ink); } }
+.hstat { animation: slap .5s var(--qt-spring) backwards; }
+.hstat:nth-child(1) { animation-delay: .1s; } .hstat:nth-child(2) { animation-delay: .18s; } .hstat:nth-child(3) { animation-delay: .26s; }
+.play:not(.running) { animation: nudge 5s ease-in-out infinite 2s; }
+@keyframes nudge { 0%, 88%, 100% { transform: none; } 92% { transform: translate(-2px, -2px) rotate(-1.5deg); } 96% { transform: translate(1px, 0) rotate(1deg); } }
+.play:hover, .play:active { animation: none; }
+.play.running svg { animation: beat 1s ease-in-out infinite; }
+@keyframes beat { 50% { transform: scale(1.18); } }
+
+/* launch: comic rays, halftone, GO! stamp */
+.launch .rays { position: absolute; left: 50%; top: 50%; width: 220vmax; height: 220vmax; margin: -110vmax; opacity: 0; transition: opacity .5s .15s;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--a1) 20%, transparent) 0 6deg, transparent 6deg 18deg);
+  animation: spin 24s linear infinite; }
+.launch.on .rays { opacity: 1; }
+.launch .halftone { position: absolute; inset: 0; opacity: 0; transition: opacity .6s .2s;
+  background: radial-gradient(rgba(0,0,0,.45) 1.5px, transparent 1.8px) 0 0 / 9px 9px;
+  -webkit-mask: radial-gradient(circle at center, transparent 25%, #000 75%); mask: radial-gradient(circle at center, transparent 25%, #000 75%); }
+.launch.on .halftone { opacity: 1; }
+.launch .wave { border: 3px solid var(--qt-ink); }
+.launch .wave.w2 { border-color: var(--a1); animation-delay: .18s; }
+.launch .go-stamp { display: inline-block; margin-bottom: 14px; padding: 4px 18px; font: 400 34px/1.1 var(--display); color: var(--qt-on-accent);
+  background: var(--a1); border: var(--B); border-radius: 12px; box-shadow: 5px 5px 0 var(--qt-ink); transform: rotate(-6deg);
+  animation: go-stamp .6s var(--qt-spring) .35s backwards; }
+@keyframes go-stamp { from { transform: scale(3) rotate(-24deg); opacity: 0; } 70% { transform: scale(.92) rotate(-4deg); opacity: 1; } }
+.launch .lring circle:first-child { stroke: var(--qt-ink) !important; stroke-width: 7; }
+.launch .lring circle:nth-child(2) { stroke-width: 5; stroke-linecap: round; }
+.launch .lring .pl { animation: slap .5s var(--qt-spring) .45s backwards; }
+.launch .lring .pl svg { filter: drop-shadow(2px 2px 0 var(--qt-ink)); }
+
+/* micro: toasts slap, drawer content staggers, gear spins open, chips hop */
+.toast { animation: toast-slap .5s var(--qt-spring); }
+@keyframes toast-slap { from { opacity: 0; transform: translateY(30px) rotate(-6deg) scale(.8); } 60% { opacity: 1; transform: translateY(-3px) rotate(1.5deg) scale(1.03); } }
+.drawer.open .group { animation: group-in .5s var(--qt-spring) backwards; }
+.drawer.open .group:nth-child(1) { animation-delay: .08s; } .drawer.open .group:nth-child(2) { animation-delay: .14s; }
+.drawer.open .group:nth-child(3) { animation-delay: .2s; } .drawer.open .group:nth-child(4) { animation-delay: .26s; }
+@keyframes group-in { from { opacity: 0; transform: translateX(40px) rotate(2deg); } }
+body:has(.drawer.open) #btn-settings svg { transform: rotate(120deg) scale(1.1); transition: transform .6s var(--qt-spring); }
+.chip:active { transform: scale(.92); }
+.chip .n { transition: transform .3s var(--qt-spring); }
+.chip:hover .n { transform: translateY(-2px) scale(1.15); }
+.menu button { animation: group-in .3s var(--qt-spring) backwards; }
+.menu button:nth-of-type(2) { animation-delay: .02s; } .menu button:nth-of-type(3) { animation-delay: .04s; } .menu button:nth-of-type(4) { animation-delay: .06s; }
+.menu button:nth-of-type(5) { animation-delay: .08s; } .menu button:nth-of-type(6) { animation-delay: .1s; } .menu button:nth-of-type(n+7) { animation-delay: .12s; }
+.now-playing { animation: slap .5s var(--qt-spring); }
+.tool:hover .ti { transform: rotate(-8deg) scale(1.1); box-shadow: 5px 5px 0 var(--qt-ink); }
+.tool:active { transform: translate(3px, 3px) scale(.98); box-shadow: 0 0 0 var(--qt-ink); }
+.trow:hover .thumb { transform: rotate(-6deg) scale(1.08); transition: transform .35s var(--qt-spring); }
+.kpi .val { transform-origin: left bottom; }
+.empty { animation: slap .45s var(--qt-spring); }

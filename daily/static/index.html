@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#16141a">
+<title>Daily</title>
+<link rel="icon" href="static/icon.svg">
+<link rel="apple-touch-icon" href="static/daily-192.png">
+<link rel="manifest" href="static/manifest.webmanifest">
+<link rel="stylesheet" href="static/qt.css">
+<script src="static/qt-bridge.js" defer></script>
+<link rel="stylesheet" href="static/daily.css">
+</head>
+<body class="qt qt-dots" data-tool="daily">
+<header class="top">
+  <div class="brand">
+    <svg class="mark" id="mark" viewBox="0 0 100 100" role="img" aria-label="Daily"><defs><clipPath id="sky"><rect x="0" y="0" width="100" height="68"/></clipPath></defs>
+      <rect x="10" y="10" width="86" height="86" rx="22" fill="#000"/><rect class="tile" x="4" y="4" width="86" height="86" rx="22" fill="var(--qt-daily)" stroke="#000" stroke-width="5"/>
+      <g transform="translate(47 47) scale(.86) translate(-50 -50)" fill="none" stroke="#16141a" stroke-width="7.5" stroke-linecap="round">
+        <g class="rays"><path class="ray" d="M50 24v9"/><path class="ray" d="M24 40l7 6"/><path class="ray" d="M76 40l-7 6"/></g>
+        <g clip-path="url(#sky)"><path class="sun" d="M31 68a19 19 0 0 1 38 0z" fill="#16141a" stroke="none"/></g>
+        <path d="M18 68h64"/>
+      </g></svg>
+    <div>
+      <div class="qt-eyebrow" id="date">Today</div>
+      <h1 class="qt-display hello" id="hello">Daily</h1>
+      <p class="headline" id="headline"></p>
+    </div>
+  </div>
+  <div class="top-r">
+    <span class="qt-chip live" id="live" title="Refreshes on its own every 30 seconds"><i class="qt-dot on"></i><span id="liveTxt">live</span></span>
+    <button class="qt-btn icon" id="refresh" title="Refresh now (R)" aria-label="Refresh now">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg>
+    </button>
+  </div>
+</header>
+
+<section class="strip" id="strip" aria-label="Today in four numbers">
+  <a class="sticker" data-tool="kharcha" href="#money" data-k="money"><span class="lbl">Spent today</span><b id="s-money">…</b><small id="s-money2">&nbsp;</small></a>
+  <a class="sticker" data-tool="lens" href="#photos" data-k="photos"><span class="lbl">New photos</span><b id="s-photos">…</b><small id="s-photos2">&nbsp;</small></a>
+  <a class="sticker" data-tool="volt" href="#downloads" data-k="downloads"><span class="lbl">Downloads</span><b id="s-dl">…</b><small id="s-dl2">&nbsp;</small></a>
+  <a class="sticker" data-tool="space" href="#disk" data-k="disk"><span class="lbl">Free on C:</span><b id="s-disk">…</b><small id="s-disk2">&nbsp;</small></a>
+</section>
+
+<main class="grid">
+  <article class="qt-card card" id="money" data-tool="kharcha">
+    <div class="card-h"><div class="ttl"><img src="static/t-kharcha.svg" alt=""><div><div class="qt-eyebrow">Kharcha</div><h2>Money today</h2></div></div><button class="qt-btn sm" data-open="kharcha">Open</button></div>
+    <div class="body" id="moneyBody"><div class="skel"></div></div>
+  </article>
+
+  <article class="qt-card card" id="photos" data-tool="lens">
+    <div class="card-h"><div class="ttl"><img src="static/t-lens.svg" alt=""><div><div class="qt-eyebrow">Lens</div><h2>New photos</h2></div></div><button class="qt-btn sm" data-open="lens">Open</button></div>
+    <div class="body" id="photosBody"><div class="skel"></div></div>
+  </article>
+
+  <article class="qt-card card" id="downloads" data-tool="volt">
+    <div class="card-h"><div class="ttl"><img src="static/t-volt.svg" alt=""><div><div class="qt-eyebrow">VOLT</div><h2>Downloads</h2></div></div><button class="qt-btn sm" data-open="volt">Open</button></div>
+    <form class="grabf" id="grabf" autocomplete="off">
+      <input class="qt-input" id="grabUrl" type="url" inputmode="url" placeholder="Paste a link to download…" aria-label="Link to download">
+      <button class="qt-btn primary" data-mode="auto" title="Video (or photos) with VOLT">⚡ Grab</button>
+      <button class="qt-btn" data-mode="audio" title="Just the audio, as MP3">🎵</button>
+    </form>
+    <div class="body" id="dlBody"><div class="skel"></div></div>
+  </article>
+
+  <article class="qt-card card" id="disk" data-tool="space">
+    <div class="card-h"><div class="ttl"><img src="static/t-space.svg" alt=""><div><div class="qt-eyebrow">Space Manager</div><h2>Disk space</h2></div></div><button class="qt-btn sm" data-open="space">Open</button></div>
+    <div class="body" id="diskBody"><div class="skel"></div></div>
+  </article>
+</main>
+
+<footer class="foot qt-mono" id="foot">Daily · reads Kharcha, Lens, VOLT and Space Manager</footer>
+<div class="qt-toasts" id="toasts"></div>
+<script src="static/daily.js"></script>
+</body>
+</html>

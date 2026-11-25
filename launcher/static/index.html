@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launchpad</title>
+<link rel="icon" href="/icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/qt.css">
+<script src="/qt-bridge.js" defer></script>
+<link rel="stylesheet" href="/ink.css">
+</head>
+<body data-tool="launchpad">
+<div class="aurora" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
+<div class="grain" aria-hidden="true"></div>
+
+<nav class="rail" aria-label="Sections">
+  <div class="brand" title="Launchpad">
+    <svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--a1)"/><stop offset="1" stop-color="var(--a2)"/></linearGradient></defs>
+      <path class="brand-orbit" d="M16 3a13 13 0 1 1 0 26a13 13 0 1 1 0-26" fill="none" stroke="url(#lg)" stroke-width="2.2" stroke-dasharray="6 5"/>
+      <path d="M12 10.5v11l9.5-5.5z" fill="url(#lg)"/>
+    </svg>
+  </div>
+  <div class="rail-pill" aria-hidden="true"></div>
+  <button class="rail-btn active" data-view="library" title="Library (1)"><svg viewBox="0 0 24 24"><path d="M4 5h6v6H4zM14 5h6v6h-6zM4 15h6v4H4zM14 15h6v4h-6z"/></svg><span>Library</span></button>
+  <button class="rail-btn" data-view="stats" title="Stats (2)"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg><span>Stats</span></button>
+  <button class="rail-btn" data-view="tools" title="Tools (3)"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg><span>Tools</span></button>
+  <div class="rail-spacer"></div>
+  <button class="rail-btn" id="btn-settings" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span></button>
+</nav>
+
+<main class="main">
+  <header class="topbar">
+    <div class="greet"><span id="greet-text">Welcome back</span><small id="greet-sub">&nbsp;</small></div>
+    <label class="search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="search" placeholder="Search games" autocomplete="off" spellcheck="false">
+      <kbd>/</kbd>
+      <span class="search-hint" id="search-hint" hidden></span>
+    </label>
+    <div class="now-playing" id="now-playing" hidden></div>
+    <div class="clock" id="clock">--:--</div>
+  </header>
+
+  <!-- LIBRARY -->
+  <section class="view view-library active" data-view="library">
+    <div class="hero" id="hero">
+      <div class="hero-bg"><div class="hero-layer"></div><div class="hero-layer"></div></div>
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <div class="hero-source" id="hero-source"></div>
+        <div class="hero-title" id="hero-title"></div>
+        <div class="hero-meta" id="hero-meta"></div>
+        <div class="hero-actions">
+          <button class="play" id="hero-play"><span class="play-shine"></span><svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg><span class="play-label">Play</span></button>
+          <button class="icon-btn" id="hero-fav" title="Favourite (F)"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9.2-8.6C1.2 8.2 3.1 4.5 6.6 4.5c2 0 3.4 1.1 5.4 3.2 2-2.1 3.4-3.2 5.4-3.2 3.5 0 5.4 3.7 3.8 6.9C19 15.6 12 20 12 20z"/></svg></button>
+          <button class="icon-btn" id="hero-folder" title="Open install folder"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
+          <button class="icon-btn" id="hero-more" title="More"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></svg></button>
+        </div>
+      </div>
+      <div class="hero-stats" id="hero-stats"></div>
+    </div>
+
+    <div class="shelf-head">
+      <div class="chips" id="chips"><span class="chip-ink"></span></div>
+      <div class="sort">
+        <button class="sort-btn" id="dice-btn" title="Surprise me (R)"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="9" cy="9" r="1.1" fill="currentColor"/><circle cx="15" cy="15" r="1.1" fill="currentColor"/><circle cx="15" cy="9" r="1.1" fill="currentColor"/><circle cx="9" cy="15" r="1.1" fill="currentColor"/></svg><span>Surprise me</span></button>
+        <button class="sort-btn" id="sort-btn"><svg viewBox="0 0 24 24"><path d="M7 4v16M3 16l4 4 4-4M17 20V4M13 8l4-4 4 4"/></svg><span id="sort-label">Recent</span></button>
+      </div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" hidden>No games match. <button class="link" id="clear-search">Clear search</button></div>
+  </section>
+
+  <!-- STATS -->
+  <section class="view view-stats" data-view="stats">
+    <h1 class="view-title">Your playtime</h1>
+    <div class="kpis" id="kpis"></div>
+    <div class="panels">
+      <div class="panel panel-chart">
+        <div class="panel-head"><h2 id="chart-title">Last 30 days</h2><span class="muted" id="chart-note"></span>
+          <div class="range" id="range"><button data-d="7">7d</button><button data-d="30">30d</button><button data-d="90">90d</button></div></div>
+        <div class="chart" id="chart"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="panel panel-top">
+        <div class="panel-head"><h2>Most played</h2><span class="muted">lifetime</span></div>
+        <div class="toplist" id="toplist"></div>
+      </div>
+      <div class="panel panel-heat">
+        <div class="panel-head"><h2>When you play</h2><span class="muted">by hour, tracked by Launchpad</span></div>
+        <div class="heat" id="heat"></div>
+      </div>
+      <div class="panel panel-donut">
+        <div class="panel-head"><h2>Share of time</h2></div>
+        <div class="donut-wrap" id="donut"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section class="view view-tools" data-view="tools">
+    <h1 class="view-title">Tools &amp; apps</h1>
+    <p class="muted view-sub">Your QT tools and non-game apps, one click away.</p>
+    <div class="tools" id="tools"></div>
+  </section>
+</main>
+
+<!-- settings drawer -->
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-head"><h2>Settings</h2><button class="icon-btn" id="drawer-close" title="Close (Esc)"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="drawer-body">
+    <div class="group">
+      <h3>Add a game</h3>
+      <p class="muted">Paste the path to a game's .exe (or a shortcut). In Explorer: Shift + right-click the file, "Copy as path".</p>
+      <div class="row"><input id="add-path" placeholder="C:\Games\MyGame\game.exe"><button class="btn" id="add-btn">Add</button></div>
+    </div>
+    <div class="group">
+      <h3>Behaviour</h3>
+      <label class="toggle"><input type="checkbox" id="set-track"><span class="sw"></span><span>Track playtime</span></label>
+      <label class="toggle"><input type="checkbox" id="set-startup"><span class="sw"></span><span>Start quietly with Windows <small class="muted">(so playtime is tracked even when this window is closed)</small></span></label>
+      <label class="toggle"><input type="checkbox" id="set-tools"><span class="sw"></span><span>Show QT tools</span></label>
+      <label class="toggle"><input type="checkbox" id="set-motion"><span class="sw"></span><span>Reduce motion</span></label>
+      <label class="pick"><span>Break reminder <small class="muted">(a quiet Windows toast, once per session)</small></span>
+        <select id="set-nudge"><option value="0">Off</option><option value="60">1 hour</option><option value="90">1.5 hours</option><option value="120">2 hours</option><option value="180">3 hours</option></select></label>
+    </div>
+    <div class="group">
+      <h3>Games folder</h3>
+      <p class="muted">Makes one folder with a shortcut to every game. Nothing is moved, so Steam, Riot and HoYoPlay keep working and updating.</p>
+      <div class="row"><input id="folder-path"><button class="btn" id="folder-btn">Create shortcuts</button></div>
+    </div>
+    <div class="group">
+      <h3>Library</h3>
+      <div class="row wrap"><button class="btn ghost" id="rescan-btn">Rescan PC</button><button class="btn ghost" id="unhide-btn">Show hidden games</button><button class="btn danger" id="quit-btn">Quit Launchpad</button></div>
+      <p class="muted small" id="about"></p>
+    </div>
+  </div>
+</aside>
+
+<div class="menu" id="menu" hidden></div>
+<div class="toasts" id="toasts"></div>
+<div class="launch" id="launch" hidden></div>
+<input type="file" id="art-file" accept="image/*" hidden>
+
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+build/
+out/
+__pycache__/
+*.pyc
+*.log
+# personal working files the tools create next to themselves
+beam/beam.json
+launcher/data/
+soundboard/config.json
+soundboard/sounds/*
+!soundboard/sounds/README.txt
+suite/defaults/qtopen.ini
+suite/defaults/QTOpen.exe
+*.keystore
+*.jks
+.env
+packaging/private-words.txt

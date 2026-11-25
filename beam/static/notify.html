@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" data-tool="ping">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#16141a">
+<title>Ping · phone notifications</title>
+<link rel="icon" href="/static/ping.svg">
+<link rel="stylesheet" href="/static/qt.css">
+<link rel="stylesheet" href="/static/notify.css">
+<script src="/static/qt-bridge.js" defer></script>
+<script>if (window.top !== window.self) document.documentElement.classList.add('in-suite');</script>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><span class="bell" id="bell"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i id="bellCount" hidden></i></span>Ping<em>.</em></h1>
+    <div class="status" id="status"><i></i><span id="statusText">Looking for your phone…</span></div>
+    <div class="grow"></div>
+    <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg><input id="q" placeholder="Search notifications  ( / )" autocomplete="off"></label>
+    <button class="btn" id="toastBtn" title="Windows pop-ups for new phone notifications"></button>
+    <button class="btn ghost" id="snoozeBtn" title="No pop-ups for an hour"></button>
+    <button class="btn" id="clearBtn" title="Dismiss every clearable notification on the phone">Clear phone</button>
+  </header>
+
+  <div class="layout">
+    <aside class="apps card" id="apps">
+      <h2>Apps</h2>
+      <div id="appList"></div>
+      <p class="muted tiny" id="muteHint">Hover an app and tap the bell to mute it here and on the phone.</p>
+    </aside>
+
+    <main>
+      <section class="card setup" id="setup" hidden>
+        <h2>Hook up your phone</h2>
+        <ol>
+          <li>Install <b>Beam 1.4.0</b> on the phone (QT Suite › APKs).</li>
+          <li>Open Beam on the phone and scan this PC's QR code (once).</li>
+          <li>On the Files tab, find the <b>Notifications to PC</b> card and tap <b>Turn on</b>. Android asks you to allow notification access for Beam.</li>
+          <li>Tap <b>Keep running</b> so Android doesn't put Beam to sleep.</li>
+        </ol>
+        <p class="muted">Works on home Wi-Fi, and anywhere with Tailscale on. Nothing leaves your PC and phone.</p>
+      </section>
+
+      <div class="feedbar">
+        <div class="seg" id="seg">
+          <button data-f="live" class="on">On phone <b id="nLive">0</b></button>
+          <button data-f="all">Everything <b id="nAll">0</b></button>
+        </div>
+        <div class="grow"></div>
+        <button class="btn ghost sm" id="seenBtn">Mark all read</button>
+        <button class="btn ghost sm" id="histBtn" title="Forget notifications that are already gone from the phone">Forget history</button>
+      </div>
+      <div class="offline" id="offline" hidden><b>Phone offline</b><span id="offlineText"></span></div>
+      <div id="feed" class="feed" aria-live="polite"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+      <div class="empty" id="empty" hidden>
+        <div class="empty-bell"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></div>
+        <b id="emptyTitle">All quiet</b>
+        <span class="muted" id="emptyText">New phone notifications land here.</span>
+      </div>
+    </main>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<div class="keys" id="keys" hidden><b>Keys</b><span><kbd>J</kbd><kbd>K</kbd> move</span><span><kbd>R</kbd> reply</span><span><kbd>X</kbd> dismiss</span><span><kbd>O</kbd> open on phone</span><span><kbd>C</kbd> copy code</span><span><kbd>1</kbd>–<kbd>4</kbd> buttons</span><span><kbd>/</kbd> search</span></div>
+<script src="/static/notify.js"></script>
+</body>
+</html>

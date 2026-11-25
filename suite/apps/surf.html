@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Surf</title>
+<link rel="icon" href="/icons/surf.svg">
+<link rel="stylesheet" href="/theme/qt.css">
+<link rel="stylesheet" href="/surf.css">
+</head>
+<body class="qt qt-dots" data-tool="surf">
+<div class="sf" id="sf">
+  <header class="sf-top">
+    <div class="sf-tabs" id="tabs" role="tablist" aria-label="Tabs"></div>
+    <button class="sf-new" id="newtab" title="New tab (Ctrl+T)" aria-label="New tab">+</button>
+  </header>
+  <nav class="sf-bar">
+    <button class="sf-ib" id="back" title="Back (Alt+←)" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></svg></button>
+    <button class="sf-ib" id="fwd" title="Forward (Alt+→)" aria-label="Forward"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
+    <button class="sf-ib" id="reload" title="Reload (Ctrl+R)" aria-label="Reload"><svg viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.1-5"/><path d="M19 4v4h-4"/></svg></button>
+    <button class="sf-ib" id="home" title="Start page (Alt+Home)" aria-label="Start page"><svg viewBox="0 0 24 24"><path d="M4 11 12 4l8 7"/><path d="M6 10v9h12v-9"/></svg></button>
+    <form class="sf-addr" id="addrform" autocomplete="off">
+      <button type="button" class="sf-mode" id="mode" title="How this page is shown">START</button>
+      <input id="addr" spellcheck="false" placeholder="Search or type a web address" aria-label="Address">
+      <button type="button" class="sf-star" id="star" title="Bookmark (Ctrl+D)" aria-label="Bookmark this page"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8 6.6 19.7l1.1-6.1L3.2 9.4l6.1-.8z"/></svg></button>
+      <div class="sf-sugg" id="sugg" hidden></div>
+    </form>
+    <button class="sf-ib" id="pop" title="Pop out in its own window" aria-label="Pop out"><svg viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4l-8 8"/><path d="M18 14v5H5V6h5"/></svg></button>
+    <button class="sf-ib" id="menu" title="Bookmarks and history (Ctrl+H)" aria-label="Bookmarks and history"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"/></svg></button>
+  </nav>
+  <div class="sf-bms" id="bms"></div>
+  <div class="sf-load" id="load"><i></i></div>
+  <main class="sf-stage" id="stage"></main>
+  <aside class="sf-drawer" id="drawer" hidden>
+    <div class="sf-dhead">
+      <div class="sf-seg" role="tablist"><button data-pane="bm" class="on">Bookmarks</button><button data-pane="hist">History</button></div>
+      <button class="sf-ib" id="dclose" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <input class="qt-input sf-dfind" id="dfind" placeholder="Filter" spellcheck="false">
+    <div class="sf-dlist" id="dlist"></div>
+    <div class="sf-dfoot" id="dfoot"></div>
+  </aside>
+  <div class="sf-menu" id="modemenu" hidden></div>
+</div>
+<div class="qt-toasts" id="toasts" aria-live="polite"></div>
+<script src="/surf.js"></script>
+</body>
+</html>

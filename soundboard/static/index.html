@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#16141a">
+<title>Soundboard</title>
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="qt.css">
+<script src="qt-bridge.js" defer></script>
+<link rel="stylesheet" href="sb.css">
+<script>if (window.top !== window.self) document.documentElement.classList.add('in-suite');</script>
+</head>
+<body class="qt qt-dots" data-tool="soundboard">
+
+<header class="top">
+  <div class="brand">
+    <span class="mark" aria-hidden="true">SB</span>
+    <div>
+      <h1 class="qt-display">Soundboard</h1>
+      <div class="status" id="status"><span class="qt-dot" id="statusDot"></span><span id="statusText">Connecting…</span></div>
+    </div>
+  </div>
+  <button class="stopall" id="stopAll" title="Stop every sound (Esc)">
+    <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg><span>Stop all</span>
+  </button>
+</header>
+
+<div class="warn" id="warn" hidden role="status">
+  <svg viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3zm0 6v5m0 3v.5"/></svg>
+  <span id="warnText"></span>
+  <button class="qt-btn small" id="warnFix">Audio devices</button>
+</div>
+
+<main class="layout">
+  <section class="pads-wrap">
+    <div class="bar">
+      <h2 class="qt-eyebrow">Pads <span class="count" id="count"></span></h2>
+      <div class="bar-actions">
+        <div class="search" id="searchWrap" hidden>
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/></svg>
+          <input id="search" type="search" placeholder="Find a pad  ( / )" aria-label="Find a pad" autocomplete="off">
+        </div>
+        <button class="qt-btn" id="randomBtn" title="Play a random pad (R)" hidden>
+          <svg viewBox="0 0 24 24" class="dice"><rect x="4" y="4" width="16" height="16" rx="4"/><circle cx="9" cy="9" r=".6"/><circle cx="15" cy="15" r=".6"/><circle cx="15" cy="9" r=".6"/><circle cx="9" cy="15" r=".6"/></svg><span>Random</span>
+        </button>
+        <label class="qt-btn primary" for="upload" id="uploadBtn">
+          <svg viewBox="0 0 24 24"><path d="M12 19V5m0 0-6 6m6-6 6 6"/></svg><span>Add sounds</span>
+        </label>
+        <input type="file" id="upload" accept="audio/*,.wav,.mp3,.ogg,.flac,.aif,.aiff,.opus" multiple hidden>
+        <button class="qt-btn pc-only" id="addFolder" title="Pick a folder on the PC">Add folder</button>
+      </div>
+    </div>
+    <div class="pads" id="pads"></div>
+    <div class="drop" id="drop"><div><b>Drop sounds</b><span>to add them as pads</span></div></div>
+    <p class="tip qt-muted" id="tip">Tap a pad to play it. Long-press or right-click a pad to rename it, set its volume, make it loop or give it a hotkey. <span class="pc-only">Drag pads to reorder them, and press 1 to 0 to fire the first ten.</span></p>
+  </section>
+
+  <aside class="side">
+    <section class="qt-card panel">
+      <h2 class="qt-eyebrow">Mixer</h2>
+      <div class="fader" data-which="mic">
+        <div class="fl"><span>Your mic</span><b class="qt-mono" id="micVal">100%</b></div>
+        <input type="range" id="micGain" min="0" max="200" step="1" aria-label="Mic volume">
+        <div class="meter"><i id="micMeter"></i><b class="pk" id="micPk"></b></div>
+      </div>
+      <div class="fader" data-which="clips">
+        <div class="fl"><span>Clips</span><b class="qt-mono" id="clipVal">100%</b></div>
+        <input type="range" id="clipGain" min="0" max="150" step="1" aria-label="Clip volume">
+        <div class="meter"><i id="clipMeter"></i><b class="pk" id="clipPk"></b></div>
+      </div>
+      <div class="toggles" id="toggles"></div>
+    </section>
+
+    <details class="qt-card panel" id="devPanel">
+      <summary><h2 class="qt-eyebrow">Audio devices</h2><span class="chev">▾</span></summary>
+      <div class="devs" id="devs"></div>
+      <p class="hint qt-muted" id="hint"></p>
+      <div class="row"><button class="qt-btn" id="refresh">Rescan devices</button></div>
+    </details>
+
+    <details class="qt-card panel" id="morePanel">
+      <summary><h2 class="qt-eyebrow">More</h2><span class="chev">▾</span></summary>
+      <div class="rowline"><span>Tapping a playing pad<small>Also applies to hotkeys</small></span>
+        <div class="seg" id="tapMode" role="radiogroup" aria-label="Tapping a playing pad">
+          <button role="radio" data-v="restart" aria-checked="true">Restarts</button><button role="radio" data-v="stop" aria-checked="false">Stops</button><i></i>
+        </div></div>
+      <div class="rowline"><span>Stop-all hotkey</span><button class="qt-btn small" id="stopKey">Set</button></div>
+      <div class="rowline pc-only"><span>Classic window</span><button class="qt-btn small" id="winBtn">Show</button></div>
+      <div class="phone pc-only" id="phone">
+        <span>Use it from your phone</span>
+        <div class="seg small" id="linkTabs" hidden role="tablist"></div>
+        <div class="qr" id="qr"></div>
+        <code id="link" class="qt-mono"></code>
+        <button class="qt-btn small" id="copyLink">Copy link</button>
+      </div>
+    </details>
+  </aside>
+</main>
+
+<div class="sheet-back" id="sheetBack" hidden></div>
+<div class="sheet qt-card" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet-h"><div class="sheet-t"><h3 class="qt-display" id="sheetTitle">Pad</h3><small class="qt-mono qt-muted" id="sheetMeta"></small></div><button class="qt-btn icon ghost" id="sheetClose" aria-label="Close">✕</button></div>
+  <button class="qt-btn preview" id="padPreview" title="Plays on this device only. Nobody else hears it.">
+    <svg viewBox="0 0 24 24" class="pv-play"><path d="M8 5v14l11-7z"/></svg><svg viewBox="0 0 24 24" class="pv-stop"><rect x="7" y="7" width="10" height="10" rx="1.5"/></svg>
+    <span>Preview on this device</span><span class="pv-bar"><i id="pvBar"></i></span></button>
+  <label class="fld"><span>Name</span><input class="qt-input" id="padName" maxlength="60"></label>
+  <div class="fld"><div class="fl"><span>Volume</span><b class="qt-mono" id="padVolVal">100%</b></div>
+    <input type="range" id="padVol" min="0" max="300" step="5"></div>
+  <div class="rowline"><span>Loop until stopped</span><button class="qt-switch" role="switch" aria-checked="false" id="padLoop" aria-label="Loop"></button></div>
+  <div class="rowline"><span>Hotkey</span><span class="hk"><button class="qt-btn small" id="padKey">Set</button><button class="qt-btn small ghost" id="padKeyClear">Clear</button></span></div>
+  <div class="sheet-row">
+    <button class="qt-btn" id="padLeft" title="Move earlier">←</button>
+    <button class="qt-btn" id="padRight" title="Move later">→</button>
+    <span class="grow"></span>
+    <button class="qt-btn danger" id="padRemove">Remove</button>
+  </div>
+</div>
+
+<div class="keycap" id="keycap" hidden><div class="qt-card"><b class="qt-display">Press the keys</b><span id="keycapText">for example Ctrl + Shift + 1</span><small class="qt-muted">Esc cancels</small></div></div>
+<div class="qt-toasts" id="toasts" aria-live="polite"></div>
+<script src="qrcode.js"></script>
+<script src="sb.js"></script>
+</body>
+</html>

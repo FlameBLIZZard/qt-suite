@@ -1,0 +1,81 @@
+/* VOLT in the QT Suite "Ink Arcade" look. Loads after the inline styles and qt.css. */
+:root{
+  --bg:var(--qt-bg); --panel:var(--qt-card); --panel2:var(--qt-chip); --line:var(--qt-ink); --fg:var(--qt-fg); --mut:var(--qt-muted); --dim:var(--qt-dim);
+  --acc:var(--qt-volt); --acc-fg:var(--qt-on-accent); --bad:var(--qt-bad); --ok:var(--qt-ok); --r:var(--qt-r);
+  --sans:var(--qt-font); --mono:var(--qt-mono); --spring:var(--qt-spring); --out:var(--qt-ease); --shadow:var(--qt-shadow);
+  --B:var(--qt-border); --s:var(--qt-shadow-sm);
+  color-scheme:dark;
+}
+body{background-image:radial-gradient(#ffffff0d 1.2px,transparent 1.3px);background-size:16px 16px}
+
+/* top */
+.logo{font:400 18px var(--qt-display);letter-spacing:.06em}
+.logo i{width:14px;height:14px;border:2px solid var(--qt-ink);border-radius:3px}
+.st{font-size:11.5px}
+.st b{width:9px;height:9px;border:2px solid var(--qt-ink)}
+.icon{border:var(--qt-line) solid transparent}
+.icon:hover{background:var(--qt-chip);border-color:var(--qt-ink);box-shadow:var(--s);transform:translate(-1px,-1px)}
+.icon:active{transform:translate(2px,2px) scale(.9);box-shadow:none}
+
+h1{font-family:var(--qt-display);font-weight:400;letter-spacing:-.01em;line-height:1}
+h1 em{color:var(--qt-volt);-webkit-text-stroke:2px var(--qt-ink);paint-order:stroke fill}
+@keyframes rise{from{opacity:0;transform:translateY(.45em) rotate(-2deg)}}
+
+/* url bar */
+.bar{border:var(--B);box-shadow:var(--qt-shadow);border-radius:16px;background:var(--qt-card)}
+.bar:focus-within{border-color:var(--qt-ink);box-shadow:7px 7px 0 var(--qt-ink);transform:translate(-2px,-2px)}
+.bar:focus-within svg{color:var(--qt-volt)}
+.btn{border:var(--B);box-shadow:var(--s);border-radius:11px;font-weight:700;transition:transform var(--qt-fast) var(--qt-spring),box-shadow var(--qt-fast),background var(--qt-fast)}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--qt-ink)}
+.btn:active{transform:translate(3px,3px) scale(.98);box-shadow:none}
+.pri:hover{box-shadow:5px 5px 0 var(--qt-ink)}
+.sec:hover{background:var(--qt-hover)}
+.ghost{border:var(--qt-line) solid transparent;font-weight:600}
+.ghost:hover{background:var(--qt-chip);border-color:var(--qt-ink)}
+.ripple{background:#000}
+kbd{border:2px solid var(--qt-dim)}
+.load{height:4px}
+.err p{background:var(--qt-bad);color:var(--qt-on-accent);border:var(--B);box-shadow:var(--s);font-weight:600}
+
+/* switch */
+.sw i{width:40px;height:24px;border:var(--B);background:var(--qt-well);border-radius:99px}
+.sw i::after{width:12px;height:12px;top:3px;left:3px;border:2px solid var(--qt-ink)}
+.sw:active i::after{width:16px}
+.sw input:checked+i::after{transform:translateX(16px)}
+.sw:active input:checked+i::after{transform:translateX(12px)}
+
+/* preview card */
+.card{border:var(--B);box-shadow:var(--qt-shadow);border-radius:16px}
+.th{border:var(--B);border-radius:10px}
+.th span{background:var(--qt-volt);color:var(--qt-on-accent);font-weight:600;border:2px solid var(--qt-ink)}
+.meta h2{font-family:var(--qt-font);font-weight:700}
+.tag{border:2px solid var(--qt-ink);font-weight:600}
+.seg{background:var(--qt-well);border:var(--B)}
+.seg .pill{background:var(--qt-volt);border:var(--B);box-shadow:none}
+.seg button.on{color:var(--qt-on-accent)}
+.chip{border:var(--B);background:var(--qt-chip);font-weight:600}
+.chip:hover{border-color:var(--qt-ink);transform:translate(-1px,-1px);box-shadow:var(--s)}
+.chip.on{background:var(--qt-volt);color:var(--qt-on-accent);border-color:var(--qt-ink);box-shadow:var(--s)}
+.clip input{border:var(--B);background:var(--qt-well)}
+.clip input:focus{border-color:var(--qt-volt)}
+
+/* jobs */
+.count{border:2px solid var(--qt-ink);height:20px}
+.job{border:var(--qt-line) solid transparent}
+.job:hover{background:var(--qt-card);border-color:var(--qt-ink);box-shadow:var(--s)}
+.job img,.job .ph{border:2px solid var(--qt-ink)}
+.pb{height:10px;border:2px solid var(--qt-ink);background:var(--qt-well)}
+.pb i{background-image:repeating-linear-gradient(-45deg,transparent 0 7px,#0000001f 7px 14px);background-size:20px 20px;animation:qt-stripes .8s linear infinite}
+.pb i::after{display:none}
+.pb.ind i{animation:slide 1.2s ease-in-out infinite}
+
+/* overlays */
+.drop{border:3px dashed var(--qt-volt);backdrop-filter:none;background:color-mix(in srgb,var(--qt-bg) 88%,transparent);font:400 26px var(--qt-display)}
+.toast{border:var(--B);box-shadow:var(--s);font-weight:700}
+@keyframes tIn{from{opacity:0;transform:translateY(22px) rotate(-4deg) scale(.92)}}
+dialog{border:var(--B);box-shadow:8px 8px 0 var(--qt-ink);border-radius:16px}
+dialog h3{font:400 20px var(--qt-display)}
+dialog input:not([type=checkbox]),dialog select{border:var(--B);background:var(--qt-well)}
+dialog input:focus,dialog select:focus{border-color:var(--qt-volt)}
+dialog::backdrop{background:rgba(10,8,14,.7);backdrop-filter:none}
+.fly{border:var(--B)}

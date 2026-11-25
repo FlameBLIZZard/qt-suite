@@ -1,0 +1,216 @@
+/* QT Suite flow layer (loop 3). Loaded last. */
+
+/* ---------- 1. Files group on the rail ---------- */
+.nav-group .ic { position: relative; overflow: hidden; }
+.gmix { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; width: 22px; height: 22px; }
+.gmix img { width: 10.5px; height: 10.5px; border-radius: 2px; display: block; }
+.gcount { font: 700 10.5px var(--qt-mono); min-width: 20px; height: 18px; padding: 0 5px; border-radius: 99px; display: grid; place-items: center;
+  border: 2px solid var(--qt-ink); background: var(--qt-chip); color: var(--qt-muted); transition: transform var(--qt-med) var(--qt-spring); }
+.nav-group.on .gcount { background: var(--qt-on-accent); color: var(--qt-accent); font-size: 13px; }
+.nav-group[aria-expanded="true"] .gcount { transform: rotate(90deg) scale(1.1); }
+.nav-group[aria-expanded="true"]:not(.on) { color: var(--qt-fg); background: var(--qt-hover); }
+.qt-compact .gcount { position: absolute; right: 2px; bottom: 2px; min-width: 16px; height: 15px; font-size: 9px; padding: 0 3px; }
+
+.nav-fly { position: fixed; z-index: 60; width: 270px; padding: 8px; display: flex; flex-direction: column; gap: 3px;
+  box-shadow: var(--qt-shadow); animation: fly-in .34s var(--qt-spring) both; }
+.nav-fly.out { animation: fly-out .18s ease-in both; }
+@keyframes fly-in { from { opacity: 0; transform: scale(.6) translateX(-14px) rotate(-3deg); } }
+@keyframes fly-out { to { opacity: 0; transform: scale(.85) translateX(-8px); } }
+.fly-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 4px 8px 8px; border-bottom: 2px dashed var(--qt-chip); margin-bottom: 4px; }
+.fly-head b { font: 400 15px var(--qt-display); }
+.fly-head span { font-size: 11.5px; color: var(--qt-dim); }
+.fly-item, .fly-pick { all: unset; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--qt-r-sm);
+  border: 2px solid transparent; position: relative; animation: qt-rise .32s calc(var(--i, 0) * 35ms + 40ms) var(--qt-ease) both;
+  transition: background var(--qt-fast), transform var(--qt-fast) var(--qt-spring); }
+.fly-item .ic { width: 32px; height: 32px; flex: none; display: grid; place-items: center; border-radius: var(--qt-r-xs); border: var(--qt-border); background: var(--qt-chip);
+  transition: transform var(--qt-med) var(--qt-spring); }
+.fly-item .ic img { width: 24px; height: 24px; }
+.fly-item .fl { flex: 1; display: flex; flex-direction: column; line-height: 1.2; }
+.fly-item .fl b { font-weight: 700; font-size: 14px; }
+.fly-item .fl em { font-style: normal; font-size: 11.5px; color: var(--qt-muted); }
+.fly-item:hover, .fly-item:focus-visible, .fly-pick:hover, .fly-pick:focus-visible { background: var(--qt-hover); }
+.fly-item:hover .ic, .fly-item:focus-visible .ic { transform: rotate(-10deg) scale(1.12); }
+.fly-item:focus-visible, .fly-pick:focus-visible { border-color: var(--qt-accent); }
+.fly-item.on { background: var(--qt-accent); color: var(--qt-on-accent); border-color: var(--qt-ink); }
+.fly-item.on .fl em { color: inherit; opacity: .75; }
+.fly-item.on kbd { background: transparent; color: inherit; }
+.fly-item:active, .fly-pick:active { transform: scale(.96); }
+.fly-pick { margin-top: 4px; border-top: 2px dashed var(--qt-chip); border-radius: 0 0 var(--qt-r-sm) var(--qt-r-sm); font-size: 13px; color: var(--qt-muted); font-weight: 600; }
+.fly-pick kbd { margin-left: auto; }
+
+/* ---------- tidy rail footer ---------- */
+.rail-foot .auto.moved { display: none; }
+.rail-btns.row { flex-direction: row; gap: 6px; }
+.rail-btns.row .qt-btn { flex: 1; width: auto; justify-content: center; padding-inline: 0; min-width: 0; }
+.rail-btns.row .qt-btn > span:not(.splat) { display: none; }
+.rail-btns.row i { width: auto; font-size: 15px; }
+.rail-btns.row .badge { position: absolute; top: -7px; right: -7px; margin: 0; }
+.rail-btns .rf { display: inline-block; transition: transform .5s var(--qt-spring); }
+.rail-btns #refresh:hover .rf { transform: rotate(-200deg); }
+.qt-compact .rail-btns.row { flex-direction: column; }
+
+/* rail list: soft fade at the edge that has more */
+#nav.fade-top { -webkit-mask-image: linear-gradient(transparent, #000 26px); mask-image: linear-gradient(transparent, #000 26px); }
+#nav.fade-bot { -webkit-mask-image: linear-gradient(#000 calc(100% - 30px), transparent); mask-image: linear-gradient(#000 calc(100% - 30px), transparent); }
+#nav.fade-top.fade-bot { -webkit-mask-image: linear-gradient(transparent, #000 26px, #000 calc(100% - 30px), transparent); mask-image: linear-gradient(transparent, #000 26px, #000 calc(100% - 30px), transparent); }
+@media (max-width: 600px) { #nav.fade-top, #nav.fade-bot { -webkit-mask-image: none; mask-image: none; } }
+
+/* ---------- 2. Today strip: every card on one row when it can ---------- */
+.glance { grid-template-columns: repeat(auto-fit, minmax(158px, 1fr)); }
+.glance .gcard { min-width: 0; }
+.glance .gnum { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- 3. rail badges ---------- */
+.nav > .nbadge { position: relative; order: 2; z-index: 3; min-width: 18px; height: 17px; padding: 0 5px; border-radius: 99px; display: grid; place-items: center;
+  font: 700 10px/1 var(--qt-mono); border: 2px solid var(--qt-ink); background: var(--qt-bad); color: #fff; pointer-events: auto;
+  animation: nb-in .45s var(--qt-spring) both; }
+.nbadge[data-k="go"] { background: var(--qt-volt); color: var(--qt-on-accent); }
+.nbadge[data-k="warn"] { background: var(--qt-warn); color: var(--qt-on-accent); }
+.nbadge.out { animation: nb-out .2s ease-in both; }
+@keyframes nb-in { from { transform: scale(0) rotate(-30deg); } }
+@keyframes nb-out { to { transform: scale(0); opacity: 0; } }
+.nav > .qt-dot { order: 3; }
+.qt-compact .nav > .nbadge { position: absolute; left: auto; right: 2px; top: -2px; }
+@media (max-width: 600px) { .nav > .nbadge { position: absolute; left: auto; right: 2px; top: -1px; } }
+
+/* ---------- 4. quick actions on home tiles ---------- */
+.tile > .tq-row { position: absolute; right: 14px; bottom: 13px; display: flex; gap: 6px; z-index: 2; }
+.tq { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; border: var(--qt-border); background: var(--qt-chip); color: var(--qt-fg);
+  font-size: 14px; line-height: 1; cursor: pointer; box-shadow: 2px 2px 0 var(--qt-ink);
+  opacity: 0; transform: translateY(6px) scale(.8); transition: opacity var(--qt-fast), transform var(--qt-med) var(--qt-spring), background var(--qt-fast), box-shadow var(--qt-fast); }
+.tile:hover .tq, .tile:focus-within .tq, .tq:focus-visible { opacity: 1; transform: none; transition-delay: calc(var(--i, 0) * 40ms); }
+.tq:hover { background: var(--qt-accent); color: var(--qt-on-accent); transform: translate(-1px, -2px) rotate(-6deg) !important; box-shadow: 3px 4px 0 var(--qt-ink); }
+.tq:active { transform: translate(1px, 1px) scale(.9) !important; box-shadow: 0 0 0 var(--qt-ink); }
+.tq.danger:hover { background: var(--qt-bad); color: #fff; }
+.tq:focus-visible { outline: 2.5px solid var(--qt-accent); outline-offset: 2px; }
+.tq.busy { pointer-events: none; animation: spin .8s linear infinite; }
+@media (hover: none) { .tq { opacity: 1; transform: none; } }
+
+/* ---------- 5. recent files on home ---------- */
+.recentf { display: flex; flex-direction: column; gap: 10px; }
+.rf-head { display: flex; align-items: baseline; gap: 12px; }
+.rf-head h2 { font: 400 19px var(--qt-display); margin: 0; }
+.rf-head .qt-btn { margin-left: auto; }
+.rf-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(150px, 1fr); gap: 12px; overflow-x: auto; padding: 2px 8px 10px 2px; scrollbar-width: thin; }
+.rf-card { all: unset; cursor: pointer; position: relative; display: flex; flex-direction: column; gap: 8px; padding: 8px; min-width: 0;
+  animation: rf-deal .5s calc(var(--i) * 45ms) var(--qt-spring) both; transition: transform var(--qt-med) var(--qt-spring), box-shadow var(--qt-fast); }
+.rf-card:hover { transform: translate(-2px, -3px) rotate(-1deg); box-shadow: 7px 8px 0 var(--qt-ink); }
+.rf-card:active { transform: translate(2px, 2px) scale(.97); box-shadow: 1px 1px 0 var(--qt-ink); }
+.rf-card:focus-visible { outline: 2.5px solid var(--qt-accent); outline-offset: 3px; }
+@keyframes rf-deal { from { opacity: 0; transform: translate(-30px, 24px) rotate(-8deg) scale(.85); } }
+.rf-th { position: relative; height: 92px; border-radius: var(--qt-r-xs); border: var(--qt-border); overflow: hidden; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--qt-accent) 16%, var(--qt-well)); }
+.rf-th > img:first-child:not(.rf-app) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; transition: transform .5s var(--qt-ease); }
+.rf-card:hover .rf-th > img:first-child:not(.rf-app) { transform: scale(1.08); }
+.rf-th .rf-app { width: 30px; height: 30px; }
+.rf-th b { position: absolute; left: 6px; bottom: 5px; z-index: 2; font: 700 10px var(--qt-mono); text-transform: uppercase; padding: 1px 5px; border-radius: 5px;
+  background: var(--qt-ink); color: var(--qt-accent); }
+.rf-nm { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.rf-nm b { font-weight: 700; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rf-nm small { font-size: 11px; color: var(--qt-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rf-x { position: absolute; top: 3px; right: 3px; z-index: 3; width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; font-size: 11px;
+  background: var(--qt-ink); color: var(--qt-fg); opacity: 0; transform: scale(.6); transition: opacity var(--qt-fast), transform var(--qt-med) var(--qt-spring), background var(--qt-fast); }
+.rf-card:hover .rf-x { opacity: 1; transform: none; }
+.rf-x:hover { background: var(--qt-bad); transform: rotate(90deg) !important; }
+@media (hover: none) { .rf-x { opacity: .8; transform: none; } }
+
+/* ---------- 6. revived tools in the activity drawer ---------- */
+.act-row.k-revive { border-left-color: var(--qt-accent); background: color-mix(in srgb, var(--qt-ok) 10%, var(--qt-well)); }
+
+/* ---------- 7. Ctrl+E recent-tool switcher ---------- */
+.mru-wrap { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; background: #0008; animation: mru-fade .16s ease-out both; }
+@keyframes mru-fade { from { opacity: 0; } }
+.mru-wrap.out { animation: mru-out .18s ease-in both; }
+@keyframes mru-out { to { opacity: 0; } }
+.mru { padding: 16px 16px 10px; box-shadow: 8px 8px 0 var(--qt-ink); outline: none; max-width: calc(100vw - 40px); animation: mru-pop .34s var(--qt-spring) both; }
+@keyframes mru-pop { from { transform: scale(.7) translateY(20px); opacity: 0; } }
+.mru-row { position: relative; display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 4px; }
+.mru-item { all: unset; cursor: pointer; position: relative; z-index: 1; width: 96px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 6px 10px;
+  border-radius: var(--qt-r-sm); text-align: center; color: var(--qt-muted); animation: qt-rise .3s calc(var(--i) * 30ms) var(--qt-ease) both; transition: color var(--qt-fast); }
+.mru-item b { font-size: 12.5px; font-weight: 700; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mru-item em { position: absolute; top: 4px; right: 6px; font: 700 9px var(--qt-mono); font-style: normal; text-transform: uppercase; color: var(--qt-dim); }
+.mru-ic { width: 54px; height: 54px; display: grid; place-items: center; border-radius: 14px; border: var(--qt-border); background: var(--qt-chip); box-shadow: 3px 3px 0 var(--qt-ink);
+  transition: transform var(--qt-med) var(--qt-spring); }
+.mru-ic img { width: 38px; height: 38px; }
+.mru-item.on { color: var(--qt-on-accent); }
+.mru-item.on em { color: inherit; }
+.mru-item.on .mru-ic { transform: translateY(-4px) rotate(-6deg) scale(1.08); }
+.mru-sel { position: absolute; left: 0; top: 4px; bottom: 4px; z-index: 0; border-radius: var(--qt-r-sm); background: var(--qt-accent); border: var(--qt-border);
+  box-shadow: 3px 3px 0 var(--qt-ink); transition: transform .32s var(--qt-spring), width .2s; }
+.mru-foot { margin-top: 10px; font-size: 11px; color: var(--qt-dim); text-align: center; }
+
+/* ---------- 10. drop a file on a rail app ---------- */
+html.pk-drag-app body::after { opacity: 0 !important; }
+.nav.drop-on { color: var(--qt-on-accent); background: var(--qt-accent); border-color: var(--qt-ink); box-shadow: var(--qt-shadow-sm); z-index: 5; }
+.nav.drop-on .nm { animation: qt-rise .25s var(--qt-ease) both; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.pk-drag #nav .nav[data-tool="pictures"], html.pk-drag #nav .nav[data-tool="player"], html.pk-drag #nav .nav[data-tool="reader"],
+html.pk-drag #nav .nav[data-tool="code"], html.pk-drag #nav .nav[data-tool="archive"], html.pk-drag #nav .nav-group { outline: 2px dashed var(--qt-accent); outline-offset: -2px; }
+
+/* phone tab bar: the Files count sits on the icon corner like the status dots */
+@media (max-width: 600px) {
+  .nav-group .gcount { position: absolute; top: 2px; right: 6px; min-width: 16px; height: 15px; font-size: 9px; padding: 0 3px; }
+  .nav-fly kbd { display: none; }
+  .tile > .tq-row { right: 10px; bottom: 10px; }
+}
+
+/* =================================== 11-20. motion =================================== */
+/* 12. badge wobble lives in JS; 13. stamp on a tile after a quick action */
+.tile > .tq-stamp { position: absolute; right: 18px; top: 74px; z-index: 4; pointer-events: none; padding: 4px 10px; border-radius: 8px; border: 3px solid currentColor;
+  font: 400 16px var(--qt-display); letter-spacing: .04em; color: var(--qt-ok); background: color-mix(in srgb, var(--qt-ok) 14%, transparent);
+  animation: stamp 1.3s var(--qt-ease) both; }
+.tile > .tq-stamp.off { color: var(--qt-bad); background: color-mix(in srgb, var(--qt-bad) 14%, transparent); }
+@keyframes stamp { 0% { opacity: 0; transform: scale(2.6) rotate(-24deg); } 18% { opacity: 1; transform: scale(.92) rotate(-9deg); } 26% { transform: scale(1.04) rotate(-11deg); }
+  75% { opacity: 1; transform: scale(1) rotate(-10deg); } 100% { opacity: 0; transform: scale(1) rotate(-10deg) translateY(-8px); } }
+
+/* 15. switcher: the chosen icon flies up to fill the screen */
+.mru-ghost { position: fixed; z-index: 90; display: grid; place-items: center; border-radius: 14px; border: var(--qt-border); background: var(--qt-accent); pointer-events: none; }
+.mru-ghost img { width: 70%; height: 70%; }
+
+/* 16. home headline */
+.hero-drop .hw { display: inline-block; animation: hw-drop .7s calc(var(--w) * 90ms + 120ms) cubic-bezier(.3,1.5,.5,1) both; transform-origin: 50% 100%; }
+@keyframes hw-drop { 0% { opacity: 0; transform: translateY(-70px) rotate(-8deg); } 55% { opacity: 1; transform: translateY(0) scale(1.12,.78); }
+  75% { transform: scale(.95,1.07); } 100% { transform: none; } }
+.hero-drop .hl { animation: none; }
+.hl { position: relative; }
+.hl-swipe { position: absolute; left: -2%; bottom: -.18em; width: 104%; height: .32em; overflow: visible; pointer-events: none; }
+.hl-swipe path { fill: none; stroke: var(--qt-accent); stroke-width: 7; stroke-linecap: round; filter: drop-shadow(2px 2px 0 var(--qt-ink));
+  stroke-dasharray: 320; stroke-dashoffset: 320; animation: swipe .7s .75s var(--qt-ease) forwards; }
+.home.enter .hl-swipe path { animation: swipe .6s .25s var(--qt-ease) forwards; }
+@keyframes swipe { to { stroke-dashoffset: 0; } }
+.hero h1:hover .hl-swipe path { animation: swipe-wave .6s var(--qt-ease); stroke-dashoffset: 0; }
+@keyframes swipe-wave { 0% { stroke-dashoffset: 0; } 40% { stroke-dashoffset: -320; } 41% { stroke-dashoffset: 320; } 100% { stroke-dashoffset: 0; } }
+
+/* 17. toasts: a fuse burns down along the bottom */
+.qt-toast { position: relative; overflow: hidden; }
+.qt-toast > .fuse { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--qt-ink); opacity: .45; transform-origin: 0 50%;
+  animation: fuse var(--life, 2.4s) linear both; pointer-events: none; }
+@keyframes fuse { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+.qt-toast.act-toast:hover > .fuse { animation-play-state: paused; }
+
+/* 18. settings: knob squash, row pulse, "saved" tick */
+.qt-switch.flick::after { animation: knob .42s var(--qt-ease); }
+@keyframes knob { 0% { width: 18px; } 35% { width: 27px; border-radius: 10px; } 70% { width: 16px; } 100% { width: 18px; } }
+.qt-switch[aria-checked="true"].flick::after { animation-name: knob-on; }
+@keyframes knob-on { 0% { width: 18px; translate: -18px 0; } 35% { width: 27px; translate: -14px 0; border-radius: 10px; } 70% { width: 16px; translate: 2px 0; } 100% { width: 18px; translate: 0 0; } }
+.sline.pulse, .srow.pulse { animation: row-pulse .6s var(--qt-ease); }
+@keyframes row-pulse { 30% { background: color-mix(in srgb, var(--qt-accent) 10%, transparent); } }
+.saved-tick { position: fixed; z-index: 70; translate: -50% -100%; pointer-events: none; font: 700 11px var(--qt-mono); padding: 3px 8px; border-radius: 99px;
+  border: 2px solid var(--qt-ink); background: var(--qt-ok); color: var(--qt-on-accent); animation: tick 1.1s var(--qt-ease) both; }
+@keyframes tick { 0% { opacity: 0; transform: translateY(8px) scale(.5); } 20% { opacity: 1; transform: translateY(0) scale(1.1); } 30% { transform: scale(1); }
+  80% { opacity: 1; } 100% { opacity: 0; transform: translateY(-16px); } }
+
+/* 11. the Files mosaic spreads apart when you point at it */
+.gmix img { transition: transform var(--qt-med) var(--qt-spring); }
+.nav-group:hover .gmix img:nth-child(1) { transform: translate(-2px, -2px) rotate(-8deg); }
+.nav-group:hover .gmix img:nth-child(2) { transform: translate(2px, -2px) rotate(8deg); }
+.nav-group:hover .gmix img:nth-child(3) { transform: translate(-2px, 2px) rotate(6deg); }
+.nav-group:hover .gmix img:nth-child(4) { transform: translate(2px, 2px) rotate(-6deg); }
+.nav-group:hover .ic { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tq-stamp, .mru-ghost, .saved-tick { display: none; }
+  .hl-swipe path { animation: none; stroke-dashoffset: 0; }
+  .qt-toast > .fuse { animation: none; transform: scaleX(.5); }
+  .rf-card, .fly-item, .mru-item, .nav-fly, .mru { animation: none; }
+}
+.qt-calm .hl-swipe path { stroke-dashoffset: 0; }

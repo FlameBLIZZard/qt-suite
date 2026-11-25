@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Space Manager</title>
+<link rel="icon" href="/static/icon.svg">
+<link rel="stylesheet" href="/static/qt.css">
+<script src="/static/qt-bridge.js" defer></script>
+<link rel="stylesheet" href="/static/space.css">
+</head>
+<body class="qt" data-tool="space">
+<header class="top">
+  <div class="brand"><img src="/static/icon.svg" alt="" class="mark"><span class="qt-display word">Space Manager</span></div>
+  <nav class="tabs" id="tabs" role="tablist">
+    <span class="tab-pill" aria-hidden="true"></span>
+    <button role="tab" data-tab="overview" class="on">Overview</button>
+    <button role="tab" data-tab="clean">Clean up <i class="badge" id="b-clean"></i></button>
+    <button role="tab" data-tab="big">What's big</button>
+    <button role="tab" data-tab="reels">Reels <i class="badge" id="b-reels"></i></button>
+    <button role="tab" data-tab="activity">Activity</button>
+  </nav>
+  <div class="top-r">
+    <span class="qt-chip" id="adminChip" hidden title="Running with admin rights">ADMIN</span>
+    <span class="qt-chip warn" id="sandboxChip" hidden>TEST SANDBOX</span>
+    <button class="qt-btn ghost icon" id="settingsBtn" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.6M12 18.6v2.6M4.2 7.5l2.2 1.3M17.6 15.2l2.2 1.3M4.2 16.5l2.2-1.3M17.6 8.8l2.2-1.3"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <!-- OVERVIEW -->
+  <section class="pane on" id="p-overview">
+    <div class="drives" id="drives"><div class="skeleton qt-card"></div><div class="skeleton qt-card"></div></div>
+    <div class="cols">
+      <div class="qt-card wins" id="wins">
+        <div class="card-h"><div><div class="qt-eyebrow">Quick wins</div><h2>Space you can get back</h2></div><button class="qt-btn" id="winsRefresh">Check again</button></div>
+        <div id="winsList" class="winlist"></div>
+      </div>
+      <div class="qt-card guide">
+        <div class="qt-eyebrow">House rules</div><h2>Where things should live</h2>
+        <dl>
+          <dt><b class="tag ssd">SSD C:</b></dt><dd>Windows, apps, games you play (Valorant, Genshin, Minecraft, Steam), active projects and reels you're still editing.</dd>
+          <dt><b class="tag hdd">HDD D:</b></dt><dd>Photos, videos, clips, finished reel frames, backups and archives. It follows D:\README.md: unsure? Put it in 00_Inbox.</dd>
+          <dt><b class="tag usb">USB</b></dt><dd>D: is a USB exFAT drive. Eject it before unplugging, and keep a second copy of anything you can't lose.</dd>
+        </dl>
+        <div class="row"><button class="qt-btn" data-open="storage">Windows Storage settings</button><button class="qt-btn" data-open="apps">Installed apps</button><button class="qt-btn ghost" data-open="bin">Open Recycle Bin</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLEAN UP -->
+  <section class="pane" id="p-clean">
+    <div class="bar">
+      <div><div class="qt-eyebrow">Clean up</div><h1 class="qt-display">Caches and leftovers</h1>
+        <p class="qt-muted sub">Only caches and leftovers are listed here. Your own files are never touched, and files in use are skipped.</p></div>
+      <div class="bar-r"><button class="qt-btn ghost" id="cleanAll">Select all</button><button class="qt-btn" id="cleanScan">Measure again</button><button class="qt-btn primary big" id="cleanGo" disabled>Clean selected</button></div>
+    </div>
+    <div class="adminNote qt-card" id="adminNote" hidden><span>Some Windows folders need admin rights to clean.</span><button class="qt-btn" id="adminBtn">Restart as admin</button></div>
+    <div class="cleanlist" id="cleanList"></div>
+  </section>
+
+  <!-- WHAT'S BIG -->
+  <section class="pane" id="p-big">
+    <div class="scanbar qt-card">
+      <div class="where">
+        <input class="qt-input mono" id="bigPath" spellcheck="false" aria-label="Folder to scan">
+        <div class="quick" id="quickRoots"></div>
+      </div>
+      <button class="qt-btn primary big" id="bigScan">Scan</button>
+    </div>
+    <div class="progress qt-card" id="bigProg" hidden>
+      <div class="pr-top"><b id="bigProgTxt">Scanning</b><button class="qt-btn ghost" id="bigCancel">Cancel</button></div>
+      <div class="qt-bar"><i id="bigProgBar"></i></div>
+      <div class="pr-path mono" id="bigProgPath"></div>
+    </div>
+    <div id="bigEmpty" class="empty qt-dots">
+      <div class="emo">◔</div><h2>Find out what's eating the drive</h2>
+      <p class="qt-muted">Scan a drive or folder once. After that you can click into any folder instantly, see the biggest and oldest files, folders you can rebuild, and duplicate copies.</p>
+    </div>
+    <div id="bigBody" hidden>
+      <div class="subtabs" id="subtabs">
+        <button data-sub="folders" class="on">Folders</button>
+        <button data-sub="files">Biggest files</button>
+        <button data-sub="old">Not touched in a year <i class="badge" id="b-old"></i></button>
+        <button data-sub="rebuild">Rebuildable <i class="badge" id="b-rebuild"></i></button>
+        <button data-sub="dupes">Duplicates</button>
+        <button data-sub="types">By type</button>
+        <span class="scaninfo qt-muted" id="scanInfo"></span>
+      </div>
+      <div class="crumbs" id="crumbs"></div>
+      <div class="listtools" id="listTools">
+        <label class="ck" title="Select everything shown"><input type="checkbox" id="bigAll" aria-label="Select everything shown"><span></span></label>
+        <div class="filter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+          <input class="qt-input" id="bigFilter" placeholder="Filter by name or path" spellcheck="false" aria-label="Filter"><kbd>/</kbd></div>
+        <div class="seg" id="bigSort" role="group" aria-label="Sort"><button data-sort="size" class="on">Size</button><button data-sort="name">Name</button><button data-sort="date">Newest</button></div>
+        <span class="keys qt-muted">↑↓ move · Enter open · Space select · Del recycle · Backspace up</span>
+      </div>
+      <div class="list" id="bigList"></div>
+    </div>
+  </section>
+
+  <!-- REELS -->
+  <section class="pane" id="p-reels">
+    <div class="bar">
+      <div><div class="qt-eyebrow">Curious Orbit</div><h1 class="qt-display">Reel frames</h1>
+        <p class="qt-muted sub" id="reelsSub">Finished reels keep their final mp4 and project files on C:. Their plates and render folders go to D:, with a note left behind.</p></div>
+      <div class="bar-r"><button class="qt-btn" id="reelsScan">Check again</button><button class="qt-btn primary big" id="reelsGo" disabled>Move frames to D:</button></div>
+    </div>
+    <div class="reelhead"><label class="ck"><input type="checkbox" id="reelsAll"><span></span></label><span>Reel</span><span>Frames on C:</span><span>Status</span><span>Final video (stays)</span><span>node_modules</span><span>Last change</span></div>
+    <div class="reellist" id="reelList"></div>
+  </section>
+
+  <!-- ACTIVITY -->
+  <section class="pane" id="p-activity">
+    <div class="bar">
+      <div><div class="qt-eyebrow">Log</div><h1 class="qt-display">What Space Manager did</h1>
+        <p class="qt-muted sub mono" id="logPath"></p></div>
+      <div class="bar-r"><button class="qt-btn" data-open="log">Open log folder</button></div>
+    </div>
+    <div class="stats" id="logStats"></div>
+    <div class="listtools logtools">
+      <div class="seg" id="logKind" role="group" aria-label="Show"><button data-k="all" class="on">All</button><button data-k="freed">Freed</button><button data-k="moved">Moved</button><button data-k="scan">Scans</button><button data-k="problem">Problems</button></div>
+      <div class="filter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <input class="qt-input" id="logFilter" placeholder="Search the log" spellcheck="false" aria-label="Search the log"></div>
+      <span class="keys qt-muted" id="logCount"></span>
+    </div>
+    <div class="loglist" id="logList"></div>
+  </section>
+</main>
+
+<div class="selbar qt-card" id="selbar" hidden>
+  <b id="selTxt"></b>
+  <button class="qt-btn ghost" id="selClear">Clear</button>
+  <span class="grow"></span>
+  <button class="qt-btn ghost" id="selCopy" title="Copy the selected paths">Copy paths</button>
+  <button class="qt-btn" id="selReveal">Show in Explorer</button>
+  <button class="qt-btn" id="selInbox">Move to D: Inbox</button>
+  <button class="qt-btn danger" id="selRecycle">Recycle</button>
+</div>
+
+<div class="modal" id="modal" hidden><div class="dlg qt-card" role="dialog" aria-modal="true" aria-labelledby="mTitle"></div></div>
+<div class="qt-toasts" id="toasts"></div>
+<script src="/static/space.js"></script>
+</body>
+</html>

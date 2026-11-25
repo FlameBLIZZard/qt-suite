@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lens</title>
+<link rel="icon" href="/static/icon.svg">
+<link rel="stylesheet" href="/static/qt.css">
+<script src="/static/qt-bridge.js" defer></script>
+<link rel="stylesheet" href="/static/lens.css">
+</head>
+<body class="qt" data-tool="lens">
+<div class="app">
+  <aside class="side qt-dots" aria-label="Lens">
+    <button class="brand" data-view="photos" title="All photos">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="none" stroke="currentColor" stroke-width="3.5"/><circle cx="16" cy="16" r="5.5" fill="currentColor"/><circle cx="22" cy="9.5" r="2" fill="currentColor"/></svg></span>
+      <span class="word qt-display">Lens</span>
+      <span class="tagline">phone + PC</span>
+    </button>
+
+    <nav class="views" id="views">
+      <button data-view="photos" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg><span>Photos</span><b id="nAll"></b></button>
+      <button data-view="people"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.8 3.2-6 6.5-6s5.9 2.2 6.5 6"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.2c2.7.2 4.4 2 5 5"/></svg><span>People</span><b id="nPeople"></b></button>
+      <button data-view="albums"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg><span>Albums</span><b id="nAlbums"></b></button>
+      <button data-view="saved"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-5-5m5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg><span>Pulled to PC</span><b id="nSaved"></b></button>
+    </nav>
+
+    <div class="srcs" role="radiogroup" aria-label="Show from">
+      <button data-src="all" class="on" role="radio" aria-checked="true">Both</button>
+      <button data-src="phone" role="radio" aria-checked="false">Phone</button>
+      <button data-src="pc" role="radio" aria-checked="false">PC</button>
+    </div>
+
+    <div class="status qt-card" id="status">
+      <div class="st-row" id="stPhone"><i class="qt-dot"></i><div><b>Phone</b><span>Looking for Beam…</span></div></div>
+      <div class="st-row" id="stPc"><i class="qt-dot"></i><div><b>PC folders</b><span>…</span></div></div>
+      <div class="st-row" id="stClip"><i class="qt-dot"></i><div><b>Word search</b><span>…</span></div></div>
+      <div class="qt-bar" id="pcBar" hidden><i></i></div>
+      <button class="qt-btn ghost small" id="bSettings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M4.9 19.1 7 17m10-10 2.1-2.1"/></svg>Folders and phone link</button>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <header class="top">
+      <label class="search" id="searchbox">
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.8-4.8"/></svg>
+        <input id="q" placeholder="Search phone and PC: sunset at the beach, receipts, a name…" spellcheck="false" autocomplete="off" aria-label="Search">
+        <kbd>Ctrl F</kbd>
+        <button class="x" id="qClear" title="Clear (Esc)" hidden>×</button>
+        <div class="suggest qt-card" id="suggest" hidden></div>
+      </label>
+      <div class="kinds" role="radiogroup" aria-label="Kind">
+        <button data-kind="" class="on">All</button>
+        <button data-kind="photo">Photos</button>
+        <button data-kind="video">Videos</button>
+      </div>
+      <button class="qt-btn icon" id="bSize" title="Bigger or smaller tiles (Ctrl + / Ctrl -)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/><path d="M14 4h6v6M10 20H4v-6"/></svg></button>
+    </header>
+
+    <div class="crumb" id="crumb" hidden><button class="qt-btn small" id="crumbBack">← Back</button><h2 class="qt-display" id="crumbTitle"></h2><span class="qt-muted" id="crumbSub"></span></div>
+
+    <nav class="rail" id="rail" aria-label="Jump to a month" hidden></nav>
+    <section class="scroller" id="scroller" tabindex="-1">
+      <div id="grid" class="grid"></div>
+      <div id="people" class="people" hidden></div>
+      <div id="albums" class="albums" hidden></div>
+      <div id="empty" class="empty" hidden></div>
+    </section>
+
+    <div class="selbar qt-card" id="selbar" hidden>
+      <b id="selN">0 selected</b>
+      <button class="qt-btn primary" id="sPull" title="Copy the full originals from the phone to Pictures › From phone"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-5-5m5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>Pull to PC</button>
+      <button class="qt-btn" id="sSend" title="Put PC photos on the phone (Pictures › From PC)"><svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/></svg>Send to phone</button>
+      <button class="qt-btn ghost" id="sAll">Select all</button>
+      <button class="qt-btn ghost" id="sClear">Clear</button>
+    </div>
+  </main>
+</div>
+
+<div class="viewer" id="viewer" hidden>
+  <div class="v-stage" id="vStage">
+    <button class="v-nav prev" id="vPrev" title="Previous (←)">‹</button>
+    <div class="v-media" id="vMedia"></div>
+    <button class="v-nav next" id="vNext" title="Next (→)">›</button>
+    <div class="v-wait qt-card" id="vWait" hidden></div>
+    <div class="v-zoom qt-chip" id="vZoom" hidden></div>
+  </div>
+  <aside class="v-info" id="vInfo">
+    <div class="v-head"><span class="qt-eyebrow" id="vSrc"></span><button class="qt-btn icon ghost" id="vClose" title="Close (Esc)">×</button></div>
+    <h3 id="vName"></h3>
+    <p class="qt-muted" id="vWhen"></p>
+    <div class="v-acts" id="vActs"></div>
+    <dl id="vMeta"></dl>
+  </aside>
+</div>
+
+<div class="drawer" id="drawer" hidden>
+  <div class="d-card qt-card qt-pop">
+    <div class="v-head"><h3 class="qt-display">Folders and phone link</h3><button class="qt-btn icon ghost" id="dClose">×</button></div>
+    <h6>PC photo folders</h6>
+    <p class="qt-muted">Lens looks through these for photos and videos, and learns what's in them for word search. Nothing is moved or changed.</p>
+    <div id="folders" class="folders"></div>
+    <div class="row"><button class="qt-btn" id="dAdd">+ Add a folder</button><button class="qt-btn ghost" id="dRescan">Look again now</button></div>
+    <h6>Phone</h6>
+    <div id="dPhone" class="dphone"></div>
+  </div>
+</div>
+
+<div class="qt-toasts" id="toasts"></div>
+<script src="/static/lens.js"></script>
+</body>
+</html>

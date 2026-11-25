@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Burrow</title>
+<link rel="icon" href="/static/icon.svg">
+<link rel="stylesheet" href="/static/qt.css">
+<script src="/static/qt-bridge.js" defer></script>
+<link rel="stylesheet" href="/static/burrow.css">
+</head>
+<body class="qt" data-tool="burrow">
+<div class="app" id="app">
+  <aside class="side qt-dots" id="side" aria-label="Places">
+    <button class="brand" data-go="home:" title="Home">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M4 26c0-8 5-15 12-15s12 7 12 15" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><circle cx="12" cy="19" r="2" fill="currentColor"/><circle cx="20" cy="19" r="2" fill="currentColor"/><path d="M13 24q3 2 6 0" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+      <span class="word qt-display">Burrow</span>
+    </button>
+    <button class="cmdk" id="cmdkBtn" title="Jump anywhere (Ctrl+K)"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.8-4.8"/></svg><span>Jump anywhere</span><kbd>Ctrl K</kbd></button>
+    <div class="side-scroll">
+      <div class="sec"><h6>Places</h6><div class="links" id="places"></div></div>
+      <div class="sec" id="pinsSec"><h6>Pinned <span class="hint">drop folders here</span></h6><div class="links" id="pins"></div></div>
+      <div class="sec"><h6>Your tools</h6><div class="links" id="toolLinks"></div></div>
+      <div class="sec"><h6>Drives</h6><div class="links" id="drives"></div></div>
+    </div>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="tabbar">
+      <div class="tabs" id="tabs" role="tablist"></div>
+      <button class="tab-add" id="newTab" title="New tab (Ctrl+T)">+</button>
+    </div>
+
+    <div class="toolbar">
+      <div class="navbtns">
+        <button class="tb" id="bBack" title="Back (Alt+Left)"><svg viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></svg></button>
+        <button class="tb" id="bFwd" title="Forward (Alt+Right)"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button>
+        <button class="tb" id="bUp" title="Up a level (Backspace)"><svg viewBox="0 0 24 24"><path d="M12 19V6M6 11l6-6 6 6"/></svg></button>
+        <button class="tb" id="bRefresh" title="Refresh (F5)"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></button>
+      </div>
+      <div class="pathbar" id="pathbar">
+        <div class="crumbs" id="crumbs"></div>
+        <input class="path-in" id="pathIn" spellcheck="false" autocomplete="off" aria-label="Path">
+        <div class="suggest" id="suggest" hidden></div>
+      </div>
+      <label class="searchbox" id="searchbox">
+        <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.8-4.8"/></svg>
+        <input id="q" placeholder="Search" spellcheck="false" autocomplete="off" aria-label="Search">
+        <kbd id="qKbd">Ctrl F</kbd>
+        <button class="q-x" id="qClear" title="Clear (Esc)" hidden>×</button>
+      </label>
+      <div class="tools">
+        <button class="tb accent" id="bGrab" title="Download a link with VOLT (Ctrl+D)"><svg viewBox="0 0 24 24"><path d="M13 2 5 14h6l-1 8 8-12h-6z"/></svg><span>Grab link</span></button>
+        <button class="tb" id="bNewFolder" title="New folder (Ctrl+Shift+N)"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 10v6M9 13h6"/></svg></button>
+        <button class="tb" id="bView" title="List or grid (Ctrl+G)"><svg viewBox="0 0 24 24" id="viewIco"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+        <button class="tb" id="bPreview" title="Preview panel (Ctrl+P)"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M14 4v16"/></svg></button>
+        <button class="tb" id="bMore" title="More"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
+      </div>
+    </div>
+
+    <div class="filterbar" id="filterbar">
+      <div class="chips" id="chips"></div>
+      <div class="spacer"></div>
+      <div class="digging" id="digging" hidden><span class="shovel">⛏</span><span id="digText">Digging…</span></div>
+      <button class="sortbtn" id="bSort" title="Sort"><span id="sortLbl">Name</span><svg viewBox="0 0 24 24" id="sortDir"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+    </div>
+
+    <div class="body" id="body">
+      <section class="pane" id="pane" tabindex="0" aria-label="Files">
+        <div class="colhead" id="colhead">
+          <button data-sort="name">Name</button><button data-sort="mtime">Modified</button><button data-sort="type">Type</button><button data-sort="size">Size</button>
+        </div>
+        <div class="scroller" id="scroller">
+          <div class="spacer-v" id="spacerV"><div class="rows" id="rows"></div></div>
+          <div class="home" id="homeView" hidden></div>
+          <div class="empty" id="empty" hidden></div>
+        </div>
+        <div class="dropzone" id="dropzone"><div><b>Drop to copy here</b><span id="dropTo"></span></div></div>
+      </section>
+      <aside class="preview" id="preview" aria-label="Preview"></aside>
+    </div>
+
+    <footer class="status" id="status">
+      <span id="stCount"></span>
+      <span id="stSel" class="sel"></span>
+      <span class="grow"></span>
+      <span id="stUndo" class="undo"></span>
+      <button class="pill" id="stBeam" title="Beam"><i class="qt-dot"></i>Beam</button>
+      <button class="pill" id="stVolt" title="VOLT"><i class="qt-dot"></i>VOLT</button>
+    </footer>
+  </main>
+</div>
+
+<div class="jobs" id="jobs"></div>
+<div class="menu" id="menu" hidden role="menu"></div>
+<div class="scrim" id="scrim" hidden></div>
+<div class="modal qt-card" id="modal" hidden role="dialog" aria-modal="true"></div>
+<div class="palette qt-card" id="palette" hidden role="dialog" aria-label="Jump anywhere">
+  <input id="palIn" placeholder="Type a folder, a path or an action…" spellcheck="false" autocomplete="off">
+  <div class="pal-list" id="palList"></div>
+  <div class="pal-foot"><span><kbd>↑↓</kbd> pick</span><span><kbd>Enter</kbd> go</span><span><kbd>Ctrl Enter</kbd> new tab</span><span><kbd>Esc</kbd> close</span></div>
+</div>
+<div class="lightbox" id="lightbox" hidden></div>
+<div class="qt-toasts" id="toasts" aria-live="polite"></div>
+<script src="/static/burrow.js"></script>
+</body>
+</html>

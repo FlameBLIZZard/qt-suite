@@ -1,0 +1,47 @@
+/* VOLT 3.2: queue controls, size estimates, update badge, restart overlay, motion. Ink Arcade, loads last. */
+.chip u{display:block;text-decoration:none;font:500 10px var(--qt-mono);opacity:.7;margin-top:1px}
+.chip i{font-style:normal}
+.qhold{display:inline-flex;align-items:center;gap:6px}
+.qhold i{width:10px;height:10px;display:inline-block;border-left:3px solid currentColor;border-right:3px solid currentColor;transition:transform var(--qt-med) var(--qt-spring)}
+.qhold.on{color:var(--qt-volt)}
+.qhold.on i{border:0;width:0;height:0;border-left:9px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent}
+.qhold.flip i{animation:qt-pop .4s var(--qt-spring)}
+.icon.pz svg,.icon.front svg{transition:transform var(--qt-fast) var(--qt-spring)}
+.icon.pz:hover svg{transform:scale(1.15)}
+.icon.front:hover svg{transform:translateY(-2px)}
+.job[data-st=paused] .pb i{animation:none;background-color:var(--qt-muted)}
+.job[data-st=paused] img,.job[data-st=paused] .ph{filter:grayscale(.8);transition:filter .5s}
+.job.freeze{animation:freeze .5s var(--qt-spring)}
+@keyframes freeze{30%{transform:scale(.98) translateY(1px)}}
+.job.kick{animation:kick .5s var(--qt-spring)}
+@keyframes kick{35%{transform:translateX(6px) rotate(.4deg)}}
+.job.lift{animation:lift .55s var(--qt-spring);z-index:2}
+@keyframes lift{30%{transform:translateY(-6px) scale(1.02);box-shadow:var(--qt-shadow-sm)}}
+.job.launch img{animation:launch .45s var(--qt-ease)}
+@keyframes launch{40%{transform:scale(1.18) rotate(-3deg)}}
+.s.tick-up{animation:qt-pop .4s var(--qt-spring)}
+.job[data-pos]:not([data-pos=""])::before{content:"#" attr(data-pos);position:absolute;left:4px;top:4px;z-index:1;padding:0 6px;border-radius:6px;
+  font:700 10.5px var(--qt-mono);background:var(--qt-volt);color:var(--qt-on-accent);border:2px solid var(--qt-ink);box-shadow:2px 2px 0 var(--qt-ink)}
+.job.pos-pop::before{animation:qt-pop .45s var(--qt-spring)}
+.job[data-st=paused]::after{content:"PAUSED";position:absolute;left:14px;top:50%;transform:translateY(-50%) rotate(-8deg);font:400 11px var(--qt-display);
+  letter-spacing:.06em;padding:1px 6px;border:2px solid var(--qt-ink);border-radius:5px;background:var(--qt-card);color:var(--qt-fg);pointer-events:none}
+.job.freeze[data-st=paused]::after{animation:stampIn .4s var(--qt-spring)}
+@keyframes stampIn{from{opacity:0;transform:translateY(-50%) rotate(-8deg) scale(1.8)}}
+.job:focus-visible{outline:3px solid var(--qt-volt);outline-offset:-3px}
+.updb{display:inline-flex;align-items:center;gap:6px;font:600 11px var(--qt-mono);color:var(--qt-volt);border:2px solid var(--qt-volt);border-radius:7px;padding:1px 7px;animation:qt-pop .45s var(--qt-spring)}
+.updb b{width:6px;height:6px;border-radius:50%;background:var(--qt-volt);animation:qt-ping 1.6s infinite}
+.vnew{color:var(--qt-volt)}
+#upd.busy{pointer-events:none;background-image:repeating-linear-gradient(-45deg,transparent 0 7px,#0000001f 7px 14px);background-size:20px 20px;animation:qt-stripes .8s linear infinite}
+#upd.go{background:var(--qt-volt);color:var(--qt-on-accent)}
+#upd.stamp{animation:qt-pop .5s var(--qt-spring)}
+.recharge{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:color-mix(in srgb,var(--qt-bg) 85%,transparent);backdrop-filter:blur(3px);opacity:0;transition:opacity .3s}
+.recharge.on{opacity:1}
+.rc-box{display:flex;flex-direction:column;align-items:center;gap:8px;padding:26px 34px;background:var(--qt-card);border:var(--qt-border);border-radius:16px;box-shadow:var(--qt-shadow);animation:qt-pop .5s var(--qt-spring)}
+.rc-box b{font:400 20px var(--qt-display)}
+.rc-box span{font:12px var(--qt-mono);color:var(--qt-muted)}
+.rc-bolt{width:48px;height:64px}
+.rc-out{fill:none;stroke:var(--qt-ink);stroke-width:3;stroke-linejoin:round}
+.rc-fill{fill:var(--qt-volt);transform-origin:50% 100%;animation:charge 1.4s var(--qt-ease) infinite}
+@keyframes charge{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.recharge.done .rc-box{animation:qt-pop .4s var(--qt-spring) reverse}
+@media (prefers-reduced-motion:reduce){.rc-fill,.updb b,#upd.busy{animation:none!important}}

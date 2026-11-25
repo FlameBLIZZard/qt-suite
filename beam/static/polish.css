@@ -1,0 +1,76 @@
+/* Beam polish pass (Ink Arcade microanimations + small layout fixes). Loads after ink.css / vault.css. */
+
+/* sticky tab bar: hide the strip of scrolled content that showed in the 8px gap above it */
+.tabs::before{content:"";position:absolute;left:-16px;right:-16px;top:-14px;height:12px;background:var(--qt-bg);pointer-events:none}
+
+/* phone lists: let the "from X · size · when" line wrap instead of cutting off */
+.grid.phone .it .sub{white-space:normal;line-height:1.55}
+.grid.phone .it .sub .tag{max-width:13ch}
+.it .meta{cursor:pointer}
+
+/* toast with an action (Undo) */
+.toasts{pointer-events:none}
+.toast.has-act{pointer-events:auto;padding-right:6px}
+.toast-act{margin-left:auto;font:inherit;font-weight:800;font-size:13px;color:var(--qt-fg);background:var(--qt-ink);border:2px solid var(--qt-ink);
+  border-radius:9px;padding:5px 11px;cursor:pointer;transition:transform var(--qt-fast) var(--qt-spring)}
+.toast-act:hover{transform:translate(-1px,-1px)}
+.toast-act:active{transform:scale(.9)}
+.toast.has-act::after{content:"";position:absolute;left:10px;right:10px;bottom:3px;height:3px;border-radius:3px;background:currentColor;opacity:.35;
+  transform-origin:left;animation:toastclock 4.5s linear forwards}
+.toast{position:relative}
+@keyframes toastclock{to{transform:scaleX(0)}}
+
+/* tab pill: squash and stretch as it slides */
+.tab-pill.squash{animation:pillsquash .5s var(--qt-spring)}
+@keyframes pillsquash{0%{scale:1 1}30%{scale:1.08 .82}60%{scale:.97 1.06}100%{scale:1 1}}
+.tab.on svg{animation:tabico .45s var(--qt-spring)}
+@keyframes tabico{0%{transform:scale(.6) rotate(-14deg)}60%{transform:scale(1.18) rotate(4deg)}}
+
+/* list rows: touch press sinks into the shadow, like the native buttons */
+.it:active:not(.tr){transform:translate(2px,2px) scale(.99);box-shadow:none;transition-duration:.06s}
+.icon-btn svg{transition:transform .35s var(--qt-spring)}
+.icon-btn:hover svg{transform:scale(1.12)}
+a.icon-btn.dl-go svg{animation:dlgo .55s var(--qt-ease)}
+@keyframes dlgo{0%{transform:none}35%{transform:translateY(5px) scaleY(.8)}55%{transform:translateY(-3px)}100%{transform:none}}
+
+/* item thumbnails wobble in once */
+.it.enter .thumb{animation:thumbin .6s var(--qt-spring) both;animation-delay:inherit}
+@keyframes thumbin{0%{transform:scale(.4) rotate(-18deg)}70%{transform:scale(1.08) rotate(3deg)}}
+
+/* drop zone: the arrow launches when files go */
+.drop.launch .drop-ico{animation:launch .7s var(--qt-ease)}
+@keyframes launch{0%{transform:none}25%{transform:translateY(6px) scale(1.1,.85)}55%{transform:translateY(-26px) scale(.9,1.12);opacity:0}56%{transform:translateY(18px);opacity:0}100%{transform:none;opacity:1}}
+
+/* ink burst: a few hard-edged squares that pop out of something that just finished */
+.ink-burst{position:fixed;width:0;height:0;pointer-events:none;z-index:60}
+.ink-burst i{position:absolute;left:-5px;top:-5px;width:10px;height:10px;border:2px solid var(--qt-ink);border-radius:3px;
+  animation:burst .7s var(--qt-ease) forwards}
+@keyframes burst{0%{transform:translate(0,0) scale(.3) rotate(0);opacity:1}80%{opacity:1}100%{transform:translate(var(--x),var(--y)) scale(1) rotate(var(--r));opacity:0}}
+
+/* connection chip pops when the PC comes back; the offline banner nudges */
+.link-chip.pop{animation:chippop .55s var(--qt-spring)}
+@keyframes chippop{0%{transform:scale(.86)}55%{transform:scale(1.08) rotate(-2deg)}100%{transform:none}}
+.banner:not([hidden]){animation:drop .45s var(--qt-spring),bannerwob 2.8s 1s ease-in-out infinite}
+@keyframes bannerwob{0%,88%,100%{transform:none}92%{transform:rotate(-1deg)}96%{transform:rotate(1deg)}}
+
+/* small number changes (item count, totals) get a little bump */
+.bump{display:inline-block;animation:bump .4s var(--qt-spring)}
+@keyframes bump{40%{transform:translateY(-3px) scale(1.08);color:var(--qt-beam)}}
+
+/* remote: connection dot breathes while live, trackpad lifts while touched */
+.ws-dot.on{animation:wsbreath 2.4s ease-in-out infinite}
+@keyframes wsbreath{50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--qt-beam) 25%,transparent)}}
+.pad{transition:transform .25s var(--qt-spring),box-shadow .25s}
+.pad.active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--qt-ink)}
+.round.big.playing{animation:playbeat .5s var(--qt-spring)}
+@keyframes playbeat{40%{transform:scale(1.12) rotate(-6deg)}}
+
+/* card headers: the title nudges when the card gets new things */
+.card.fresh .card-h h2{animation:headnudge .5s var(--qt-spring)}
+@keyframes headnudge{40%{transform:translateX(4px) rotate(-1.5deg)}}
+
+@media (prefers-reduced-motion:reduce){
+  .tab-pill.squash,.tab.on svg,.it.enter .thumb,.drop.launch .drop-ico,.link-chip.pop,.banner,.bump,.ws-dot.on,.card.fresh .card-h h2,
+  a.icon-btn.dl-go svg,.round.big.playing{animation:none!important}
+  .ink-burst{display:none}
+}

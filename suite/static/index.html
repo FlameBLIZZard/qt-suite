@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QT Suite</title>
+<link rel="icon" href="/icon.svg">
+<link rel="stylesheet" href="/theme/qt.css">
+<link rel="stylesheet" href="/hub.css">
+<link rel="stylesheet" href="/hub-plus.css">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/peek.css">
+<link rel="stylesheet" href="/flow.css">
+<link rel="stylesheet" href="/spark.css">
+<link rel="stylesheet" href="/nova.css">
+<script src="/shell-pre.js"></script>
+</head>
+<body class="qt" data-tool="home">
+<nav class="rail" id="rail" aria-label="Tools">
+  <button class="brand" data-go="home" title="Home (Ctrl+0)">
+    <img class="logo" src="/icons/suite.svg" alt="" aria-hidden="true"><span class="word qt-display">Suite</span>
+  </button>
+  <div class="tools" id="nav"></div>
+  <div class="rail-foot">
+    <label class="auto" title="Open the suite quietly when you sign in to Windows"><button class="qt-switch" role="switch" aria-checked="false" id="autostart" aria-label="Start with Windows"></button><span>Start with Windows</span></label>
+    <button class="qt-btn ghost" id="refresh" title="Check status">↻ <span>Status</span></button>
+  </div>
+</nav>
+
+<main class="stage" id="stage">
+  <section class="view home qt-dots" id="view-home" data-view="home">
+    <header class="hero">
+      <div>
+        <div class="qt-eyebrow" id="greet">Good evening</div>
+        <h1 class="qt-display">Your tools,<br><span class="hl">one place.</span></h1>
+      </div>
+      <div class="hero-stats" id="hero-stats"></div>
+    </header>
+    <div class="tiles qt-stagger" id="tiles"></div>
+    <p class="hint qt-muted">Ctrl + a number jumps to that tool. Ctrl + 0 comes back here.</p>
+  </section>
+  <div id="frames"></div>
+</main>
+<div class="qt-toasts" id="toasts" aria-live="polite"></div>
+<script src="/hub.js"></script>
+<script src="/hub-plus.js"></script>
+<script src="/shell.js"></script>
+<script src="/tray.js"></script>
+<script src="/peek.js"></script>
+<script src="/flow.js"></script>
+<script src="/spark.js"></script>
+<script src="/nova.js"></script>
+<script src="/surf-hub.js"></script>
+</body>
+</html>

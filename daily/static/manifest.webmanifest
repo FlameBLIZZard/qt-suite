@@ -1,0 +1,14 @@
+{
+  "name": "Daily",
+  "short_name": "Daily",
+  "description": "Today at a glance: money, photos, downloads, disk space.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#16141a",
+  "theme_color": "#16141a",
+  "icons": [
+    {"src": "daily-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "daily-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}

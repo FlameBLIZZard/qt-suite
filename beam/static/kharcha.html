@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#16141a">
+<title>Kharcha on PC</title>
+<link rel="icon" href="/static/icon.svg">
+<link rel="stylesheet" href="/static/qt.css">
+<script src="/static/qt-bridge.js" defer></script>
+<style>
+body { margin: 0; min-height: 100vh; background: var(--qt-bg) radial-gradient(color-mix(in srgb, var(--qt-fg) 7%, transparent) 1.2px, transparent 1.3px) 0 0 / 16px 16px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 28px 24px 60px; }
+header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+h1 { font: 400 44px/1 var(--qt-display); margin: 0; letter-spacing: -.01em; }
+h1 span { color: var(--qt-accent); -webkit-text-stroke: 2px var(--qt-ink); paint-order: stroke fill; }
+.sync { display: inline-flex; align-items: center; gap: 8px; font: 600 12px var(--qt-mono); padding: 7px 12px; border: 2px solid var(--qt-ink); border-radius: 99px; background: var(--qt-chip); color: var(--qt-muted); }
+.sync i { width: 9px; height: 9px; border-radius: 50%; background: var(--qt-dim); border: 1.5px solid var(--qt-ink); }
+.sync.live i { background: var(--qt-accent); animation: pulse 2s infinite; }
+@keyframes pulse { 50% { transform: scale(1.35); } }
+.grow { flex: 1; }
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+.card { background: var(--qt-card); border: var(--qt-border); border-radius: var(--qt-r); box-shadow: var(--qt-shadow); padding: 18px; animation: up .5s var(--qt-spring) both; }
+.card:nth-child(2) { animation-delay: .04s } .card:nth-child(3) { animation-delay: .08s } .card:nth-child(4) { animation-delay: .12s }
+@keyframes up { from { transform: translateY(14px) scale(.98); opacity: 0; } }
+.c3 { grid-column: span 3; } .c4 { grid-column: span 4; } .c5 { grid-column: span 5; } .c7 { grid-column: span 7; } .c8 { grid-column: span 8; } .c12 { grid-column: 1 / -1; }
+@media (max-width: 900px) { .c3 { grid-column: span 6; } .c4, .c5, .c7, .c8 { grid-column: 1 / -1; } }
+.k { font: 600 11px var(--qt-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--qt-muted); }
+.v { font: 400 34px/1.1 var(--qt-display); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.hero { background: var(--qt-accent); color: var(--qt-on-accent); }
+.hero .k, .hero .s { color: color-mix(in srgb, var(--qt-on-accent) 70%, var(--qt-accent)); }
+.s { font-size: 13px; color: var(--qt-muted); margin-top: 4px; }
+.ok { color: var(--qt-ok); } .bad { color: var(--qt-bad); }
+h2 { font: 600 12px var(--qt-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--qt-muted); margin: 0 0 12px; display: flex; align-items: center; gap: 10px; }
+label { display: block; font: 600 11px var(--qt-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--qt-muted); margin: 0 0 6px; }
+input, select { width: 100%; box-sizing: border-box; padding: 11px 12px; font: 600 15px var(--qt-font); color: var(--qt-fg); background: var(--qt-well); border: var(--qt-border); border-radius: var(--qt-r-sm); outline: none; }
+input:focus, select:focus { box-shadow: 3px 3px 0 var(--qt-accent); }
+.amt { font: 400 30px var(--qt-display); padding: 10px 14px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.seg { display: flex; gap: 6px; padding: 4px; border: var(--qt-border); border-radius: var(--qt-r-sm); background: var(--qt-well); margin-bottom: 12px; }
+.seg button { flex: 1; padding: 8px; border: 0; border-radius: 7px; background: none; color: var(--qt-muted); font: 700 13px var(--qt-font); cursor: pointer; transition: background .2s, color .2s; }
+.seg button.on { background: var(--qt-accent); color: var(--qt-on-accent); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border-radius: var(--qt-r-sm); border: var(--qt-border); background: var(--qt-chip); color: var(--qt-fg); font: 700 14px var(--qt-font); box-shadow: var(--qt-shadow-sm); cursor: pointer; text-decoration: none; transition: transform var(--qt-fast) var(--qt-spring), box-shadow var(--qt-fast); }
+.btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--qt-ink); }
+.btn:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--qt-ink); }
+.btn.primary { background: var(--qt-accent); color: var(--qt-on-accent); }
+.btn.block { width: 100%; margin-top: 12px; }
+.btn.sm { padding: 6px 10px; font-size: 12px; box-shadow: 2px 2px 0 var(--qt-ink); }
+.cats { display: flex; flex-direction: column; gap: 12px; }
+.cat { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; }
+.cat .e { font-size: 20px; }
+.bar { grid-column: 2 / -1; height: 10px; border: 2px solid var(--qt-ink); border-radius: 6px; background: var(--qt-well); overflow: hidden; margin-top: -6px; }
+.bar i { display: block; height: 100%; background: var(--qt-accent); transform-origin: left; animation: grow .8s var(--qt-spring) both; }
+.bar.over i { background: var(--qt-bad); }
+@keyframes grow { from { transform: scaleX(0); } }
+.num { font-family: var(--qt-mono); font-variant-numeric: tabular-nums; font-weight: 700; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+td { padding: 9px 6px; border-top: 2px dashed var(--qt-chip); vertical-align: middle; }
+td.r { text-align: right; }
+tr.in td.num { color: var(--qt-ok); }
+.muted { color: var(--qt-muted); }
+.chip { display: inline-block; font: 600 11px var(--qt-mono); padding: 2px 8px; border: 2px solid var(--qt-ink); border-radius: 99px; background: var(--qt-well); color: var(--qt-muted); }
+.chip.wait { background: var(--qt-warn); color: var(--qt-on-accent); }
+.week { display: flex; gap: 8px; align-items: flex-end; height: 130px; margin-top: 10px; }
+.week .d { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; height: 100%; }
+.week .t { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.week .b { width: 100%; border: 2px solid var(--qt-ink); border-radius: 6px 6px 3px 3px; background: var(--qt-chip); transform-origin: bottom; animation: rise .7s var(--qt-spring) both; }
+.week .d.today .b { background: var(--qt-accent); }
+.week .l { font: 600 11px var(--qt-mono); color: var(--qt-muted); }
+@keyframes rise { from { transform: scaleY(0); } }
+.empty { text-align: center; padding: 30px 10px; color: var(--qt-muted); }
+.setup ol { line-height: 1.9; padding-left: 20px; }
+code { font-family: var(--qt-mono); font-size: 13px; background: var(--qt-well); border: 1.5px solid var(--qt-ink); border-radius: 7px; padding: 3px 7px; word-break: break-all; }
+.toast { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 140%); background: var(--qt-fg); color: var(--qt-bg); border: var(--qt-border); box-shadow: var(--qt-shadow-sm); border-radius: 99px; padding: 10px 18px; font-weight: 700; transition: transform .45s var(--qt-spring); z-index: 9; }
+.toast.show { transform: translate(-50%, 0); }
+.search { max-width: 260px; padding: 7px 10px; font-size: 13px; }
+.who { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 2px dashed var(--qt-chip); }
+.who:first-child { border-top: 0; }
+body.calm .card, body.calm .bar i, body.calm .week .b, body.calm .gbar i { animation: none; }
+.bar0 { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.mon { display: inline-flex; align-items: center; gap: 6px; }
+.mon b { font: 400 20px var(--qt-display); min-width: 150px; text-align: center; }
+.mon .btn[disabled] { opacity: .3; pointer-events: none; }
+.gbar { height: 12px; border: 2px solid var(--qt-ink); border-radius: 6px; background: var(--qt-well); overflow: hidden; margin: 6px 0 2px; }
+.gbar i { display: block; height: 100%; background: var(--qt-accent); transform-origin: left; animation: grow .9s var(--qt-spring) both; }
+.v.pop { animation: vpop .5s var(--qt-spring); }
+@keyframes vpop { 40% { transform: scale(1.08); } }
+kbd { font: 600 11px var(--qt-mono); border: 1.5px solid var(--qt-ink); border-radius: 5px; padding: 1px 5px; background: var(--qt-well); }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body class="qt" data-tool="kharcha">
+<div class="wrap">
+  <header><h1>Khar<span>cha</span></h1><span class="sync" id="sync"><i></i><span id="syncText">Loading…</span></span><span class="grow"></span>
+    <a class="btn sm" href="/api/kharcha/backup" id="dl">⬇ Latest backup</a></header>
+  <div id="main"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+let D = null, kind = 'tx', query = '', moff = 0, lastSig = '', prevV = {};
+const cur = () => (D && D.state && D.state.settings && D.state.settings.currency) || '₹';
+const money = n => (n < 0 ? '−' : '') + cur() + Math.abs(n).toLocaleString('en-IN', { maximumFractionDigits: Math.round(n * 100) % 100 ? 2 : 0 });
+const sum = a => a.reduce((x, y) => x + y, 0);
+const DAY = 864e5;
+const sod = d => { d = new Date(d); d.setHours(0, 0, 0, 0); return d; };
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2400); }
+function ago(s) { const m = Math.round((Date.now() / 1000 - s) / 60); return m < 1 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : Math.round(m / 1440) + ' days ago'; }
+function period(S, off = 0, at) {
+  if (off > 0) { let q = period(S); for (let i = 0; i < off; i++) q = period(S, 0, new Date(+q.start - DAY)); return q; }
+  const ref = at || new Date(), sd = Math.min(28, Math.max(1, (S.settings.startDay | 0) || 1));
+  let m = ref.getMonth(); if (ref.getDate() < sd) m -= 1;
+  const start = new Date(ref.getFullYear(), m, sd), end = new Date(ref.getFullYear(), m + 1, sd);
+  return { start, end, days: Math.round((end - start) / DAY) };
+}
+const catOf = (S, id) => (S.cats || []).find(c => c.id === id) || { name: 'Other', emoji: '✨', budget: 0 };
+function balances(S) {   // Bill Buddy: friend balances, > 0 = they owe you
+  const out = {};
+  (S.friends || []).forEach(f => out[f.id] = 0);
+  (S.bills || []).forEach(x => { for (const f in out) { if (x.payer === 'me') out[f] += +(x.shares[f] || 0); else if (x.payer === f) out[f] -= +(x.shares.me || 0); } });
+  (S.settles || []).forEach(s => { if (s.fid in out) out[s.fid] += s.dir === 'in' ? -s.amt : s.amt; });
+  return out;
+}
+
+async function load() {
+  try { D = await (await fetch('/api/kharcha')).json(); } catch (e) { $('#syncText').textContent = 'Beam is not answering'; return; }
+  const live = D.at && Date.now() / 1000 - D.at < 15 * 60;
+  $('#sync').classList.toggle('live', !!live);
+  $('#syncText').textContent = D.at ? `Synced from ${D.device || 'phone'} · ${ago(D.at)}` : 'Not connected yet';
+  $('#dl').hidden = !D.at;
+  const sig = JSON.stringify([D.at, D.inbox, moff, kind]);
+  if (sig === lastSig) return;   // nothing new: leave the page alone (no replayed animations every 15 s)
+  document.body.classList.toggle('calm', !!lastSig); lastSig = sig;
+  render();
+}
+function setupCard() {
+  return `<div class="card c12 setup"><h2>Connect your phone</h2>
+    <p>Kharcha on the phone sends its data here through Beam, over Wi-Fi or Tailscale. Nothing goes to the internet.</p>
+    <ol><li>Open <b>Beam</b> on this PC and press <b>Copy</b> under the QR code (the link has Beam's key).</li>
+    <li>Get it to the phone: paste it in Beam's Clipboard tab and tap <b>Send</b>, then copy it there.</li>
+    <li>In <b>Kharcha</b> on the phone: <b>Setup → PC sync</b>, paste the link, tap <b>Connect</b>.</li></ol>
+    <p class="muted">From then on, Kharcha syncs whenever you open it or save something. Expenses you add here show up on the phone.</p></div>`;
+}
+function render() {
+  const box = D.inbox || [];
+  if (!D.state) { $('#main').innerHTML = `<div class="grid">${setupCard()}${addCard(box, null)}</div>`; return; }
+  const S = D.state, now = Date.now(), today = +sod(now), cp = period(S), p = period(S, moff);
+  const firstTs = Math.min(now, ...S.tx.map(t => t.ts)); let maxOff = 0; while (maxOff < 36 && +period(S, maxOff).start > firstTs) maxOff++;
+  const mlabel = p.start.toLocaleDateString('en-IN', { month: 'long' }) + (p.start.getFullYear() !== new Date().getFullYear() ? ' ' + p.start.getFullYear() : '');
+  const txP = S.tx.filter(t => t.ts >= +p.start && t.ts < +p.end), spent = sum(txP.map(t => t.amt));
+  const inc = (S.inc || []).filter(x => x.ts >= +p.start && x.ts < +p.end), inSum = sum(inc.map(x => x.amt));
+  const income = Math.max(+S.settings.income || 0, sum(inc.filter(x => x.kind === 'salary').map(x => x.amt))) + sum(inc.filter(x => x.kind !== 'salary').map(x => x.amt));
+  const spendable = Math.max(0, income - (+S.settings.saveTarget || 0));
+  const daysLeft = Math.max(1, Math.ceil((cp.end - today) / DAY));
+  const txC = S.tx.filter(t => t.ts >= +cp.start && t.ts < +cp.end), spentC = sum(txC.map(t => t.amt));
+  const incC = (S.inc || []).filter(x => x.ts >= +cp.start && x.ts < +cp.end);
+  const incomeC = Math.max(+S.settings.income || 0, sum(incC.filter(x => x.kind === 'salary').map(x => x.amt))) + sum(incC.filter(x => x.kind !== 'salary').map(x => x.amt));
+  const spendableC = Math.max(0, incomeC - (+S.settings.saveTarget || 0));
+  const spentToday = sum(txC.filter(t => t.ts >= today).map(t => t.amt));
+  const safe = incomeC ? (spendableC - (spentC - spentToday)) / daysLeft - spentToday : 0;
+  const bal = balances(S), owed = sum(Object.values(bal).filter(v => v > 0)), owe = -sum(Object.values(bal).filter(v => v < 0));
+  let h = `<div class="grid"><div class="bar0"><span class="mon"><button class="btn sm" data-m="1" ${moff >= maxOff ? 'disabled' : ''} title="Earlier month">‹</button><b>${esc(mlabel)}</b><button class="btn sm" data-m="-1" ${moff ? '' : 'disabled'} title="Later month">›</button></span><span class="muted" style="font-size:13px">${moff ? 'Looking back' : 'This month so far'}</span><span class="grow"></span><span class="muted" style="font-size:12px"><kbd>N</kbd> add · <kbd>/</kbd> search</span><button class="btn sm" id="csv">⬇ CSV</button></div>`;
+  h += `<div class="card hero c3"><div class="k">${incomeC ? (safe < 0 ? 'Over today by' : 'Safe to spend today') : 'Spent this month'}</div><div class="v" data-v="hero">${money(Math.round(incomeC ? Math.abs(safe) : spentC))}</div><div class="s">${daysLeft} day${daysLeft > 1 ? 's' : ''} left this month</div></div>`;
+  h += `<div class="card c3"><div class="k">Spent in ${esc(p.start.toLocaleDateString('en-IN', { month: 'short' }))}</div><div class="v" data-v="spent">${money(Math.round(spent))}</div><div class="s">${income ? money(Math.round(Math.max(0, spendable - spent))) + ' left of ' + money(Math.round(spendable)) : txP.length + ' expenses'}</div></div>`;
+  h += `<div class="card c3"><div class="k">Money in</div><div class="v ok">+${money(Math.round(inSum))}</div><div class="s">${inc.length} this month</div></div>`;
+  h += `<div class="card c3"><div class="k">Friends</div><div class="v ${owed >= owe ? 'ok' : 'bad'}">${owed || owe ? money(Math.round(Math.max(owed, owe))) : 'Square'}</div><div class="s">${owed || owe ? (owed >= owe ? 'owed to you' : 'you owe') + ' (Bill Buddy)' : 'Nobody owes anybody'}</div></div>`;
+  h += addCard(box, S);
+  // last 14 days
+  const days = Array.from({ length: 14 }, (_, i) => ({ d: sod(now - (13 - i) * DAY), v: 0 }));
+  S.tx.forEach(t => { const i = Math.floor((+sod(t.ts) - +days[0].d) / DAY); if (i >= 0 && i < 14) days[i].v += t.amt; });
+  const mx = Math.max(...days.map(x => x.v), 1);
+  h += `<div class="card c7"><h2>Last 14 days <span class="grow"></span><span class="num" style="color:var(--qt-fg)">${money(Math.round(sum(days.map(x => x.v))))}</span></h2><div class="week">${days.map((x, i) => `<div class="d ${i === 13 ? 'today' : ''}" title="${x.d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}: ${money(Math.round(x.v))}"><div class="t"><div class="b" style="height:${Math.max(3, x.v / mx * 100)}%;animation-delay:${i * 30}ms"></div></div><div class="l">${i === 13 ? 'Today' : x.d.toLocaleDateString('en-IN', { weekday: 'narrow' })}</div></div>`).join('')}</div></div>`;
+  // categories
+  const by = {}; txP.forEach(t => by[t.cat] = (by[t.cat] || 0) + t.amt);
+  const rows = Object.entries(by).sort((a, b) => b[1] - a[1]), cm = Math.max(1, ...rows.map(r => r[1]));
+  h += `<div class="card c5"><h2>Where it went</h2><div class="cats">${rows.length ? rows.map(([id, v], i) => { const c = catOf(S, id), b = +c.budget || 0;
+      return `<div class="cat"><span class="e">${c.emoji}</span><b>${esc(c.name)}</b><span class="num">${money(Math.round(v))}${b ? `<span class="muted"> / ${money(b)}</span>` : ''}</span><div class="bar ${b && v > b ? 'over' : ''}"><i style="width:${Math.min(100, (b ? v / b : v / cm) * 100)}%;animation-delay:${i * 50}ms"></i></div></div>`; }).join('') : '<div class="empty">Nothing spent yet this month.</div>'}</div></div>`;
+  // transactions
+  const all = [...S.tx.map(t => ({ ...t, k: 'tx' })), ...(S.inc || []).map(t => ({ ...t, k: 'in' }))].sort((a, b) => b.ts - a.ts);
+  const ql = query.toLowerCase(), list = (ql ? all.filter(t => (t.note || '').toLowerCase().includes(ql) || catOf(S, t.cat).name.toLowerCase().includes(ql) || String(t.amt).includes(ql)) : all).slice(0, 80);
+  h += `<div class="card c8"><h2>Everything <span class="grow"></span><input class="search" id="q" placeholder="Search" value="${esc(query)}"></h2><table>${list.map(t => { const c = t.k === 'in' ? { emoji: '💰', name: t.kind || 'Money in' } : catOf(S, t.cat);
+      return `<tr class="${t.k === 'in' ? 'in' : ''}"><td style="width:28px">${c.emoji}</td><td><b>${esc(t.note || c.name)}</b><div class="muted" style="font-size:12px">${esc(c.name)}${t.mode ? ' · ' + esc(t.mode) : ''}</div></td><td class="muted">${new Date(t.ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</td><td class="r num">${t.k === 'in' ? '+' : ''}${money(t.amt)}</td></tr>`; }).join('') || '<tr><td class="empty">Nothing here.</td></tr>'}</table></div>`;
+  // goals + bills coming up
+  const goals = (S.goals || []).filter(g => +g.target > 0);
+  if (goals.length) h += `<div class="card c4"><h2>Goals</h2>${goals.map((g, i) => { const sv = sum((S.saves || []).filter(x => x.goalId === g.id).map(x => x.amt)), pc = Math.min(100, sv / g.target * 100);
+      return `<div style="margin-bottom:12px"><div style="display:flex;gap:8px"><b class="grow">${esc(g.emoji || '🎯')} ${esc(g.name)}</b><span class="num">${Math.round(pc)}%</span></div><div class="gbar"><i style="width:${pc}%;animation-delay:${i * 80}ms"></i></div><div class="muted" style="font-size:12px">${money(Math.round(sv))} of ${money(g.target)}</div></div>`; }).join('')}</div>`;
+  const subs = (S.subs || []).map(x => { const d = new Date(); let due = new Date(d.getFullYear(), d.getMonth(), Math.min(x.day, 28)); if (+due < +sod(d)) due = new Date(d.getFullYear(), d.getMonth() + 1, Math.min(x.day, 28)); return { ...x, due }; }).sort((a, b) => a.due - b.due);
+  if (subs.length) h += `<div class="card c4"><h2>Bills coming up</h2>${subs.slice(0, 6).map(x => `<div class="who"><b class="grow">${esc(x.name)}</b><span class="muted" style="font-size:12px">${x.due.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span><span class="num">${money(x.amt)}</span></div>`).join('')}</div>`;
+  // friends + backups
+  const fr = (S.friends || []).filter(f => Math.abs(bal[f.id]) >= .01);
+  h += `<div class="card c4"><h2>Bill Buddy</h2>${fr.length ? fr.map(f => `<div class="who"><b class="grow">${esc(f.name)}</b><span class="num ${bal[f.id] > 0 ? 'ok' : 'bad'}">${bal[f.id] > 0 ? 'owes you ' : 'you owe '}${money(Math.abs(bal[f.id]))}</span></div>`).join('') : '<div class="muted">All square with everyone.</div>'}
+    <h2 style="margin-top:22px">Backups on this PC</h2><div class="muted" style="font-size:13px;margin-bottom:8px">One a day, last 90 kept. In Kharcha: Setup → Restore a backup.</div>
+    ${(D.backups || []).slice(0, 6).map(b => `<div class="who"><span class="grow num" style="font-weight:500">${esc(b.replace('kharcha-', '').replace('.json', ''))}</span><a class="btn sm" href="/api/kharcha/backup/${encodeURIComponent(b)}">⬇</a></div>`).join('')}</div>`;
+  h += '</div>';
+  const focus = document.activeElement && document.activeElement.id, pos = focus === 'q' ? $('#q').selectionStart : 0;
+  const keep = { amt: $('#a-amt') && $('#a-amt').value, note: $('#a-note') && $('#a-note').value, cat: $('#a-cat') && $('#a-cat').value };
+  $('#main').innerHTML = h;
+  document.querySelectorAll('[data-v]').forEach(el => { if (prevV[el.dataset.v] && prevV[el.dataset.v] !== el.textContent) el.classList.add('pop'); prevV[el.dataset.v] = el.textContent; });
+  if (keep.amt) $('#a-amt').value = keep.amt; if (keep.note) $('#a-note').value = keep.note; if (keep.cat && $('#a-cat')) $('#a-cat').value = keep.cat;
+  if (focus && $('#' + focus)) { $('#' + focus).focus(); if (focus === 'q') $('#q').setSelectionRange(pos, pos); }
+}
+function addCard(box, S) {
+  const cats = S ? (kind === 'inc' ? [['salary', '💼 Salary'], ['refund', '↩️ Refund'], ['cashback', '🎁 Cashback'], ['other', '✨ Other']] : S.cats.map(c => [c.id, c.emoji + ' ' + c.name]))
+    : (kind === 'inc' ? [['salary', '💼 Salary'], ['other', '✨ Other']] : [['food', '🍔 Food'], ['shopping', '🛍️ Shopping'], ['travel', '🚕 Travel'], ['bills', '🧾 Bills'], ['other', '✨ Other']]);
+  const d = new Date(), local = new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 16);
+  return `<div class="card ${S ? 'c5' : 'c12'}" style="${S ? 'grid-row:span 2' : ''}"><h2>Add from the PC</h2>
+    <div class="seg"><button data-kind="tx" class="${kind === 'tx' ? 'on' : ''}">Spent</button><button data-kind="inc" class="${kind === 'inc' ? 'on' : ''}">Received</button></div>
+    <input class="amt" id="a-amt" type="number" inputmode="decimal" placeholder="${cur()}0" min="0" step="0.01">
+    <div class="row2"><div><label>Category</label><select id="a-cat">${cats.map(([v, l]) => `<option value="${esc(v)}">${esc(l)}</option>`).join('')}</select></div>
+    <div><label>When</label><input id="a-when" type="datetime-local" value="${local}"></div></div>
+    <div style="margin-top:10px"><label>Note</label><input id="a-note" placeholder="${kind === 'inc' ? 'e.g. salary' : 'e.g. groceries'}" maxlength="80"></div>
+    <button class="btn primary block" id="a-save">Add ${kind === 'inc' ? 'money in' : 'expense'}</button>
+    ${box.length ? `<h2 style="margin-top:18px">Waiting for the phone <span class="chip wait">${box.length}</span></h2>${box.map(x => `<div class="who"><span class="grow">${esc(x.note || x.cat)} <span class="muted">· ${new Date(x.ts).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span></span><span class="num">${x.kind === 'inc' ? '+' : ''}${money(x.amt)}</span><button class="btn sm" data-drop="${esc(x.id)}" title="Remove">✕</button></div>`).join('')}<div class="muted" style="font-size:12px;margin-top:6px">They land in Kharcha next time it opens.</div>` : ''}</div>`;
+}
+document.addEventListener('click', async e => {
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.kind) { kind = t.dataset.kind; render(); return; }
+  if (t.dataset.m) { moff = Math.max(0, moff + +t.dataset.m); document.body.classList.remove('calm'); lastSig = JSON.stringify([D.at, D.inbox, moff, kind]); render(); return; }
+  if (t.id === 'csv' && D && D.state) { csv(D.state); return; }
+  if (t.dataset.drop) { await fetch('/api/kharcha/inbox/' + encodeURIComponent(t.dataset.drop), { method: 'DELETE' }); load(); return; }
+  if (t.id === 'a-save') {
+    const amt = +$('#a-amt').value; if (!(amt > 0)) { toast('Type an amount'); $('#a-amt').focus(); return; }
+    const r = await fetch('/api/kharcha/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ kind, amt, cat: $('#a-cat').value, note: $('#a-note').value.trim(), ts: new Date($('#a-when').value).getTime() || Date.now() }) });
+    if (!r.ok) { toast((await r.json()).error || 'Could not add'); return; }
+    $('#a-amt').value = ''; $('#a-note').value = ''; toast('Added. It reaches the phone on the next sync.'); load();
+  }
+});
+document.addEventListener('input', e => { if (e.target.id === 'q') { query = e.target.value; render(); } });
+function csv(S) {
+  const q = v => /[",\n]/.test(String(v ?? '')) ? '"' + String(v).replace(/"/g, '""') + '"' : (v ?? '');
+  const rows = [['Date', 'Time', 'Amount', 'Category', 'Note', 'Mode', 'Type']];
+  [...S.tx.map(t => [t, 'Expense', catOf(S, t.cat).name]), ...(S.inc || []).map(t => [t, 'Income', t.kind || 'other'])].sort((a, b) => a[0].ts - b[0].ts)
+    .forEach(([t, ty, c]) => { const d = new Date(t.ts); rows.push([d.toLocaleDateString('en-CA'), d.toTimeString().slice(0, 5), t.amt, c, t.note, t.mode || '', ty]); });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([rows.map(r => r.map(q).join(',')).join('\n')], { type: 'text/csv' }));
+  a.download = 'kharcha-' + new Date().toLocaleDateString('en-CA') + '.csv'; a.click(); toast('Spreadsheet saved');
+}
+document.addEventListener('keydown', e => {
+  const typing = ['INPUT', 'SELECT', 'TEXTAREA'].includes((document.activeElement || {}).tagName);
+  if (!typing && (e.key === 'n' || e.key === 'N') && $('#a-amt')) { e.preventDefault(); $('#a-amt').focus(); return; }
+  if (!typing && e.key === '/' && $('#q')) { e.preventDefault(); $('#q').focus(); return; } if (e.key === 'Enter' && (e.target.id === 'a-amt' || e.target.id === 'a-note')) $('#a-save').click(); });
+load(); setInterval(() => { if (!document.hidden && !['a-amt', 'a-note', 'q'].includes((document.activeElement || {}).id)) load(); }, 15000);
+</script>
+</body>
+</html>
