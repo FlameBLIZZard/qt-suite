@@ -35,6 +35,9 @@ try {
   Check "hub lists the tools ($($tools.Count))" ($tools.Count -ge 15 -and -not ($tools.id -contains 'apks')) ''
   Check 'hub page' ((Get-Url http://127.0.0.1:7841/) -eq 200) ''
   Check 'hub nova + spark APIs' ((Get-Url http://127.0.0.1:7841/api/nova/store) -eq 200 -and (Get-Url http://127.0.0.1:7841/api/spark/sys) -eq 200) ''
+  $g = try { Invoke-RestMethod http://127.0.0.1:7841/api/guide/state -TimeoutSec 5 } catch { $null }
+  Check 'first run: welcome is due, version shown' ($g -and $g.fresh -and -not $g.onboarded -and $g.version -eq (Get-Content (Join-Path $Repo 'VERSION') -Raw).Trim()) "$($g | ConvertTo-Json -Compress)"
+  Check 'Help, tour and welcome files served' ((Get-Url http://127.0.0.1:7841/guide.js) -eq 200 -and (Get-Url http://127.0.0.1:7841/guide.css) -eq 200 -and (Get-Url http://127.0.0.1:7841/api/guide/changelog) -eq 200) ''
   Check 'file tools served (Inkmotion, Pixlab, viewers)' ((Get-Url http://127.0.0.1:7841/tool/inkmotion) -eq 200 -and (Get-Url http://127.0.0.1:7841/tool/pixlab) -eq 200 -and (Get-Url http://127.0.0.1:7841/tool/pictures) -eq 200) ''
   $hubProc = Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -like "$Dir\runtime\*" -and $_.CommandLine -like '*app.py*' }
   Check 'hub runs on the bundled pythonw' ([bool]$hubProc) ''

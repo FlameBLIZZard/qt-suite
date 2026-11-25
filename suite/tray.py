@@ -68,14 +68,14 @@ def show_suite(tid=None):
     return False
 
 
-def poke(port):
-    """Ask a hub that's already running to show its window. False if it didn't answer."""
+def poke(port, tid=None):
+    """Ask a hub that's already running to show its window (on tid, e.g. "help"). False if it didn't answer."""
     try:
         u32.AllowSetForegroundWindow(0xFFFFFFFF)  # ASFW_ANY: let the hub bring its window to the front
     except Exception:
         pass
     try:
-        _post(f"http://127.0.0.1:{port}/api/tray/show", {}, port=port, timeout=2)
+        _post(f"http://127.0.0.1:{port}/api/tray/show", {"id": tid} if tid else {}, port=port, timeout=2)
         return True
     except Exception:
         return False

@@ -35,7 +35,7 @@ foreach ($t in $Tools) {
   robocopy (Join-Path $Repo $t) (Join-Path $App $t) /E /XD tests __pycache__ /XF *.pyc /NFL /NDL /NJH /NJS /NP | Out-Null
   if ($LASTEXITCODE -ge 8) { throw "copy failed: $t" }
 }
-foreach ($f in 'LICENSE', 'README.md', 'THIRD_PARTY.md') { Copy-Item (Join-Path $Repo $f) $App }
+foreach ($f in 'LICENSE', 'README.md', 'THIRD_PARTY.md', 'VERSION', 'CHANGELOG.md') { Copy-Item (Join-Path $Repo $f) $App }
 Copy-Item (Join-Path $Repo 'build\packages.json') (Join-Path $App 'runtime\packages.json') -ErrorAction SilentlyContinue
 
 Step "QT Suite.exe + QTOpen.exe"

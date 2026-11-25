@@ -22,6 +22,7 @@ import tray  # notification-area icon + menu (tray.py)
 import spark  # loop 4: notes, pins, CPU/RAM, VOLT grabs, unzip, downloads (spark.py)
 import nova  # loop 5: apps, reminders, todos, screenshots, network, top apps, clipboard (nova.py)
 import web  # Surf web browser: frame check, Lite proxy, pop out (web.py)
+import guide  # first-run welcome, tour, help, checklist, setup doctor (guide.py)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 QT = os.path.dirname(HERE)
@@ -261,6 +262,12 @@ class H(BaseHTTPRequestHandler):
             r = nova.route_get(p, urllib.parse.parse_qs(u.query))
             if r:
                 return self._send(*r)
+        if p.startswith("/api/guide/"):  # welcome, tour, help, doctor (guide.py)
+            if self.headers.get("Sec-Fetch-Site", "same-origin") not in ("same-origin", "none"):
+                return self._send(403, {"error": "cross-site"})
+            r = guide.route_get(p, urllib.parse.parse_qs(u.query))
+            if r:
+                return self._send(*r)
         if p.startswith("/api/web/"):  # Surf browser (web.py)
             if self.headers.get("Sec-Fetch-Site", "same-origin") not in ("same-origin", "none"):
                 return self._send(403, {"error": "cross-site"})
@@ -291,10 +298,16 @@ class H(BaseHTTPRequestHandler):
                 f"http://127.0.0.1:{PORT}", f"http://localhost:{PORT}"):
             return self._send(403, {"error": "bad origin"})
         if self.path == "/api/tray/show":  # a second launch: focus the window instead of opening another
-            tray.show_suite()
+            n = int(self.headers.get("Content-Length") or 0)
+            try:
+                tid = json.loads(self.rfile.read(min(n, 4096)) or b"{}").get("id") if n else None
+            except (ValueError, AttributeError):
+                tid = None
+            ok_ids = set(BY_ID) | {"help", "settings", "home", "search"}
+            tray.show_suite(tid if tid in ok_ids else None)
             return self._send(200, {"ok": True})
         parts = self.path.strip("/").split("/")
-        if self.path.startswith(("/api/settings", "/api/startall", "/api/open-file", "/api/peek/", "/api/spark/", "/api/nova/", "/api/web/")):
+        if self.path.startswith(("/api/settings", "/api/startall", "/api/open-file", "/api/peek/", "/api/spark/", "/api/nova/", "/api/web/", "/api/guide/")):
             n = int(self.headers.get("Content-Length") or 0)
             cap = (4 << 20) if self.path.startswith("/api/spark/") else (1 << 16)   # notes can be long
             try:
@@ -302,7 +315,7 @@ class H(BaseHTTPRequestHandler):
             except ValueError:
                 body = {}
             body = body if isinstance(body, dict) else {}
-            route = web.route_post if self.path.startswith("/api/web/") else viewer.post if self.path.startswith("/api/peek/") else nova.route_post if self.path.startswith("/api/nova/") else spark.route_post if self.path.startswith("/api/spark/") else shell.route_post
+            route = guide.route_post if self.path.startswith("/api/guide/") else web.route_post if self.path.startswith("/api/web/") else viewer.post if self.path.startswith("/api/peek/") else nova.route_post if self.path.startswith("/api/nova/") else spark.route_post if self.path.startswith("/api/spark/") else shell.route_post
             r = route(self.path.split("?")[0], body)
             if r:
                 return self._send(*r)
@@ -357,11 +370,16 @@ def open_window(url):
 
 def main():
     url = f"http://127.0.0.1:{PORT}/"
+    page = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--page=")), "")   # e.g. the Start menu's "QT Suite Help"
+    page = page if page in set(BY_ID) | {"help", "settings"} else ""
+    if page:
+        url += "#" + page
     if port_up(PORT):  # already running: just bring up a window
-        if "--no-window" not in sys.argv and not tray.poke(PORT):
+        if "--no-window" not in sys.argv and not tray.poke(PORT, page or None):
             open_window(url)
         return
     srv = ThreadingHTTPServer(("127.0.0.1", PORT), H)
+    guide.init(TOOLS, status, VOLT_PY)  # first: it checks whether this is a brand-new user
     shell.init(TOOLS, start, port_up)
     viewer.init(start, BY_ID["beam"], port_up)
     spark.init(start, BY_ID, port_up)

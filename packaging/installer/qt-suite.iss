@@ -50,6 +50,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Messages]
 WelcomeLabel2=This installs [name/ver] on your PC.%n%nOne window for your tools: send files to your phone, download media, browse files, see your games, play sounds into your mic, free up disk space and more. Everything runs on this PC; nothing goes to the cloud.%n%nClose QT Suite before you continue if it's running.
+FinishedLabel=QT Suite is installed.%n%nThe first time it opens, a short welcome helps you pick the tools you want. After that, press F1 or the ? on the rail any time for Help, a tour and a setup check.%n%nClosing the window keeps it running in the tray, by the clock.
 
 [Tasks]
 Name: "desktopicon"; Description: "Put a QT Suite shortcut on the desktop"; GroupDescription: "Shortcuts:"
@@ -60,6 +61,7 @@ Source: "{#AppDir}\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs cre
 
 [Icons]
 Name: "{group}\QT Suite"; Filename: "{app}\QT Suite.exe"; WorkingDir: "{app}"; Comment: "All your QT tools in one window"
+Name: "{group}\QT Suite Help"; Filename: "{app}\QT Suite.exe"; Parameters: "--page=help"; WorkingDir: "{app}"; Comment: "Getting started, questions and a setup check"
 Name: "{group}\Uninstall QT Suite"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\QT Suite"; Filename: "{app}\QT Suite.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 ; the same Startup shortcut the in-app "Start with Windows" switch makes, so the two stay in sync

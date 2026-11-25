@@ -18,7 +18,8 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # tool folder -> (globs to skip). Paths are relative to the tool folder, "/" separated.
 SKIP_ALWAYS = ["__pycache__", "*.pyc", "*.log", "*.tmp", ".venv", "venv", "node_modules", ".git", "Thumbs.db", "desktop.ini", "*.lnk"]
 TOOLS = {
-    "suite": ["screens", "tray-menu.png", "tests/run_all.ps1", "defaults/qtopen.ini", "defaults/QTOpen.exe", "start.bat", "make-shortcut.bat"],
+    "suite": ["screens", "tray-menu.png", "tests/run_all.ps1", "defaults/qtopen.ini", "defaults/QTOpen.exe", "start.bat", "make-shortcut.bat",
+              "kit", "icons/svg/remote.svg"],   # phone remote kit: unfinished work in another thread, not wired into the hub yet
     "daily": ["docs", "tests", "start.bat", "make-shortcut.bat"],
     "beam": ["beam.json", "tests", "README.txt", "start.bat", "make-shortcut.bat", "data", "inbox"],
     "launcher": ["data", "tests", "README.txt", "start.bat", "make-shortcut.bat"],

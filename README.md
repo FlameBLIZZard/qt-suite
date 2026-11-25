@@ -22,6 +22,31 @@ There's also a portable zip. Unzip it anywhere and run `QT Suite.exe`.
 
 Python comes inside the app, so you don't need to install it.
 
+## Getting started
+
+The first time QT Suite opens, a short welcome walks you through setup. It takes about a minute.
+
+1. **Pick your tools.** Tick the ones you want, or start from a preset such as *The basics*, *Phone + PC* or *Make stuff*. Badges show which tools need the phone app or the internet. Tools you don't pick are only hidden, so you can bring them back from Settings or Help any time.
+2. **Choose how it starts.** Start with Windows, start your picked tools with the suite, little sounds, and how bouncy the motion is.
+3. **Learn three moves.** `Ctrl+K` searches everything, `Ctrl+1` to `Ctrl+9` jump to a tool, and `F1` opens Help.
+4. **Take the tour** (30 seconds). A spotlight shows the rail, Home, the Today strip and the little buttons.
+
+![The welcome's tool picker with presets and tool cards](docs/media/welcome-pick.png)
+
+After that:
+
+- A **Get set up** list on Home ticks itself off as you try things: open search, open a tool, open a file, visit Settings and Help.
+- The first time you open each tool, a small tip says how to start with it. You can turn tips off.
+- **Help** (`F1`, or the **?** on the rail) explains every tool, answers common questions, and has a search box. It opens on the tool you're in.
+- **Check my setup** in Help looks for busy ports, a missing download engine, no home network and low disk space, with a button to fix each one.
+- **What's this?** (`Shift+F1`): point at any part of the window to learn what it does.
+- **Settings** has a search box, plus text size and stronger contrast under *Help and comfort*.
+- To connect your phone, open **Beam** and scan its QR code with your phone's camera. Your phone and PC need to be on the same Wi-Fi.
+
+![Help: start buttons, getting started steps and a card for every tool](docs/media/help.png)
+
+The Start menu also has a **QT Suite Help** shortcut.
+
 ## What's inside
 
 | Tool | What it does |

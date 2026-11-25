@@ -18,6 +18,7 @@
   let S = { order: [], hidden: [], boot: [], motion: "system", rail: "full", launch: "home", last: "", glance: true, split: null, peek: true };
   window.qtPeekOn = () => S.peek !== false;
   window.qtS = () => S;   // flow.js reads the saved settings (group, revive)
+  window.qtSaveS = p => saveS(p); window.qtRelayout = () => relayout(); window.qtSheet = () => toggleSheet();   // guide.js: tool picker, help
   let allTools = [];   // every tool incl. hidden (settings page)
 
   /* ---------- settings store ---------- */
