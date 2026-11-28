@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remote</title>
+<link rel="icon" href="/icon.svg">
+<link rel="stylesheet" href="/theme/qt.css">
+<link rel="stylesheet" href="/static/remote.css">
+</head>
+<body class="qt qt-dots" data-tool="remote">
+<main class="con">
+  <header class="con-head qt-rise">
+    <img class="logo" src="/icon.svg" alt="">
+    <div>
+      <div class="qt-eyebrow">QT Remote · remote desktop</div>
+      <h1>Remote</h1>
+      <div class="sub" id="sub">See and control this PC from your laptop or phone, and reach your other PCs from here.</div>
+    </div>
+    <div class="master qt-card">
+      <div><b>Let my devices connect</b><div class="small qt-muted" id="masterNote">Only paired devices on your Tailscale</div></div>
+      <button class="qt-switch" role="switch" id="enabled" aria-checked="false" aria-label="Let my devices connect"></button>
+    </div>
+  </header>
+
+  <div class="grid qt-stagger">
+    <section class="card qt-card alert hide" id="pendingCard" aria-live="polite">
+      <div class="qt-eyebrow">Waiting for you</div>
+      <h2>A device wants to pair</h2>
+      <p class="lead">Only allow it if the code matches the one on that device's screen.</p>
+      <div class="list" id="pending"></div>
+    </section>
+
+    <section class="card qt-card hide" id="sessCard">
+      <div class="qt-eyebrow">Connected now</div>
+      <h2>Live sessions</h2>
+      <div class="list" id="sessions"></div>
+      <div class="row" style="margin-top:12px"><button class="qt-btn danger" id="endAll">End all sessions</button></div>
+    </section>
+
+    <section class="card qt-card" id="howCard">
+      <div class="qt-eyebrow">Use this PC from elsewhere</div>
+      <h2>Connect from another device</h2>
+      <ol class="steps">
+        <li>On your laptop or phone, install <b>Tailscale</b> and sign in with the <b>same account</b> as this PC.</li>
+        <li>Open one of these addresses in its browser (Chrome, Edge, Safari):</li>
+      </ol>
+      <div id="addrs"></div>
+      <div class="row qr-row" style="align-items:flex-start;margin-top:6px">
+        <div class="qr" id="qr" title="Scan with your phone"></div>
+        <ol class="steps grow" start="3" style="margin:0">
+          <li>Press <b>Ask to connect</b>. A code shows on both screens.</li>
+          <li>Press <b>Allow</b> on this PC (or here, below). That device is trusted from then on.</li>
+        </ol>
+      </div>
+      <div class="lock-note" id="tsNote"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        <span id="tsText">Checking Tailscale...</span></div>
+    </section>
+
+    <section class="card qt-card">
+      <div class="qt-eyebrow">Trusted devices</div>
+      <h2>Devices that can connect</h2>
+      <p class="lead">Each one has its own key that only works from that same Tailscale device. Remove one and its key stops working at once.</p>
+      <div class="list" id="devices"></div>
+    </section>
+
+    <section class="card qt-card">
+      <div class="qt-eyebrow">The other way round</div>
+      <h2>Control another device</h2>
+      <p class="lead">Your other Tailscale devices. A PC shows <b>Open</b> when it runs QT Suite with Remote on.</p>
+      <div class="list" id="peers"><div class="empty">Looking...</div></div>
+      <div class="row" style="margin-top:10px"><button class="qt-btn" id="rescan">Look again</button></div>
+    </section>
+
+    <section class="card qt-card">
+      <div class="qt-eyebrow">Settings</div>
+      <h2>How Remote behaves</h2>
+      <div id="settings"></div>
+      <div class="row" style="margin-top:12px"><button class="qt-btn" id="testPrompt">Show the allow prompt</button></div>
+    </section>
+
+    <section class="card qt-card wide">
+      <div class="qt-eyebrow">Activity</div>
+      <h2>Who connected, and when</h2>
+      <div class="log" id="log"></div>
+    </section>
+  </div>
+</main>
+<div class="qt-toasts" id="toasts"></div>
+<script src="/static/qrcode.js"></script>
+<script src="/static/console.js"></script>
+</body>
+</html>

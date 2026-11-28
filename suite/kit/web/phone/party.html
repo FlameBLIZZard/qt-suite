@@ -1,0 +1,78 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<meta name="theme-color" content="#16141a"><title>QT Party</title><link rel="stylesheet" href="/assets/phone.css"></head>
+<body class="ph" id="b">
+<div id="join" class="ph-card" hidden><div class="eyebrow">QT Suite party</div><h1>Join the party</h1>
+  <input type="text" id="nm" maxlength="16" placeholder="Your name" autocomplete="nickname"><button class="ph-btn big pri" id="jb" style="margin-top:12px">Join</button><p class="mut" id="jerr"></p></div>
+<div id="app" hidden>
+  <div class="top"><div><div class="eyebrow" id="room"></div><b id="me" style="font:20px var(--disp)"></b></div><span class="status" id="score">0</span></div>
+  <div id="view"></div>
+</div>
+<script src="/assets/phone.js"></script>
+<script>
+// one page, two uses: /party/<ROOM> for guests (no key) and /pad for your own paired phone
+const GUEST = location.pathname.startsWith("/party");
+const ROOM = GUEST ? (location.pathname.split("/")[2] || "").toUpperCase() : "";
+const BASE = GUEST ? "/party/api" : "/api";
+let token = GUEST ? localStorage.getItem("qtparty-" + ROOM) : null, st = null, mode = "", input = { x: 0, y: 0, a: false, b: false }, lastSent = 0, dirty = false;
+async function send(extra) {
+  const body = Object.assign({ room: ROOM, token }, input, extra || {});
+  if (!GUEST) body.name = localStorage.getItem("qtpad-name") || "You";
+  try { const r = await api(GUEST ? BASE + "/input" : "/api/pad", body); if (!GUEST && r.me) apply(r); } catch (e) { if (GUEST && /404/.test(e.message)) location.reload(); }
+}
+function tick() { if (dirty && Date.now() - lastSent > 45) { dirty = false; lastSent = Date.now(); send(); } requestAnimationFrame(tick); }
+async function join() {
+  const name = Q("#nm").value.trim() || undefined;
+  try { const r = await api(BASE + "/join", { room: ROOM, name, token }); token = r.token; localStorage.setItem("qtparty-" + ROOM, token); start(r); }
+  catch (e) { Q("#jerr").textContent = e.message; Q("#join").hidden = false; }
+}
+function start(r) { Q("#join").hidden = true; Q("#app").hidden = false; apply(r); poll(); tick(); keepAwake(); }
+function apply(r) {
+  st = r; Q("#me").textContent = r.me.name; Q("#me").style.color = r.me.color; Q("#score").textContent = r.me.score + " pts";
+  Q("#room").textContent = GUEST ? "Party " + ROOM : "Game pad"; document.documentElement.style.setProperty("--c", r.me.color);
+  const key = r.mode + "|" + (r.quiz ? r.quiz.q + r.quiz.reveal + r.quiz.answered : "") + "|" + (r.buzz || []).join();
+  if (key !== mode) { mode = key; render(); }
+}
+async function poll() {
+  for (;;) {
+    try { if (GUEST) apply(await api(`${BASE}/state?room=${ROOM}&token=${encodeURIComponent(token)}`)); else await send(); }
+    catch (e) { if (GUEST) { Q("#app").hidden = true; Q("#join").hidden = false; Q("#jerr").textContent = "The party ended. Ask for the new code."; return; } }
+    await new Promise(r => setTimeout(r, 800));
+  }
+}
+function render() {
+  const v = Q("#view"), m = st.mode;
+  document.body.className = m === "pad" ? "pad" : "ph";
+  if (m === "quiz" && st.quiz) {
+    const q = st.quiz;
+    v.innerHTML = `<div class="ph-card"><b style="font-size:20px">${esc(q.q)}</b></div><div class="ans">${q.options.map((o, i) => `<button class="ph-btn ${q.reveal === i ? "pri" : ""}" data-a="${i}" ${q.answered || q.reveal != null ? "disabled" : ""}>${"ABCD"[i]}. ${esc(o)}</button>`).join("")}</div>
+      <p class="mut">${q.reveal != null ? "Answer shown on the big screen" : q.answered ? "Locked in. Fastest right answer scores most." : "Tap your answer"}</p>`;
+    v.onclick = e => { const b = e.target.closest("[data-a]"); if (!b) return; b.classList.add("picked"); buzz(40); send({ answer: +b.dataset.a }); v.querySelectorAll("[data-a]").forEach(x => x.disabled = true); };
+  } else if (m === "buzz") {
+    const first = (st.buzz || [])[0];
+    v.innerHTML = `<div class="buzz" id="bz">${first ? (first === st.me.name ? "YOU!" : esc(first)) : "BUZZ"}</div><p class="mut" style="text-align:center">${first ? "First buzz: " + esc(first) : "Smash it when you know"}</p>`;
+    Q("#bz").onpointerdown = () => { buzz(80); send({ buzz: true }); };
+  } else if (m === "tap") {
+    v.innerHTML = `<div class="buzz" id="tp" style="background:var(--c)">TAP!</div><p class="mut" style="text-align:center">Tap as fast as you can</p>`;
+    Q("#tp").onpointerdown = e => { e.currentTarget.classList.add("down"); buzz(10); send({ tap: true }); };
+    Q("#tp").onpointerup = e => e.currentTarget.classList.remove("down");
+  } else if (m === "pad") {
+    v.innerHTML = `<div class="padwrap"><div class="stick" id="stk"><i id="nub"></i></div><div class="abtns"><button class="abtn" id="ba">A</button><button class="abtn b" id="bb">B</button></div></div>`;
+    const stk = Q("#stk"), nub = Q("#nub");
+    let pid = null;
+    const moveStick = e => { const r = stk.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, R = r.width / 2;
+      let dx = (e.clientX - cx) / R, dy = (e.clientY - cy) / R; const l = Math.hypot(dx, dy); if (l > 1) { dx /= l; dy /= l; }
+      input.x = +dx.toFixed(2); input.y = +dy.toFixed(2); nub.style.transform = `translate(${dx * R * .6}px,${dy * R * .6}px)`; dirty = true; };
+    stk.onpointerdown = e => { pid = e.pointerId; stk.setPointerCapture(pid); moveStick(e); };
+    stk.onpointermove = e => { if (e.pointerId === pid) moveStick(e); };
+    stk.onpointerup = stk.onpointercancel = () => { pid = null; input.x = input.y = 0; nub.style.transform = ""; dirty = true; };
+    for (const [id, k] of [["#ba", "a"], ["#bb", "b"]]) { const b = Q(id);
+      b.onpointerdown = e => { e.preventDefault(); b.setPointerCapture(e.pointerId); b.classList.add("down"); input[k] = true; dirty = true; buzz(15); };
+      b.oncontextmenu = e => e.preventDefault(); b.onpointerup = b.onpointercancel = () => { b.classList.remove("down"); input[k] = false; dirty = true; }; }
+  } else {
+    v.innerHTML = `<div class="ph-card" style="text-align:center"><h1>You're in! 🎉</h1><p>Look at the big screen. The host picks the game.</p></div>`;
+  }
+}
+Q("#jb").onclick = join;
+if (GUEST) { if (!ROOM) Q("#jerr").textContent = "Scan the QR code on the PC"; if (token) join(); else Q("#join").hidden = false; }
+else { api("/api/pad", { name: localStorage.getItem("qtpad-name") || "You" }).then(r => { if (r.me) start(r); else Q("#view").textContent = "Couldn't join"; }); }
+</script></body></html>

@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QT widget · CPU + RAM</title><link rel="stylesheet" href="/kit/w/w.css"></head>
+<body style="--a:#5dffb0"><div class="ey">This PC</div><div class="row"><b>CPU</b><b id="c">-</b></div><div class="bar"><i id="ci"></i></div><div class="row"><b>RAM</b><b id="r">-</b></div><div class="bar"><i id="ri"></i></div><div class="mut" id="n"></div>
+<script src="/kit/w/w.js"></script><script>every(2000, async () => { try { const s = await api('/api/spark/sys'); const cpu = Math.round(s.cpu ?? s.cpu_pct ?? 0), ram = Math.round((s.mem && s.mem.pct) || 0);
+ Q('#c').textContent = cpu + '%'; Q('#ci').style.width = cpu + '%'; Q('#r').textContent = ram + '%'; Q('#ri').style.width = ram + '%'; Q('#n').textContent = s.up ? 'Up ' + Math.floor(s.up/3600) + ' h ' + Math.floor(s.up%3600/60) + ' min · ' + s.cores + ' cores' : ''; } catch {} });</script></body></html>

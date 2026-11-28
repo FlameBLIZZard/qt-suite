@@ -1,0 +1,142 @@
+/* QT Suite design system. One file, shared by every tool.
+   Look: "Ink Arcade" - thick ink outlines, hard offset shadows, springy squash motion.
+   Each tool sets its own accent with  :root { --qt-accent: #...; }  (or data-tool="beam").
+   Edit this copy in QT\suite\theme, then run  python QT\suite\sync-theme.py  to copy it into every tool. */
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap");
+
+:root {
+  /* tool accents */
+  --qt-beam: #c6ff3d; --qt-launchpad: #4dc3ff; --qt-volt: #ffc93d; --qt-soundboard: #ff5fa2;
+  --qt-inkmotion: #b28bff; --qt-kharcha: #5dffb0; --qt-lens: #ff8a3d; --qt-apks: #ff8a3d; --qt-pixlab: #ff6b4a; --qt-burrow: #2ee6d6; --qt-space: #7d9bff; --qt-daily: #ff9de2; --qt-ping: #ff4d5e;
+  --qt-pictures: #ffd84d; --qt-player: #ff3dd6; --qt-reader: #e8d9b5; --qt-code: #a0e8ff; --qt-archive: #d9a066; --qt-surf: #3d8bff; --qt-remote: #ff5ac8;
+  --qt-accent: var(--qt-beam);
+  --qt-on-accent: #16141a;
+
+  /* surfaces */
+  --qt-bg: #16141a; --qt-bg2: #1c1921; --qt-card: #221f27; --qt-chip: #2c2833; --qt-hover: #2c2833; --qt-well: #0f0e12;
+  --qt-ink: #000; --qt-fg: #fff8ec; --qt-muted: #b6aea3; --qt-dim: #7d766e;
+  --qt-ok: #5dff9c; --qt-warn: #ffc93d; --qt-bad: #ff5d6c;
+
+  /* shape */
+  --qt-line: 2.5px; --qt-r: 14px; --qt-r-sm: 10px; --qt-r-xs: 7px;
+  --qt-shadow: 5px 5px 0 var(--qt-ink); --qt-shadow-sm: 3px 3px 0 var(--qt-ink);
+  --qt-border: var(--qt-line) solid var(--qt-ink);
+
+  /* type */
+  --qt-display: "Archivo Black", "Arial Black", Impact, sans-serif;
+  --qt-font: "Space Grotesk", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --qt-mono: "JetBrains Mono", Consolas, ui-monospace, monospace;
+
+  /* motion */
+  --qt-ease: cubic-bezier(.2, .9, .2, 1);
+  --qt-spring: cubic-bezier(.34, 1.8, .5, 1);
+  --qt-fast: .18s; --qt-med: .35s; --qt-slow: .6s;
+  color-scheme: dark;
+}
+[data-tool="beam"] { --qt-accent: var(--qt-beam); }
+[data-tool="launchpad"] { --qt-accent: var(--qt-launchpad); }
+[data-tool="volt"] { --qt-accent: var(--qt-volt); }
+[data-tool="burrow"] { --qt-accent: var(--qt-burrow); }
+[data-tool="space"] { --qt-accent: var(--qt-space); }
+[data-tool="daily"] { --qt-accent: var(--qt-daily); }
+[data-tool="ping"] { --qt-accent: var(--qt-ping); }
+[data-tool="soundboard"] { --qt-accent: var(--qt-soundboard); }
+[data-tool="inkmotion"] { --qt-accent: var(--qt-inkmotion); }
+[data-tool="kharcha"] { --qt-accent: var(--qt-kharcha); }
+[data-tool="pixlab"] { --qt-accent: var(--qt-pixlab); }
+[data-tool="lens"], [data-tool="apks"] { --qt-accent: var(--qt-lens); }
+[data-tool="pictures"] { --qt-accent: var(--qt-pictures); }
+[data-tool="player"] { --qt-accent: var(--qt-player); }
+[data-tool="reader"] { --qt-accent: var(--qt-reader); }
+[data-tool="code"] { --qt-accent: var(--qt-code); }
+[data-tool="archive"] { --qt-accent: var(--qt-archive); }
+[data-tool="surf"] { --qt-accent: var(--qt-surf); }
+[data-tool="remote"] { --qt-accent: var(--qt-remote); }
+
+/* ---------- base (opt-in via .qt on <body>) ---------- */
+.qt { background: var(--qt-bg); color: var(--qt-fg); font: 15px/1.45 var(--qt-font); -webkit-font-smoothing: antialiased; }
+.qt ::selection { background: var(--qt-accent); color: var(--qt-on-accent); }
+.qt ::-webkit-scrollbar { width: 12px; height: 12px; }
+.qt ::-webkit-scrollbar-thumb { background: var(--qt-chip); border: 3px solid var(--qt-bg); border-radius: 10px; }
+.qt ::-webkit-scrollbar-thumb:hover { background: var(--qt-dim); }
+.qt-dots { background-image: radial-gradient(#ffffff0e 1.2px, transparent 1.3px); background-size: 16px 16px; }
+.qt :focus-visible { outline: 2.5px solid var(--qt-accent); outline-offset: 3px; }
+
+/* ---------- type ---------- */
+.qt-display { font-family: var(--qt-display); font-weight: 400; letter-spacing: -.01em; line-height: 1; }
+.qt-eyebrow { font: 600 11px var(--qt-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--qt-accent); }
+.qt-mono { font-family: var(--qt-mono); font-variant-numeric: tabular-nums; }
+.qt-muted { color: var(--qt-muted); }
+
+/* ---------- card ---------- */
+.qt-card { background: var(--qt-card); border: var(--qt-border); border-radius: var(--qt-r); box-shadow: var(--qt-shadow);
+  transition: transform var(--qt-med) var(--qt-spring), box-shadow var(--qt-med) var(--qt-ease); }
+.qt-card.qt-lift:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--qt-ink); }
+
+/* ---------- buttons ---------- */
+.qt-btn { appearance: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 16px; border-radius: var(--qt-r-sm); border: var(--qt-border); font: 700 14px var(--qt-font);
+  background: var(--qt-chip); color: var(--qt-fg); box-shadow: var(--qt-shadow-sm); text-decoration: none; white-space: nowrap;
+  transition: transform var(--qt-fast) var(--qt-spring), box-shadow var(--qt-fast) var(--qt-ease), background var(--qt-fast); }
+.qt-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--qt-ink); }
+.qt-btn:active { transform: translate(3px, 3px) scale(.98); box-shadow: 0 0 0 var(--qt-ink); }
+.qt-btn.primary { background: var(--qt-accent); color: var(--qt-on-accent); }
+.qt-btn.danger { background: var(--qt-bad); color: var(--qt-on-accent); }
+.qt-btn.ghost { background: transparent; box-shadow: none; border-color: transparent; }
+.qt-btn.ghost:hover { background: var(--qt-hover); border-color: var(--qt-ink); box-shadow: var(--qt-shadow-sm); }
+.qt-btn.icon { padding: 8px; }
+.qt-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: var(--qt-shadow-sm); }
+.qt-btn svg { width: 18px; height: 18px; }
+
+/* ---------- chips, status ---------- */
+.qt-chip { display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; border-radius: 99px; border: var(--qt-border);
+  background: var(--qt-chip); font: 600 12px var(--qt-mono); }
+.qt-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--qt-dim); border: 2px solid var(--qt-ink); flex: none; }
+.qt-dot.on { background: var(--qt-ok); animation: qt-ping 2s infinite; }
+.qt-dot.warn { background: var(--qt-warn); }
+.qt-dot.bad { background: var(--qt-bad); }
+@keyframes qt-ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--qt-ok) 60%, transparent); } 80%, 100% { box-shadow: 0 0 0 8px transparent; } }
+
+/* ---------- inputs ---------- */
+.qt-input { appearance: none; width: 100%; padding: 10px 12px; border-radius: var(--qt-r-sm); border: var(--qt-border);
+  background: var(--qt-well); color: var(--qt-fg); font: 500 14px var(--qt-font); transition: box-shadow var(--qt-fast), transform var(--qt-fast) var(--qt-spring); }
+.qt-input:focus { outline: none; box-shadow: var(--qt-shadow-sm), 0 0 0 0 transparent; border-color: var(--qt-accent); transform: translate(-1px, -1px); }
+
+/* ---------- switch (button role=switch aria-checked) ---------- */
+.qt-switch { appearance: none; cursor: pointer; width: 46px; height: 28px; border-radius: 99px; border: var(--qt-border);
+  background: var(--qt-well); position: relative; flex: none; transition: background var(--qt-med); padding: 0; }
+.qt-switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%;
+  background: var(--qt-fg); border: 2px solid var(--qt-ink); transition: transform var(--qt-med) var(--qt-spring), width var(--qt-fast); box-sizing: content-box; width: 14px; height: 14px; }
+.qt-switch[aria-checked="true"] { background: var(--qt-accent); }
+.qt-switch[aria-checked="true"]::after { transform: translateX(18px); background: var(--qt-on-accent); }
+.qt-switch:active::after { width: 20px; }
+
+/* ---------- progress ---------- */
+.qt-bar { height: 14px; border-radius: 99px; border: var(--qt-border); background: var(--qt-well); overflow: hidden; }
+.qt-bar > i { display: block; height: 100%; width: 0; background: var(--qt-accent); border-right: var(--qt-border); transition: width var(--qt-slow) var(--qt-ease);
+  background-image: repeating-linear-gradient(-45deg, transparent 0 8px, #0000001c 8px 16px); background-size: 22px 22px; animation: qt-stripes .8s linear infinite; }
+@keyframes qt-stripes { to { background-position: 22px 0; } }
+
+/* ---------- toast ---------- */
+.qt-toasts { position: fixed; right: 18px; bottom: 18px; display: flex; flex-direction: column; gap: 10px; z-index: 9999; pointer-events: none; }
+.qt-toast { pointer-events: auto; padding: 11px 15px; border-radius: var(--qt-r-sm); border: var(--qt-border); box-shadow: var(--qt-shadow-sm);
+  background: var(--qt-accent); color: var(--qt-on-accent); font: 700 14px var(--qt-font); animation: qt-toast-in .45s var(--qt-spring) both; }
+.qt-toast.bad { background: var(--qt-bad); }
+.qt-toast.out { animation: qt-toast-out .3s var(--qt-ease) forwards; }
+@keyframes qt-toast-in { from { transform: translateY(120%) rotate(-3deg); opacity: 0; } }
+@keyframes qt-toast-out { to { transform: translateX(120%); opacity: 0; } }
+
+/* ---------- motion helpers ---------- */
+.qt-rise { animation: qt-rise .55s var(--qt-ease) both; }
+.qt-pop { animation: qt-pop .5s var(--qt-spring) both; }
+.qt-stagger > * { animation: qt-rise .55s var(--qt-ease) both; }
+.qt-stagger > *:nth-child(2) { animation-delay: .05s; } .qt-stagger > *:nth-child(3) { animation-delay: .1s; }
+.qt-stagger > *:nth-child(4) { animation-delay: .15s; } .qt-stagger > *:nth-child(5) { animation-delay: .2s; }
+.qt-stagger > *:nth-child(6) { animation-delay: .25s; } .qt-stagger > *:nth-child(n+7) { animation-delay: .3s; }
+.qt-wiggle:hover { animation: qt-wiggle .5s var(--qt-spring); }
+@keyframes qt-rise { from { opacity: .001; transform: translateY(14px); } }
+@keyframes qt-pop { from { opacity: .001; transform: scale(.6) rotate(-6deg); } }
+@keyframes qt-wiggle { 25% { transform: rotate(-8deg) scale(1.1); } 60% { transform: rotate(5deg) scale(1.05); } }
+@media (prefers-reduced-motion: reduce) {
+  .qt *, .qt *::before, .qt *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
+}

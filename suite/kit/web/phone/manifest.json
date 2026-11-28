@@ -1,0 +1,2 @@
+{"name": "QT Suite phone link", "short_name": "QT Phone", "start_url": "/deck", "display": "standalone", "background_color": "#16141a", "theme_color": "#16141a",
+ "icons": [{"src": "/assets/icon.svg", "sizes": "any", "type": "image/svg+xml"}]}

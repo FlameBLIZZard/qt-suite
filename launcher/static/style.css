@@ -209,7 +209,7 @@ kbd { font: 11px var(--font); color: var(--dim); border: 1px solid var(--line2);
 .gen-cover { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-start; padding: 18px 16px; overflow: hidden; background-size: 180% 180%; transition: background-position 1.2s var(--ease); }
 .card:hover .gen-cover { background-position: 100% 100%; }
 .gen-cover .gen-icon { width: 44px; height: 44px; border-radius: 12px; object-fit: contain; background: rgba(0,0,0,.25); padding: 6px; }
-.gen-cover .gen-title { margin-top: auto; margin-bottom: 52px; font: 700 26px/1 var(--display); letter-spacing: -.02em; text-shadow: 0 4px 20px rgba(0,0,0,.4); word-break: break-word; }
+.gen-cover .gen-title { margin-top: auto; margin-bottom: 52px; font: 700 calc(26px * var(--fit, 1))/1 var(--display); letter-spacing: -.02em; text-shadow: 0 4px 20px rgba(0,0,0,.4); overflow-wrap: anywhere; word-break: normal; }
 .gen-cover .gen-ring { position: absolute; width: 180%; aspect-ratio: 1; right: -90%; top: -30%; border-radius: 50%; border: 1px solid rgba(255,255,255,.18);
   box-shadow: 0 0 0 26px rgba(255,255,255,.04), 0 0 0 60px rgba(255,255,255,.025); animation: spin 60s linear infinite; }
 .card.drop .card-inner { box-shadow: 0 0 0 3px var(--a2), 0 0 40px var(--a2); }
@@ -363,3 +363,12 @@ kbd { font: 11px var(--font); color: var(--dim); border: 1px solid var(--line2);
 @media (max-width: 720px) { .view { padding: 0 16px 40px; } .topbar { padding: 14px 16px; } .clock, .greet small { display: none; } .rail { width: 64px; } .rail-btn { width: 50px; } .rail-btn span { display: none; } .rail-pill { left: 7px; width: 50px; } .hero-content { left: 22px; bottom: 24px; right: 22px; } .kpis { grid-template-columns: repeat(2, 1fr); } .drawer { width: auto; left: 12px; } }
 html.calm *, html.calm *::before, html.calm *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+/* loop 30: phone width: greeting and search stack, search takes the full row */
+@media (max-width: 520px) {
+  .topbar { flex-wrap: wrap; gap: 10px; }
+  .topbar .greet { font-size: 22px; }
+  .topbar .search { width: 100%; flex: 1 1 100%; }
+  .shelf-head { flex-wrap: wrap; gap: 10px; }
+  .shelf-head .chips { flex: 1 1 100%; overflow-x: auto; scrollbar-width: none; }
+  .sort-btn span { white-space: nowrap; }
+}

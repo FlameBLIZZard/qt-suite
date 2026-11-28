@@ -231,3 +231,16 @@ body[data-tool="settings"] #set-btn, body[data-tool="settings"] #set-btn:hover {
 .sdef-apps{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .sdef-apps .qt-chip{display:inline-flex;align-items:center;gap:6px}
 
+
+/* loop 30: hero buttons show a count and calm down when there's nothing to do */
+.hero-acts .qt-btn .ha-n { font: 700 11px/1 "JetBrains Mono", monospace; font-style: normal; min-width: 18px; padding: 3px 5px; margin-left: 2px; border-radius: 99px; background: rgba(0,0,0,.28); text-align: center; }
+.hero-acts .qt-btn.idle { opacity: .55; box-shadow: none; transform: none; }
+.hero-acts .qt-btn.idle:hover { opacity: .85; }
+/* loop 30 motion: idle <-> ready fades instead of snapping; an armed Stop all breathes until you confirm */
+.hero-acts .qt-btn { transition: opacity .35s var(--qt-ease), transform var(--qt-fast) var(--qt-spring), box-shadow var(--qt-fast), background .25s; }
+.hero-acts .armed { animation: haArmed 1s ease-in-out infinite; }
+@keyframes haArmed { 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--qt-bad) 35%, transparent), 4px 4px 0 var(--qt-ink); } }
+.hero-acts .qt-btn:not(.idle):hover .ha-n { animation: haNudge .45s var(--qt-spring); }
+@keyframes haNudge { 40% { transform: translateY(-3px) scale(1.15); } }
+@media (prefers-reduced-motion: reduce) { .hero-acts .armed, .hero-acts .qt-btn:hover .ha-n { animation: none !important; } }
+.qt-calm .hero-acts .armed, .qt-calm .hero-acts .ha-n { animation: none !important; }

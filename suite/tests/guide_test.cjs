@@ -122,7 +122,7 @@ const shot = async (p, n) => { if (process.env.SHOTS) await p.screenshot({ path:
   // What's this
   await p.keyboard.press("Shift+F1"); await p.waitForTimeout(300);
   check("What's this? mode", !!(await p.$(".gd-what-band")));
-  const tile = await p.$("#tiles .tile"); const bb = await tile.boundingBox();
+  const tile = await p.$("#tiles .tile"); await tile.scrollIntoViewIfNeeded(); await p.waitForTimeout(200); const bb = await tile.boundingBox();
   await p.mouse.move(bb.x + 30, bb.y + 30); await p.waitForTimeout(400);
   check("pointing at a tile explains it", /tile/i.test(await p.textContent(".gd-what")));
   await shot(p, "g12-whatsthis");

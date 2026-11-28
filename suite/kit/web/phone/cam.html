@@ -1,0 +1,66 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#16141a"><title>Webcam</title><link rel="stylesheet" href="/assets/phone.css"></head>
+<body class="ph">
+<div class="top"><div><div class="eyebrow">QT Suite</div><h1>Webcam + mic</h1></div><a href="/">More</a></div>
+<div class="ph-card"><video id="v" playsinline muted autoplay></video>
+  <div class="row" style="margin-top:10px"><span class="status" id="cs">camera off</span><span class="mut" id="fps"></span></div>
+  <div class="row" style="margin-top:10px"><button class="ph-btn pri" id="cam">Start camera</button><button class="ph-btn" id="flip">Flip</button></div></div>
+<div class="ph-card"><div class="row"><span class="status" id="ms">mic off</span></div><div class="meter" style="margin:10px 0"><i id="lv"></i></div>
+  <button class="ph-btn big" id="mic">Start mic</button></div>
+<p class="mut">Keep this page open and the screen on. Camera and mic stop if you switch apps.</p>
+<canvas id="c" hidden></canvas>
+<script src="/assets/phone.js"></script>
+<script>
+let stream = null, facing = "environment", size = 720, quality = 0.7, running = false, frames = 0, t0 = performance.now(), track = null;
+const v = Q("#v"), c = Q("#c"), cx = c.getContext("2d");
+async function startCam() {
+  stopCam();
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: facing, width: { ideal: size * 16 / 9 }, height: { ideal: size } }, audio: false });
+  } catch (e) { toast(e.name === "NotAllowedError" ? "Camera blocked. Allow it in the site settings." : "No camera: " + e.message, 3500); return; }
+  track = stream.getVideoTracks()[0]; v.srcObject = stream; running = true; keepAwake();
+  Q("#cam").textContent = "Stop camera"; Q("#cs").textContent = "camera on"; Q("#cs").className = "status on";
+  pump();
+}
+function stopCam() { running = false; if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; Q("#cam").textContent = "Start camera"; Q("#cs").textContent = "camera off"; Q("#cs").className = "status"; }
+async function pump() {
+  while (running) {
+    if (!v.videoWidth) { await new Promise(r => setTimeout(r, 100)); continue; }
+    const h = Math.min(size, v.videoHeight), w = Math.round(v.videoWidth * h / v.videoHeight);
+    if (c.width !== w) { c.width = w; c.height = h; }
+    cx.drawImage(v, 0, 0, w, h);
+    const blob = await new Promise(r => c.toBlob(r, "image/jpeg", quality));
+    try { await fetch("/api/cam/frame", { method: "POST", body: blob }); frames++; } catch { await new Promise(r => setTimeout(r, 500)); }
+    const now = performance.now(); if (now - t0 > 1000) { Q("#fps").textContent = Math.round(frames * 1000 / (now - t0)) + " fps · " + w + "x" + h; frames = 0; t0 = now; }
+    await new Promise(r => setTimeout(r, 30));
+  }
+}
+Q("#cam").onclick = () => running ? stopCam() : startCam();
+Q("#flip").onclick = () => { facing = facing === "user" ? "environment" : "user"; if (running) startCam(); };
+// mic: 16 kHz mono 16-bit chunks
+let ac = null, micStream = null, proc = null;
+async function startMic() {
+  try { micStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 } }); }
+  catch (e) { toast("Mic blocked: " + e.message, 3500); return; }
+  ac = new AudioContext({ sampleRate: 16000 });
+  const src = ac.createMediaStreamSource(micStream); proc = ac.createScriptProcessor(2048, 1, 1);
+  src.connect(proc); proc.connect(ac.destination);
+  proc.onaudioprocess = e => {
+    const f = e.inputBuffer.getChannelData(0), out = new Int16Array(f.length); let peak = 0;
+    for (let i = 0; i < f.length; i++) { const s = Math.max(-1, Math.min(1, f[i])); out[i] = s * 32767; peak = Math.max(peak, Math.abs(s)); }
+    Q("#lv").style.width = Math.round(peak * 100) + "%";
+    fetch("/api/mic/pcm", { method: "POST", body: out.buffer }).catch(() => {});
+    e.outputBuffer.getChannelData(0).fill(0);
+  };
+  Q("#mic").textContent = "Stop mic"; Q("#ms").textContent = "mic on"; Q("#ms").className = "status on"; keepAwake();
+}
+function stopMic() { if (micStream) micStream.getTracks().forEach(t => t.stop()); if (ac) ac.close(); ac = micStream = proc = null; Q("#mic").textContent = "Start mic"; Q("#ms").textContent = "mic off"; Q("#ms").className = "status"; }
+Q("#mic").onclick = () => ac ? stopMic() : startMic();
+listen({ cam: it => {
+  if (it.facing) { facing = it.facing === "front" ? "user" : "environment"; if (running) startCam(); }
+  if (it.size) { size = it.size; if (running) startCam(); }
+  if (it.quality) quality = it.quality;
+  if (it.torch && track) { const on = !(track.getSettings().torch); track.applyConstraints({ advanced: [{ torch: on }] }).catch(() => toast("No torch on this camera")); }
+  if (it.run === true) startCam(); if (it.run === false) stopCam();
+} });
+</script></body></html>

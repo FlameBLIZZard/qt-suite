@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QT widget · Mini deck</title><link rel="stylesheet" href="/kit/w/w.css"></head>
+<body style="--a:#c6ff3d"><div class="ey">Deck</div><div id="g" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px"></div>
+<script src="/kit/w/w.js"></script><script>api('/api/kit/deck').then(d => { Q('#g').innerHTML = d.buttons.slice(0,9).map(b => `<button style="background:${b.color};color:#16141a" title="${esc(b.label)}" data-a='${esc(JSON.stringify(b.action))}'>${esc(b.icon)}</button>`).join(''); });
+ document.addEventListener('click', e => { const b = e.target.closest('[data-a]'); if (b) api('/api/kit/do', {action: JSON.parse(b.dataset.a)}); });</script></body></html>

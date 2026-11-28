@@ -320,7 +320,7 @@ def categories():
     return [
         {"id": "usertemp", "name": "Temporary files", "default": True, "age": 24, "empty_dirs": True, "icon": "temp",
          "desc": "Your temp folder. Only files older than 1 day, so running apps are not affected.",
-         "roots": [TEMP], "exclude": [os.path.join(TEMP, "claude")]},
+         "roots": [TEMP], "exclude": []},
         {"id": "wintemp", "name": "Windows temp files", "default": True, "age": 24, "empty_dirs": True, "admin": True, "icon": "temp",
          "desc": "The system temp folder. Needs admin.", "roots": [rf"{W}\Temp"]},
         {"id": "winupdate", "name": "Windows Update downloads", "default": True, "age": 72, "empty_dirs": True, "admin": True, "icon": "update",

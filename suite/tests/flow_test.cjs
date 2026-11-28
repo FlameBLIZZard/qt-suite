@@ -84,9 +84,16 @@ const check = (n, c) => { console.log((c ? "PASS  " : "FAIL  ") + n); if (!c) fa
     el.dispatchEvent(new DragEvent("drop", { dataTransfer: dt, bubbles: true, cancelable: true }));
   });
   check("dragging over the Files button says where it goes", (await p.evaluate(() => window.__lbl)) === "Open in the right app");
-  await p.waitForTimeout(2000);
-  const cf = p.frames().find(f => f.url().includes("/tool/code"));
-  check("dropped text opens in Code, not the hub's Peek", (await p.evaluate(() => current)) === "code" && !(await p.$(".pk")) && !!cf && !!(await cf.$(".pk")));
+  let cf = null;
+  for (let n = 0; n < 25; n++) {   // the Code frame can still be loading on a cold hub
+    await p.waitForTimeout(250);
+    cf = p.frames().find(f => f.url().includes("/tool/code"));
+    if (cf && await cf.$(".pk").catch(() => null)) break;
+  }
+  const dropState = [await p.evaluate(() => current), !(await p.$(".pk")), !!cf, !!(cf && await cf.$(".pk")), p.frames().filter(f => f.url().includes("/tool/code")).length,
+    await p.evaluate(() => [...document.querySelectorAll("iframe")].map(f => f.src.replace(location.origin, "") + (f.closest(".view") && f.closest(".view").hidden ? ":hidden" : "")).join(" "))];
+  check("dropped text opens in Code, not the hub's Peek" + (dropState.every(x => x === true || x === "code") ? "" : " " + JSON.stringify(dropState)),
+    dropState[0] === "code" && dropState[1] && dropState[2] && dropState[3]);
   // 18. settings switches exist and save
   await p.keyboard.press("Control+,"); await p.waitForSelector('[data-sw="group"]');
   check("Settings has Group file apps + Bring crashed tools back", !!(await p.$('[data-sw="revive"]')));

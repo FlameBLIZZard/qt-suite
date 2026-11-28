@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QT widget · Kharcha</title><link rel="stylesheet" href="/kit/w/w.css"></head>
+<body style="--a:#5dffb0"><div class="ey">This month</div><div class="big" id="s">-</div><div class="mut" id="l"></div><div class="bar"><i id="b"></i></div><div class="mut" id="t"></div><div id="r" class="mut" style="margin-top:6px"></div>
+<script src="/kit/w/w.js"></script><script>every(60000, async () => { const k = await api('/api/kit/kharcha'); if (!k.ok) { Q('#s').textContent = '-'; Q('#l').textContent = k.msg; return; }
+ Q('#s').textContent = money(k.spent); Q('#l').textContent = k.limit ? 'of ' + money(k.limit) : ''; Q('#b').style.width = (k.limit ? Math.min(100, 100*k.spent/k.limit) : 0) + '%';
+ Q('#t').textContent = 'Today ' + money(k.today) + (k.left_per_day != null ? ' · ' + money(k.left_per_day) + '/day left' : '');
+ Q('#r').innerHTML = k.recent.slice(0,2).map(t => esc(t.emoji + ' ' + (t.note || '') + ' ' + money(t.amt))).join('<br>'); });</script></body></html>

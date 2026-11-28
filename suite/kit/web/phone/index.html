@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#16141a"><title>QT Suite</title><link rel="stylesheet" href="/assets/phone.css"><link rel="manifest" href="/assets/manifest.json"></head>
+<body class="ph">
+<div class="eyebrow">QT Suite on <span id="pc">your PC</span></div>
+<h1>Phone link</h1>
+<div class="tiles">
+  <a class="tile" href="/deck"><span class="e">🎛</span><b>Stream deck</b><span>Buttons that run things on the PC</span></a>
+  <a class="tile" href="/clip"><span class="e">📋</span><b>Clipboard</b><span>Send text to the PC stack</span></a>
+  <a class="tile" href="/cam"><span class="e">🎥</span><b>Webcam + mic</b><span>Be the PC's camera and mic</span></a>
+  <a class="tile" href="/find"><span class="e">📍</span><b>Find my phone</b><span>Leave open so the PC can ring it</span></a>
+  <a class="tile" href="/pad"><span class="e">🕹</span><b>Game pad</b><span>Play the Suite's arcade</span></a>
+</div>
+<p class="mut">Tip: in Chrome's menu pick "Add to Home screen" on any of these pages to open it like an app.</p>
+<script src="/assets/phone.js"></script>
+<script>api("/api/hello").then(j => Q("#pc").textContent = j.pc).catch(() => {});</script>
+</body></html>

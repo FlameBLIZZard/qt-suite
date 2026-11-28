@@ -354,3 +354,11 @@ main { flex: 1; overflow: hidden; position: relative; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .boom .burst, .usage::after { display: none; }
 }
+
+/* loop 30: on a narrow window the tab pill scrolls sideways instead of hiding Reels and Activity off the edge */
+@media (max-width: 760px) {
+  .top { gap: 10px; padding: 10px 12px; }
+  .tabs { min-width: 0; overflow-x: auto; scrollbar-width: none; flex: 1 1 auto; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button { flex: none; white-space: nowrap; }
+}

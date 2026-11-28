@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#16141a">
+<meta name="mobile-web-app-capable" content="yes">
+<title>QT Remote</title>
+<link rel="icon" href="/icon.svg">
+<link rel="stylesheet" href="/theme/qt.css">
+<link rel="stylesheet" href="/static/remote.css">
+</head>
+<body class="qt qt-dots viewer" data-tool="remote">
+
+<div class="gate" id="gate">
+  <div class="card qt-card qt-rise">
+    <div class="qt-eyebrow">QT Remote</div>
+    <h1 id="gTitle">Connecting...</h1>
+    <div class="who" id="gWho"></div>
+    <div id="gBody"><p><span class="spin"></span> Saying hello to the PC...</p></div>
+  </div>
+</div>
+
+<div class="stage hide" id="stage" tabindex="-1">
+  <div class="wrap" id="wrap"><canvas id="screen" tabindex="0" aria-label="Remote screen"></canvas></div>
+</div>
+
+<button class="tab-pull hide" id="pull" aria-label="Show toolbar"></button>
+<nav class="tb hide" id="tb" aria-label="Remote toolbar">
+  <span class="pcname wide-only" id="pcname"></span>
+  <select id="mon" title="Which screen" class="wide-only"></select>
+  <select id="q" title="Picture quality">
+    <option value="speed">Fast</option><option value="balanced" selected>Balanced</option><option value="sharp">Sharp</option>
+  </select>
+  <button class="qt-btn" id="bFit" title="Fit to window / real size">Fit</button>
+  <button class="qt-btn" id="bKeys" title="Special keys">Keys</button>
+  <button class="qt-btn" id="bKbd" title="Show the keyboard">Type</button>
+  <button class="qt-btn" id="bTouch" title="Touch: trackpad or tap where you point">Trackpad</button>
+  <button class="qt-btn" id="bClip" title="Clipboard">Clipboard</button>
+  <button class="qt-btn" id="bFile" title="Send files to the PC">Send file</button>
+  <button class="qt-btn wide-only" id="bFull" title="Full screen (F11)">Full screen</button>
+  <span class="stat" id="stat"></span>
+  <span class="sep"></span>
+  <button class="qt-btn ghost" id="bTuck" title="Hide toolbar">Hide</button>
+  <button class="qt-btn danger" id="bEnd">End</button>
+</nav>
+
+<div class="menu hide" id="keys" role="menu"></div>
+<div class="panel qt-card hide" id="clip">
+  <div class="qt-eyebrow">Clipboard</div>
+  <p class="small qt-muted" style="margin:6px 0 8px">Ctrl+V on the remote screen pastes what you copied here. Text copied on the PC shows up below.</p>
+  <textarea class="qt-input" id="clipText" placeholder="Type or paste text to put on the PC's clipboard"></textarea>
+  <div class="row" style="margin-top:10px"><button class="qt-btn primary" id="clipSend">Send to PC</button><button class="qt-btn" id="clipCopy">Copy PC text here</button><span class="grow"></span><button class="qt-btn ghost" id="clipX">Close</button></div>
+</div>
+<input type="file" id="file" multiple class="hide">
+<textarea id="kbd" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Keyboard"></textarea>
+
+<div class="cover hide" id="cover"><div class="card qt-card"><h2 id="cTitle"></h2><p id="cText"></p><div class="row" style="justify-content:center" id="cBtns"></div></div></div>
+<div class="asks" id="asks"></div>
+<div class="drop hide" id="drop">Drop to send to the PC</div>
+<div class="touchhint hide" id="hint"></div>
+<div class="qt-toasts" id="toasts"></div>
+<script src="/static/view.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QT widget · Clock</title><link rel="stylesheet" href="/kit/w/w.css"></head>
+<body style="--a:#4dc3ff"><div class="ey" id="d"></div><div class="big" id="t" style="font-size:36px;white-space:nowrap"></div><div class="mut" id="z"></div>
+<script src="/kit/w/w.js"></script><script>every(1000, () => { const n = new Date(); Q('#t').textContent = n.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}); Q('#d').textContent = n.toLocaleDateString([], {weekday:'long', day:'numeric', month:'short'});
+ Q('#z').textContent = 'London ' + n.toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'}) + ' · New York ' + n.toLocaleTimeString('en-US',{timeZone:'America/New_York',hour:'2-digit',minute:'2-digit'}); });</script></body></html>

@@ -86,7 +86,14 @@ function movePill() {
   const on = $("#tabs button.on"), pill = $(".tab-pill");
   if (!on) return;
   pill.style.width = on.offsetWidth + "px";
+  const moved = pill.dataset.x !== String(on.offsetLeft);
+  pill.dataset.x = on.offsetLeft;
   pill.style.transform = `translateX(${on.offsetLeft}px)`;
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // loop 30: the pill squashes as it lands, and on a narrow window the picked tab glides into view
+  if (moved && !calm && pill.animate) pill.animate([{ scale: "1 1" }, { scale: "1.12 .8", offset: .45 }, { scale: ".96 1.06", offset: .75 }, { scale: "1 1" }], { duration: 480, easing: "ease-out" });
+  const tabs = $("#tabs");
+  if (tabs.scrollWidth > tabs.clientWidth + 2) on.scrollIntoView({ inline: "center", block: "nearest", behavior: calm ? "auto" : "smooth" });
 }
 const ORDER = ["overview", "clean", "big", "reels", "activity"];
 function go(tab) {

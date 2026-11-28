@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#16141a"><title>Clipboard</title><link rel="stylesheet" href="/assets/phone.css"></head>
+<body class="ph">
+<div class="top"><div><div class="eyebrow">QT Suite</div><h1>Clipboard stack</h1></div><a href="/">More</a></div>
+<div class="ph-card"><textarea id="t" placeholder="Type or paste. Each Send adds one item to the PC's stack."></textarea>
+  <div class="row" style="margin-top:10px"><button class="ph-btn" id="paste">Paste from phone</button><button class="ph-btn pri" id="send">Send to PC</button></div>
+  <p class="mut">On the PC, Ctrl+Alt+V pastes the next item, one at a time.</p></div>
+<div class="ph-card"><div class="row"><button class="ph-btn" id="get">Get the PC's clipboard</button></div><div class="clips" id="got"></div></div>
+<div class="ph-card"><b>Sent</b><div class="clips" id="sent"></div></div>
+<script src="/assets/phone.js"></script>
+<script>
+const sent = [];
+Q("#send").onclick = async () => {
+  const v = Q("#t").value; if (!v.trim()) return toast("Nothing to send");
+  try { await api("/api/clip", { text: v }); sent.unshift(v); Q("#t").value = ""; buzz(); toast("Sent");
+    Q("#sent").innerHTML = sent.slice(0, 10).map(s => `<div class="it">${esc(s)}</div>`).join(""); } catch (e) { toast(e.message); }
+};
+Q("#paste").onclick = async () => { try { Q("#t").value += await navigator.clipboard.readText(); } catch { toast("Long-press the box and Paste instead"); } };
+const show = text => { Q("#got").innerHTML = `<div class="it">${esc(text || "(empty)")}</div><button class="ph-btn" style="margin-top:8px" id="cp">Copy on phone</button>`;
+  Q("#cp").onclick = () => navigator.clipboard.writeText(text).then(() => toast("Copied")).catch(() => toast("Select and copy it")); };
+Q("#get").onclick = async () => show((await api("/api/clip/pc")).text);
+listen({ clip: it => { show(it.text); toast("The PC sent its clipboard"); buzz(60); } });
+</script></body></html>

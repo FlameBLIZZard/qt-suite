@@ -378,6 +378,27 @@
     toast(failed.length ? failed.join("; ") : `Stopped ${list.length} tool${list.length > 1 ? "s" : ""}`, !!failed.length);
     await load(true).catch(() => {});
   }
+  // the two buttons say what they'd do: how many of your set are stopped, how many tools are running
+  function paintActs() {
+    const setB = acts.querySelector("[data-set]"), stopB = acts.querySelector("[data-stopall]");
+    if (!setB || !stopB) return;
+    const ports = new Set(tools.filter(t => t.kind === "web" && t.status === "on").map(t => t.port));
+    const todo = S.boot.filter(id => byId(id) && byId(id).status !== "on").length;
+    const set = (b, n, title) => {
+      let c = b.querySelector(".ha-n");
+      if (!n) { if (c) c.remove(); }
+      else { if (!c) { c = document.createElement("i"); c.className = "ha-n"; b.append(c); } if (c.textContent !== String(n)) { c.textContent = n; anim(c, [{ transform: "scale(.3)" }, { transform: "scale(1.25)" }, { transform: "none" }], { duration: 380, easing: spring }); } }
+      b.title = title;
+    };
+    if (!stopB.classList.contains("armed")) stopB.classList.toggle("idle", !ports.size);
+    setB.classList.toggle("idle", !!S.boot.length && !todo);
+    set(stopB, ports.size, ports.size ? `Stop the ${ports.size} running tool${ports.size > 1 ? "s" : ""}` : "Nothing is running");
+    set(setB, todo, !S.boot.length ? "Pick which tools start with the suite (Settings)" : todo ? `Start ${todo} tool${todo > 1 ? "s" : ""} from your set` : "Your set is running");
+  }
+  const loadBeforeActs = load;
+  load = async function (force) { const r = await loadBeforeActs(force); try { paintActs(); } catch (_) {} return r; };
+  document.addEventListener("qt-settings", () => { try { paintActs(); } catch (_) {} });
+  (function first(n) { if (tools.length) paintActs(); else if (n < 40) setTimeout(() => first(n + 1), 150); })(0);   // hub.js's first load ran before this file
   acts.addEventListener("click", e => {
     if (e.target.closest("[data-set]")) startSet();
     const b = e.target.closest("[data-stopall]"); if (b) stopAll(b);
@@ -525,9 +546,12 @@
     }
     return out;
   };
+  let findAbort = null;
   async function findFiles(q) {
+    if (findAbort) findAbort.abort();   // a stale search must not keep one of the page's few connections busy
+    const ac = findAbort = new AbortController();
     try {
-      const r = await api("/api/find?q=" + encodeURIComponent(q));
+      const r = await fetch("/api/find?q=" + encodeURIComponent(q), { signal: ac.signal }).then(x => x.json());
       if (q !== fq) return;
       fres = r.files || []; fstate = r.off ? "off" : "done";
     } catch (_) { if (q === fq) { fres = []; fstate = "done"; } }

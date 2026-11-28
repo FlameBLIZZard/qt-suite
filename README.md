@@ -64,6 +64,8 @@ The Start menu also has a **QT Suite Help** shortcut.
 | **Kharcha, Ping** | Show your phone's expenses and notifications on the PC. They need the companion Android apps. |
 | **Inkmotion, Pixlab** | A stroke animation studio and a text-first pixel art editor. |
 | **Surf** | A small built-in web browser with tabs and bookmarks. |
+| **Remote** | Remote desktop over [Tailscale](https://tailscale.com): see and control this PC from your laptop, phone or another PC in any browser, and open your other PCs from the Suite. New devices pair with a code you confirm on the PC, each gets its own key, and you can make one view-only or remove it any time. |
+| **Toolkit** | 32 extras behind one rail button: phone webcam and mic, find my phone, stream deck, phone mirror, party games, Kharcha on Home, subscriptions, bill splits, auto-cleaner, scheduled backups, focus mode, folder time machine, snap zones, widgets, live wallpaper, screen recorder, batch photos, music player, game deals, hotkeys, macros, plugins, share links, auto-update and more. Some need the phone app, a USB-connected phone (adb) or a virtual audio cable. |
 
 ## See it in action
 
@@ -104,10 +106,11 @@ The MP4 versions of the clips are in [docs/media/clips](docs/media/clips). All s
 ## Privacy
 
 - Every tool listens on `127.0.0.1` only. Beam also listens on your private Wi-Fi so your phone can reach it, and every request needs its key.
+- Remote also listens on your Tailscale address (never on Wi-Fi unless you switch that on). Tailscale encrypts the traffic end to end, Remote checks which device and account is connecting, and only devices you paired and allowed on the PC get in. A strip at the top of the screen shows whenever someone is connected, with an End button.
 - Nothing is uploaded anywhere. VOLT and web searches reach the sites you ask for.
 - The pages load their fonts from Google Fonts.
 - Clipboard history stays in memory. It is never written to disk, and copies that password managers mark as private are skipped.
-- Your data lives in `%LOCALAPPDATA%` (`QT Suite`, `Beam`, `Burrow`, `volt`, `SpaceManager`, `LensPC`). When you uninstall, you choose whether to keep it.
+- Your data lives in `%LOCALAPPDATA%` (`QT Suite`, `Beam`, `Burrow`, `volt`, `SpaceManager`, `LensPC`, `QT Remote`). When you uninstall, you choose whether to keep it.
 
 ## Build it yourself
 
@@ -130,7 +133,7 @@ To run from source without building, use `python suite\app.py`.
 
 ```
 suite/          the hub: app.py (server on port 7800), static/ (UI), theme/qt.css (Ink Arcade), tray, viewers
-beam/ volt/ burrow/ launcher/ soundboard/ space-manager/ daily/ lens-pc/   one folder per tool, each a small local web app
+beam/ volt/ burrow/ launcher/ soundboard/ space-manager/ daily/ lens-pc/ remote/   one folder per tool, each a small local web app
 inkmotion/ pixlab/   single-file builds (their source lives in their own repos)
 packaging/      export.py (copy from a working folder, scrub personal data), make_runtime.py, build.ps1, launcher/, installer/
 ```

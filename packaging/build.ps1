@@ -15,7 +15,7 @@ $Repo = Split-Path $PSScriptRoot -Parent
 $Version = (Get-Content (Join-Path $Repo 'VERSION') -Raw).Trim()
 $App = Join-Path $Repo 'build\app'
 $Out = Join-Path $Repo 'out'
-$Tools = 'suite', 'daily', 'beam', 'launcher', 'volt', 'burrow', 'lens-pc', 'soundboard', 'space-manager', 'inkmotion', 'pixlab'
+$Tools = 'suite', 'daily', 'beam', 'launcher', 'volt', 'burrow', 'lens-pc', 'soundboard', 'space-manager', 'remote', 'inkmotion', 'pixlab'
 $Csc = Join-Path $env:WINDIR 'Microsoft.NET\Framework64\v4.0.30319\csc.exe'
 
 function Step($t) { Write-Host "`n== $t" -ForegroundColor Cyan }

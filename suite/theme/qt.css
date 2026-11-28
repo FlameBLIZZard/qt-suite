@@ -8,7 +8,7 @@
   /* tool accents */
   --qt-beam: #c6ff3d; --qt-launchpad: #4dc3ff; --qt-volt: #ffc93d; --qt-soundboard: #ff5fa2;
   --qt-inkmotion: #b28bff; --qt-kharcha: #5dffb0; --qt-lens: #ff8a3d; --qt-apks: #ff8a3d; --qt-pixlab: #ff6b4a; --qt-burrow: #2ee6d6; --qt-space: #7d9bff; --qt-daily: #ff9de2; --qt-ping: #ff4d5e;
-  --qt-pictures: #ffd84d; --qt-player: #ff3dd6; --qt-reader: #e8d9b5; --qt-code: #a0e8ff; --qt-archive: #d9a066; --qt-surf: #3d8bff;
+  --qt-pictures: #ffd84d; --qt-player: #ff3dd6; --qt-reader: #e8d9b5; --qt-code: #a0e8ff; --qt-archive: #d9a066; --qt-surf: #3d8bff; --qt-remote: #ff5ac8;
   --qt-accent: var(--qt-beam);
   --qt-on-accent: #16141a;
 
@@ -51,6 +51,7 @@
 [data-tool="code"] { --qt-accent: var(--qt-code); }
 [data-tool="archive"] { --qt-accent: var(--qt-archive); }
 [data-tool="surf"] { --qt-accent: var(--qt-surf); }
+[data-tool="remote"] { --qt-accent: var(--qt-remote); }
 
 /* ---------- base (opt-in via .qt on <body>) ---------- */
 .qt { background: var(--qt-bg); color: var(--qt-fg); font: 15px/1.45 var(--qt-font); -webkit-font-smoothing: antialiased; }

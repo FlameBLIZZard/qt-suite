@@ -1,0 +1,3 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QT widget · Sticky note</title><link rel="stylesheet" href="/kit/w/w.css"></head>
+<body style="--a:#ffc93d"><div class="ey">Sticky note</div><textarea id="n" placeholder="Type here. Saved as you go."></textarea>
+<script src="/kit/w/w.js"></script><script>const n = Q('#n'); let t = 0; api('/api/kit/sticky').then(j => n.value = j.text || ''); n.oninput = () => { clearTimeout(t); t = setTimeout(() => api('/api/kit/sticky', {text: n.value}), 400); };</script></body></html>

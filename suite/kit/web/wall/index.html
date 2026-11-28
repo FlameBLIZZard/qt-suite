@@ -1,0 +1,67 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QT wallpaper</title>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#16141a}canvas,video{position:fixed;inset:0;width:100vw;height:100vh;display:block;object-fit:cover}</style></head>
+<body><canvas id="c"></canvas>
+<script>
+const P = new URLSearchParams(location.search), scene = P.get("scene") || "ink", preview = P.has("preview");
+const c = document.getElementById("c"), x = c.getContext("2d");
+let W, H, t = 0;
+const fit = () => { const k = preview ? 0.5 : 1; W = c.width = innerWidth * k; H = c.height = innerHeight * k; };
+fit(); addEventListener("resize", fit);
+const AC = ["#c6ff3d", "#4dc3ff", "#ff5fa2", "#ffc93d", "#b28bff", "#5dffb0", "#ff8a3d", "#2ee6d6"];
+const rnd = (a, b) => a + Math.random() * (b - a);
+const stars = Array.from({ length: 400 }, () => ({ x: rnd(-1, 1), y: rnd(-1, 1), z: rnd(0.05, 1) }));
+const blobs = Array.from({ length: 7 }, (_, i) => ({ x: rnd(0, 1), y: rnd(0, 1), r: rnd(.12, .28), vx: rnd(-.02, .02), vy: rnd(-.02, .02), c: AC[i % AC.length] }));
+const drops = [];
+const S = {
+  ink() {
+    x.fillStyle = "#16141a"; x.fillRect(0, 0, W, H);
+    for (let i = 0; i < 6; i++) {
+      x.beginPath(); const base = H * (0.35 + i * 0.11);
+      x.moveTo(0, H);
+      for (let px = 0; px <= W; px += 12) x.lineTo(px, base + Math.sin(px / (180 + i * 40) + t * (0.25 + i * 0.07)) * (30 + i * 10) + Math.sin(px / 61 + t * 0.6) * 6);
+      x.lineTo(W, H); x.closePath(); x.fillStyle = AC[i % AC.length] + "cc"; x.fill(); x.lineWidth = 4; x.strokeStyle = "#000"; x.stroke();
+    }
+  },
+  stars() {
+    x.fillStyle = "#07060b"; x.fillRect(0, 0, W, H);
+    for (const s of stars) { s.z -= 0.0025; if (s.z <= 0.02) { s.z = 1; s.x = rnd(-1, 1); s.y = rnd(-1, 1); }
+      const px = W / 2 + s.x / s.z * W / 3, py = H / 2 + s.y / s.z * H / 3, r = (1 - s.z) * 3.2;
+      x.fillStyle = s.z < .3 ? "#c6ff3d" : "#fff8ec"; x.fillRect(px, py, r, r); }
+  },
+  blobs() {
+    x.fillStyle = "#16141a"; x.fillRect(0, 0, W, H);
+    for (const b of blobs) { b.x += b.vx * 0.016; b.y += b.vy * 0.016; if (b.x < 0 || b.x > 1) b.vx *= -1; if (b.y < 0 || b.y > 1) b.vy *= -1;
+      const r = b.r * Math.min(W, H) * (1 + 0.08 * Math.sin(t + b.r * 20));
+      x.beginPath(); x.arc(b.x * W + 8, b.y * H + 8, r, 0, 7); x.fillStyle = "#000"; x.fill();
+      x.beginPath(); x.arc(b.x * W, b.y * H, r, 0, 7); x.fillStyle = b.c; x.fill(); x.lineWidth = 5; x.strokeStyle = "#000"; x.stroke(); }
+  },
+  grid() {
+    const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#1a0b2e"); g.addColorStop(.55, "#ff5fa2"); g.addColorStop(.56, "#0b0820"); g.addColorStop(1, "#0b0820");
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+    x.beginPath(); x.arc(W / 2, H * .5, H * .2, Math.PI, 0); x.fillStyle = "#ffc93d"; x.fill();
+    x.strokeStyle = "#ff2bd6"; x.lineWidth = 2; const hor = H * .56;
+    for (let i = 0; i < 24; i++) { const k = ((i + (t * 0.6) % 1) / 24) ** 2, y = hor + k * (H - hor); x.beginPath(); x.moveTo(0, y); x.lineTo(W, y); x.stroke(); }
+    for (let i = -20; i <= 20; i++) { x.beginPath(); x.moveTo(W / 2 + i * 12, hor); x.lineTo(W / 2 + i * W / 14, H); x.stroke(); }
+  },
+  rain() {
+    x.fillStyle = "#0b0e0cbb"; x.fillRect(0, 0, W, H);
+    const cols = Math.floor(W / 18); while (drops.length < cols) drops.push(rnd(-H, 0));
+    x.font = "16px Consolas, monospace";
+    for (let i = 0; i < cols; i++) { const ch = String.fromCharCode(0x30A0 + Math.random() * 96 | 0); x.fillStyle = Math.random() < .05 ? "#fff" : "#5dff9c"; x.fillText(ch, i * 18, drops[i]); drops[i] = drops[i] > H + rnd(0, 800) ? 0 : drops[i] + 18; }
+  },
+  clock() {
+    x.fillStyle = "#16141a"; x.fillRect(0, 0, W, H);
+    const n = new Date(), s = n.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+    x.textAlign = "center"; x.font = `${Math.round(H * .26)}px "Archivo Black", Impact, sans-serif`;
+    x.fillStyle = "#000"; x.fillText(s, W / 2 + 12, H * .58 + 12); x.fillStyle = "#c6ff3d"; x.fillText(s, W / 2, H * .58);
+    x.font = `${Math.round(H * .045)}px "Space Grotesk", sans-serif`; x.fillStyle = "#b6aea3"; x.fillText(n.toLocaleDateString([], { weekday: "long", day: "numeric", month: "long" }), W / 2, H * .7);
+  },
+};
+if (scene === "video" && !preview) {
+  const v = document.createElement("video"); v.src = "/api/kit/wall/video"; v.autoplay = v.loop = v.muted = true; v.playsInline = true; document.body.append(v); c.remove();
+} else {
+  let last = 0;
+  const loop = now => { requestAnimationFrame(loop); const fps = scene === "clock" ? 2 : scene === "rain" ? 20 : 30; if (now - last < 1000 / fps) return; t += (now - last) / 1000; last = now; (S[scene] || S.ink)(); };
+  requestAnimationFrame(loop);
+}
+</script></body></html>

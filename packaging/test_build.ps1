@@ -20,7 +20,7 @@ function Check($name, $ok, $more) { if ($ok) { "PASS  $name" } else { "FAIL  $na
 function Get-Url($u) { try { (Invoke-WebRequest $u -UseBasicParsing -TimeoutSec 5).StatusCode } catch { $_.Exception.Message } }
 function Wait-Port($port, $s = 25) { for ($i = 0; $i -lt $s * 4; $i++) { if (Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue) { return $true }; Start-Sleep -Milliseconds 250 }; $false }
 
-$saved = @{}; foreach ($k in 'LOCALAPPDATA', 'QT_SUITE_PORT', 'QT_SUITE_DATA', 'PYTHONPATH', 'PYTHONHOME') { $saved[$k] = [Environment]::GetEnvironmentVariable($k) }
+$saved = @{}; foreach ($k in 'LOCALAPPDATA', 'QT_SUITE_PORT', 'QT_SUITE_DATA', 'QT_KIT_PHONE_PORT', 'QT_KIT_PARTY_PORT', 'PYTHONPATH', 'PYTHONHOME') { $saved[$k] = [Environment]::GetEnvironmentVariable($k) }
 try {
   $env:LOCALAPPDATA = $data; Remove-Item Env:PYTHONPATH, Env:PYTHONHOME -ErrorAction SilentlyContinue
   # 1. the bundled Python has everything the tools import, and nothing from this PC's own Python
@@ -28,7 +28,7 @@ try {
   Check 'bundled Python imports every package' ($LASTEXITCODE -eq 0 -and "$out" -like "$Dir*") "$out"
 
   # 2. QT Suite.exe starts the hub (spare port, temp data)
-  $env:QT_SUITE_PORT = '7841'; $env:QT_SUITE_DATA = Join-Path $data 'QT Suite'
+  $env:QT_SUITE_PORT = '7841'; $env:QT_KIT_PHONE_PORT = '7855'; $env:QT_KIT_PARTY_PORT = '7856'; $env:QT_SUITE_DATA = Join-Path $data 'QT Suite'
   Start-Process (Join-Path $Dir 'QT Suite.exe') -ArgumentList '--no-window'
   Check 'QT Suite.exe starts the hub' (Wait-Port 7841) ''
   $tools = (Invoke-WebRequest http://127.0.0.1:7841/api/tools -UseBasicParsing).Content | ConvertFrom-Json
@@ -38,10 +38,12 @@ try {
   $g = try { Invoke-RestMethod http://127.0.0.1:7841/api/guide/state -TimeoutSec 5 } catch { $null }
   Check 'first run: welcome is due, version shown' ($g -and $g.fresh -and -not $g.onboarded -and $g.version -eq (Get-Content (Join-Path $Repo 'VERSION') -Raw).Trim()) "$($g | ConvertTo-Json -Compress)"
   Check 'Help, tour and welcome files served' ((Get-Url http://127.0.0.1:7841/guide.js) -eq 200 -and (Get-Url http://127.0.0.1:7841/guide.css) -eq 200 -and (Get-Url http://127.0.0.1:7841/api/guide/changelog) -eq 200) ''
+  $k = try { Invoke-RestMethod http://127.0.0.1:7841/api/kit/status -TimeoutSec 8 } catch { $null }
+  Check 'Toolkit loads every module on the bundled Python' ($k -and $k.ok -and -not ($k.errors.PSObject.Properties | Measure-Object).Count) "$($k.errors | ConvertTo-Json -Compress)"
   Check 'file tools served (Inkmotion, Pixlab, viewers)' ((Get-Url http://127.0.0.1:7841/tool/inkmotion) -eq 200 -and (Get-Url http://127.0.0.1:7841/tool/pixlab) -eq 200 -and (Get-Url http://127.0.0.1:7841/tool/pictures) -eq 200) ''
   $hubProc = Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -like "$Dir\runtime\*" -and $_.CommandLine -like '*app.py*' }
   Check 'hub runs on the bundled pythonw' ([bool]$hubProc) ''
-  Remove-Item Env:QT_SUITE_PORT, Env:QT_SUITE_DATA
+  Remove-Item Env:QT_SUITE_PORT, Env:QT_SUITE_DATA, Env:QT_KIT_PHONE_PORT, Env:QT_KIT_PARTY_PORT
 
   # 3. each tool starts on the bundled Python (spare ports)
   $runs = @(
@@ -50,7 +52,8 @@ try {
     @('volt', 'VOLT_PORT', 7851, @('app.py', '--no-browser'), '/api/status'),
     @('burrow', 'BURROW_PORT', 7852, @('app.py', '--no-window'), '/'),
     @('lens-pc', 'LENSPC_PORT', 7853, @('app.py', '--no-window'), '/'),
-    @('space-manager', 'SPACE_PORT', 7854, @('app.py', '--no-window'), '/')
+    @('space-manager', 'SPACE_PORT', 7854, @('app.py', '--no-window'), '/'),
+    @('remote', 'QT_REMOTE_PORT', 7848, @('app.py', '--no-window'), '/api/hello')
   )
   foreach ($r in $runs) {
     Set-Item "Env:$($r[1])" $r[2]

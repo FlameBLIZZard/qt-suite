@@ -180,8 +180,9 @@ def _load():
 
 def _save(d):
     os.makedirs(DATA, exist_ok=True)
-    with open(STATE, "w", encoding="utf-8") as f:
+    with open(STATE + ".tmp", "w", encoding="utf-8") as f:
         json.dump(d, f, indent=1)
+    os.replace(STATE + ".tmp", STATE)
 
 
 # ------------------------------------------------------------------------ build ---

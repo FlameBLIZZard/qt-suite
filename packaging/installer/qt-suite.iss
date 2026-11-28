@@ -86,9 +86,11 @@ Type: filesandordirs; Name: "{app}\burrow\__pycache__"
 Type: filesandordirs; Name: "{app}\lens-pc\__pycache__"
 Type: filesandordirs; Name: "{app}\soundboard\__pycache__"
 Type: filesandordirs; Name: "{app}\space-manager\__pycache__"
+Type: filesandordirs; Name: "{app}\remote\__pycache__"
 Type: filesandordirs; Name: "{app}\runtime"
 Type: filesandordirs; Name: "{app}\suite\defaults"
 Type: files; Name: "{userstartup}\QT Suite.lnk"
+Type: files; Name: "{userstartup}\QT Remote.lnk"
 Type: dirifempty; Name: "{app}"
 
 [Code]
@@ -127,6 +129,7 @@ begin
     DelTree(L + '\LensPC', True, True, True);
     DelTree(L + '\volt', True, True, True);
     DelTree(L + '\Beam', True, True, True);
+    DelTree(L + '\QT Remote', True, True, True);
     DelTree(ExpandConstant('{app}'), True, True, True);
   end;
 end;

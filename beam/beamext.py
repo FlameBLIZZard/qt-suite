@@ -68,9 +68,14 @@ def api_vault(h, method, rest, q):
     # POST   /api/vault/<id>/bump         copied again from the vault: move to the top
     parts = rest.split("/") if rest else []
     if method == "GET" and not parts:
+        def num(k, cast=float):   # junk in the query string means "not given", not a crash
+            try:
+                return cast(arg(q, k)) if arg(q, k) else None
+            except ValueError:
+                return None
         res = vault.search(arg(q, "q"), arg(q, "src"), arg(q, "kind"), arg(q, "pinned") == "1",
-                           arg(q, "before") or None, min(200, int(arg(q, "limit", "60") or 60)),
-                           arg(q, "type"), arg(q, "since") or None)
+                           num("before"), max(1, min(200, num("limit", int) or 60)),
+                           arg(q, "type"), num("since"))
         res["on"] = bool(APP.CFG.get("vault", True))
         if arg(q, "stats") == "1":
             res["stats"] = vault.stats()

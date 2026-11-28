@@ -246,8 +246,8 @@ kbd { font: 600 10.5px var(--qt-mono); padding: 2px 6px; border-radius: 6px; bor
 .fcard .th { height: 92px; border-radius: 8px; border: 2px solid var(--qt-ink); background: var(--qt-well); display: grid; place-items: center; overflow: hidden; }
 .fcard .th img { width: 100%; height: 100%; object-fit: cover; }
 .fcard .th .ic { transform: scale(1.8); }
-.fcard b { font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fcard span { font: 11px var(--qt-mono); color: var(--qt-dim); }
+.fcard > b { font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fcard > span { font: 11px var(--qt-mono); color: var(--qt-dim); }
 .recents { display: flex; flex-wrap: wrap; gap: 8px; }
 .recents button { display: inline-flex; align-items: center; gap: 8px; max-width: 320px; }
 .recents button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -439,10 +439,27 @@ kbd { font: 600 10.5px var(--qt-mono); padding: 2px 6px; border-radius: 6px; bor
 /* small screens */
 @media (max-width: 1180px) { :root { --pv: 290px; } }
 @media (max-width: 980px) { .body:not(.nopv) { grid-template-columns: minmax(0, 1fr) 0; gap: 0; } .body .preview { display: none; } }
-@media (max-width: 760px) { .app { grid-template-columns: 0 minmax(0, 1fr); } .side { display: none; } .row { grid-template-columns: 34px minmax(0, 1fr) 0 0 80px; } .row .mt, .row .ty { display: none; } .colhead { grid-template-columns: minmax(0, 1fr) 0 0 80px; } }
+@media (max-width: 760px) { .app, .app.noside { grid-template-columns: minmax(0, 1fr); } .side { display: none; } .row { grid-template-columns: 34px minmax(0, 1fr) 0 0 80px; } .row .mt, .row .ty { display: none; } .colhead { grid-template-columns: minmax(0, 1fr) 0 0 80px; } }
 
 /* calm mode: Windows "Animation effects" off */
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; } }
 .rm-prev.settled li { animation: none; }
 .rm-prev.settled li b { animation: rm-tick .25s var(--qt-ease); }
 @keyframes rm-tick { from { opacity: .4; } }
+
+/* loop 30: phone-width Burrow (phone link, split view): the toolbar wraps so search and the action buttons stay reachable */
+@media (max-width: 760px) {
+  .toolbar { flex-wrap: wrap; row-gap: 8px; height: auto; }
+  .toolbar .pathbar { flex: 1 1 100%; min-width: 0; order: 4; }
+  .toolbar .tools { margin-left: auto; }
+  .toolbar .searchbox { flex: 1 1 100%; order: 5; }
+}
+/* loop 30 motion: on phone width the toolbar deals its buttons in, and search springs when you tap it */
+@media (max-width: 760px) and (prefers-reduced-motion: no-preference) {
+  .toolbar .tools > * { animation: brDeal .45s cubic-bezier(.34,1.8,.5,1) both; }
+  .toolbar .tools > :nth-child(2) { animation-delay: .04s; } .toolbar .tools > :nth-child(3) { animation-delay: .08s; }
+  .toolbar .tools > :nth-child(4) { animation-delay: .12s; } .toolbar .tools > :nth-child(5) { animation-delay: .16s; }
+  .toolbar .searchbox:focus-within { animation: brSquash .4s cubic-bezier(.34,1.8,.5,1); }
+}
+@keyframes brDeal { from { opacity: 0; transform: translateY(-8px) rotate(-6deg) scale(.8); } }
+@keyframes brSquash { 40% { transform: scale(1.02, .94); } }

@@ -415,6 +415,10 @@ def pick_dialog(kind):
         return [os.path.normpath(p) for p in paths]
 
 
+class BadRequest(ValueError):
+    """A request body we can't use (400, not a 500)."""
+
+
 class ZipStream:
     """Write-only, non-seekable file object for zipfile -> socket."""
 
@@ -492,7 +496,13 @@ class Handler(BaseHTTPRequestHandler):
         if n > 1 << 20:
             raise ValueError("too big")
         raw = self.rfile.read(n) if n else b"{}"
-        return json.loads(raw or b"{}")
+        try:
+            d = json.loads(raw or b"{}")
+        except ValueError:
+            raise BadRequest("That wasn't valid JSON")
+        if not isinstance(d, dict):
+            raise BadRequest("Expected a JSON object")
+        return d
 
     def drain(self):
         n = int(self.headers.get("Content-Length") or 0)
@@ -574,6 +584,11 @@ class Handler(BaseHTTPRequestHandler):
             return self.json({"error": "not found"}, 404)
         except (ConnectionError, socket.timeout, TimeoutError):
             self.close_connection = True
+        except BadRequest as e:   # the caller sent junk: say so, it isn't a server crash
+            try:
+                self.json({"error": str(e)}, 400)
+            except Exception:
+                pass
         except Exception as e:  # never kill the server thread silently
             import traceback
             traceback.print_exc()
