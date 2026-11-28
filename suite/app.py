@@ -23,6 +23,7 @@ import spark  # loop 4: notes, pins, CPU/RAM, VOLT grabs, unzip, downloads (spar
 import nova  # loop 5: apps, reminders, todos, screenshots, network, top apps, clipboard (nova.py)
 import web  # Surf web browser: frame check, Lite proxy, pop out (web.py)
 import guide  # first-run welcome, tour, help, checklist, setup doctor (guide.py)
+import kit  # Toolkit: 32 extra features + phone link (kit/, own files)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 QT = os.path.dirname(HERE)
@@ -70,6 +71,9 @@ TOOLS = [
     {"id": "ping", "name": "Ping", "kind": "web", "port": 7788, "path": "/notify", "tag": "Phone alerts",
      "blurb": "Your phone's notifications on the PC. Read, reply, dismiss and tap actions, over Wi-Fi or Tailscale.",
      "dir": "beam", "cmd": [PYW, "app.py"], "env": {"BEAM_NO_BROWSER": "1"}},
+    {"id": "remote", "name": "Remote", "kind": "web", "port": 7802, "tag": "Remote desktop",
+     "blurb": "See and control this PC from your laptop or phone over Tailscale, and open your other PCs from here.",
+     "dir": "remote", "cmd": [PYW, "app.py", "--no-window"]},
     {"id": "space", "name": "Space Manager", "kind": "web", "port": 7793, "tag": "Disk space",
      "blurb": "See what fills C: and D:, clear caches, and move finished reel frames to the HDD.",
      "dir": "space-manager", "cmd": [PYW, "app.py", "--no-window"]},
@@ -248,6 +252,8 @@ class H(BaseHTTPRequestHandler):
             return self._send(200, plus.tool_procs(TOOLS))
         if p == "/api/tray/nav":  # tray menu asks an open window to switch tools (static/tray.js polls)
             return self._send(200, tray.nav_state())
+        if kit.get(self, p, urllib.parse.parse_qs(u.query)):  # Toolkit pages + /api/kit/* (kit/__init__.py)
+            return
         if viewer.get(self, p, urllib.parse.parse_qs(u.query)):
             return
         if p.startswith("/api/spark/"):  # loop 4 layer: notes, pins, CPU/RAM, VOLT grabs, unzip, downloads (spark.py)
@@ -306,6 +312,8 @@ class H(BaseHTTPRequestHandler):
             ok_ids = set(BY_ID) | {"help", "settings", "home", "search"}
             tray.show_suite(tid if tid in ok_ids else None)
             return self._send(200, {"ok": True})
+        if kit.post(self):  # Toolkit /api/kit/* (kit/__init__.py)
+            return
         parts = self.path.strip("/").split("/")
         if self.path.startswith(("/api/settings", "/api/startall", "/api/open-file", "/api/peek/", "/api/spark/", "/api/nova/", "/api/web/", "/api/guide/")):
             n = int(self.headers.get("Content-Length") or 0)
@@ -385,6 +393,7 @@ def main():
     spark.init(start, BY_ID, port_up)
     nova.init()
     web.init(PORT)
+    kit.init(PORT)
     shell.boot()
     if "QT_SUITE_PORT" not in os.environ or os.environ.get("QT_SUITE_TRAY") == "1":  # test hubs stay out of the tray
         tray.start(PORT, open_window)

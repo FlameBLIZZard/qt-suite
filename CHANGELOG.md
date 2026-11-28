@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+## Unreleased
+
+- **Remote:** a new remote desktop tool. Open `http://<your-pc>:7802` on any device in your Tailscale network to see and control the PC from a browser, with touch gestures on phones, special keys, a shared clipboard, file drop and multiple screens. New devices pair with a 6-digit code you confirm on the PC (or from a device you already trust); each one gets a key that only works from that device, can be made view-only and can be removed. A strip on the PC shows who is connected and can end it. The Remote tile also lists your other Tailscale PCs so you can control them from here.
+
 ## 1.1.0 (2026-11-25)
 
 A friendlier first run, and help that's always one key away.

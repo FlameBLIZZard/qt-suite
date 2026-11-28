@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QT widget · Due soon</title><link rel="stylesheet" href="/kit/w/w.css"></head>
+<body style="--a:#ff9de2"><div class="ey">Subscriptions</div><div class="big" id="m" style="font-size:24px">-</div><div id="l" class="mut" style="margin-top:6px"></div>
+<script src="/kit/w/w.js"></script><script>every(300000, async () => { const s = await api('/api/kit/subs'); Q('#m').textContent = money(s.per_month) + ' a month';
+ Q('#l').innerHTML = s.subs.slice(0,4).map(x => esc(x.name) + ' · ' + (x.in_days === 0 ? 'today' : x.in_days === 1 ? 'tomorrow' : 'in ' + x.in_days + ' d') + ' · ' + money(x.amount)).join('<br>') || 'Nothing tracked'; });</script></body></html>

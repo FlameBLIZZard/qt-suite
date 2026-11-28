@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QT widget · Mini player</title><link rel="stylesheet" href="/kit/w/w.css"></head>
+<body style="--a:#ff3dd6"><div class="row"><div style="min-width:0"><div class="ey">Now playing</div><b id="t" style="display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Nothing playing</b><div class="mut" id="a">Open Music in the Suite</div></div></div>
+<div class="bar"><i id="p"></i></div><div class="row"><button data-c="prev">⏮</button><button class="p" data-c="toggle" id="pp">▶</button><button data-c="next">⏭</button></div>
+<script src="/kit/w/w.js"></script><script>document.addEventListener('click', e => { const c = e.target.closest('[data-c]'); if (c) api('/api/kit/music', {op:'cmd', cmd: c.dataset.c}); });
+ every(1000, async () => { const n = await api('/api/kit/music/now'); if (!n.live) { Q('#t').textContent = 'Nothing playing'; Q('#a').textContent = 'Open Music in the Suite'; Q('#pp').textContent = '▶'; return; }
+ Q('#t').textContent = n.title; Q('#a').textContent = n.artist || ''; Q('#p').style.width = (n.dur ? 100*n.pos/n.dur : 0) + '%'; Q('#pp').textContent = n.playing ? '⏸' : '▶'; });</script></body></html>

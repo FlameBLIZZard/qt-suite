@@ -383,6 +383,8 @@ class Tray:
         add(root, {"head": "QT SUITE", "right": f"{n_on} on" if tools else "hub busy"}, disabled=True)
         add(root, {"text": "Open QT Suite", "glyph": "▣", "bold": True, "accent": SUITE}, ("open", None))
         add(root, {"text": "Search", "glyph": "⌕", "accent": SUITE, "right": "Ctrl K"}, ("jump", "search"))
+        add(root, {"text": "Toolkit", "glyph": "▦", "accent": SUITE, "right": "Ctrl Alt Q"}, ("jump", "kit"))  # kit/ layer
+        add(root, {"text": "Mini player", "glyph": "♪", "accent": SUITE}, ("kitact", "widget.music"))
         add(root, {"sep": True})
         for t in tools:
             add(jump, {"text": t["name"], "chip": ACCENT.get(t["id"], SUITE), "tag": t.get("tag", ""),
@@ -556,6 +558,11 @@ class Tray:
                             bad.append(f"{t['name']}: {e}")
                 if bad:
                     self.balloon("Some tools didn't stop", "; ".join(bad), warn=True)
+            elif what == "kitact":  # Toolkit command (kit/actions.py)
+                from kit import actions as kit_actions
+                ok, msg = kit_actions.run({"type": "kit", "name": arg})
+                if not ok:
+                    self.balloon("QT Suite", msg, warn=True)
             elif what == "autostart":
                 _post(f"/api/autostart/{'on' if arg else 'off'}", timeout=25)
         except Exception as e:

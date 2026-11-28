@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>QT widget · Focus timer</title><link rel="stylesheet" href="/kit/w/w.css"></head>
+<body style="--a:#ff5d6c"><div class="ey">Focus</div><div class="big" id="t" style="font-size:44px">25:00</div><div class="row"><button class="p" id="go">Start</button><span class="mut" id="m"></span></div>
+<script src="/kit/w/w.js"></script><script>let s = {}; const fmt = n => Math.floor(n/60) + ':' + String(n%60).padStart(2,'0');
+ Q('#go').onclick = async () => { s = await api('/api/kit/focus', {op: s.on ? 'stop' : 'start'}); draw(); };
+ function draw() { Q('#go').textContent = s.on ? 'Stop' : 'Start'; Q('#t').textContent = s.on ? (s.left != null ? fmt(s.left) : '∞') : fmt((s.minutes||25)*60); Q('#m').textContent = 'Today ' + (s.today||0) + ' min'; }
+ every(1000, async () => { s = await api('/api/kit/focus'); draw(); });</script></body></html>

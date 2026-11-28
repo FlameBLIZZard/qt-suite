@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#16141a"><title>Find my phone</title><link rel="stylesheet" href="/assets/phone.css"></head>
+<body class="ph">
+<div class="top"><div><div class="eyebrow">QT Suite</div><h1>Find my phone</h1></div><a href="/">More</a></div>
+<div class="ph-card"><span class="status" id="st">not ready</span>
+  <p>Tap <b>Get ready</b> once. Then leave this page open (it can stay in the background) and the PC can ring this phone and see where it is.</p>
+  <button class="ph-btn big pri" id="go">Get ready</button></div>
+<div class="ph-card" id="ringing" hidden style="text-align:center"><h1>🔔 Ringing</h1><p id="msg"></p><button class="ph-btn big bad" id="stop">I found it, stop</button></div>
+<p class="mut" id="last"></p>
+<script src="/assets/phone.js"></script>
+<script>
+let ac = null, osc = null, ringT = 0;
+async function ready() {
+  ac = ac || new AudioContext(); await ac.resume();
+  try { await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, { timeout: 15000 })); } catch {}
+  keepAwake(); Q("#st").textContent = "ready: the PC can reach this phone"; Q("#st").className = "status on"; Q("#go").textContent = "Ready ✓";
+  locate();
+}
+function ring(on, text) {
+  Q("#ringing").hidden = !on; Q("#msg").textContent = text || "";
+  clearInterval(ringT); if (osc) { osc.stop(); osc = null; }
+  if (!on) { navigator.vibrate && navigator.vibrate(0); return; }
+  if (!ac) { toast("Tap Get ready first so the page may make sound", 4000); return; }
+  const g = ac.createGain(); g.gain.value = 1; g.connect(ac.destination);
+  osc = ac.createOscillator(); osc.type = "square"; osc.connect(g); osc.start();
+  let hi = false; ringT = setInterval(() => { hi = !hi; osc.frequency.setValueAtTime(hi ? 1760 : 1320, ac.currentTime); navigator.vibrate && navigator.vibrate(300); }, 220);
+  setTimeout(() => ring(false), 60000);
+}
+async function locate() {
+  navigator.geolocation.getCurrentPosition(async p => {
+    let bat = null; try { bat = (await navigator.getBattery()).level; } catch {}
+    await api("/api/find/loc", { lat: p.coords.latitude, lon: p.coords.longitude, acc: p.coords.accuracy, bat }).catch(() => {});
+    Q("#last").textContent = "Location sent " + new Date().toLocaleTimeString();
+  }, e => toast("Location: " + e.message, 3000), { enableHighAccuracy: true, timeout: 20000, maximumAge: 10000 });
+}
+Q("#go").onclick = ready; Q("#stop").onclick = () => ring(false);
+listen({ find: it => {
+  if (it.act === "ring") ring(true, it.text); if (it.act === "stop") ring(false);
+  if (it.act === "locate") locate(); if (it.act === "message") { ring(false); Q("#ringing").hidden = false; Q("#msg").textContent = it.text; navigator.vibrate && navigator.vibrate([200, 100, 200]); }
+  if (it.act === "lock") toast("Lock needs USB/adb. The PC tried that too.", 3000);
+} });
+</script></body></html>

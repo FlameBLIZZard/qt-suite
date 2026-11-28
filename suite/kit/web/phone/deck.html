@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#16141a"><title>Deck</title><link rel="stylesheet" href="/assets/phone.css"><link rel="manifest" href="/assets/manifest.json"></head>
+<body class="ph">
+<div class="top"><div><div class="eyebrow">QT Suite</div><h1>Stream deck</h1></div><a href="/">More</a></div>
+<div class="deck" id="deck"></div>
+<p class="mut" id="msg">Edit these buttons on the PC: Toolkit, Stream deck.</p>
+<script src="/assets/phone.js"></script>
+<script>
+async function load() {
+  const d = await api("/api/deck");
+  const g = Q("#deck"); g.style.setProperty("--cols", d.cols);
+  g.innerHTML = d.buttons.map(b => `<button class="dk" style="--c:${b.color}" data-id="${esc(b.id)}"><span class="e">${esc(b.icon)}</span>${esc(b.label)}</button>`).join("");
+}
+Q("#deck").addEventListener("pointerdown", e => { const b = e.target.closest(".dk"); if (b) { b.classList.add("down"); buzz(20); } });
+addEventListener("pointerup", async e => {
+  document.querySelectorAll(".dk.down").forEach(x => x.classList.remove("down"));
+  const b = e.target.closest(".dk"); if (!b) return;
+  try { const r = await api("/api/deck/press", { id: b.dataset.id }); b.classList.add(r.ok ? "ok" : "err"); if (!r.ok) toast(r.msg); }
+  catch (err) { b.classList.add("err"); toast(err.message); }
+  setTimeout(() => b.classList.remove("ok", "err"), 500);
+});
+load().catch(e => Q("#msg").textContent = e.message);
+keepAwake();
+listen({ deck: load });
+</script></body></html>

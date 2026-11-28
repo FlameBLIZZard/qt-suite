@@ -32,7 +32,7 @@ gallery-dl and mutagen are GPL. They are shipped unmodified as Python source, so
 
 | Component | Licence | Notes |
 |---|---|---|
-| QR Code Generator for JavaScript (Kazuhiko Arase) | MIT | `suite\static\qrcode.js`, `beam\static\qrcode.js` |
+| QR Code Generator for JavaScript (Kazuhiko Arase) | MIT | `suite\static\qrcode.js`, `beam\static\qrcode.js`, `remote\static\qrcode.js` |
 | Archivo Black, Space Grotesk, JetBrains Mono | SIL Open Font License 1.1 | loaded from Google Fonts at run time, not bundled |
 
 ## Not bundled

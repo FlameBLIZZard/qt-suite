@@ -19,7 +19,7 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SKIP_ALWAYS = ["__pycache__", "*.pyc", "*.log", "*.tmp", ".venv", "venv", "node_modules", ".git", "Thumbs.db", "desktop.ini", "*.lnk"]
 TOOLS = {
     "suite": ["screens", "tray-menu.png", "tests/run_all.ps1", "defaults/qtopen.ini", "defaults/QTOpen.exe", "start.bat", "make-shortcut.bat",
-              "kit", "icons/svg/remote.svg"],   # phone remote kit: unfinished work in another thread, not wired into the hub yet
+              ],   # kit/ (Toolkit) and the remote icon ship: app.py imports kit and lists Remote
     "daily": ["docs", "tests", "start.bat", "make-shortcut.bat"],
     "beam": ["beam.json", "tests", "README.txt", "start.bat", "make-shortcut.bat", "data", "inbox"],
     "launcher": ["data", "tests", "README.txt", "start.bat", "make-shortcut.bat"],
@@ -27,6 +27,7 @@ TOOLS = {
     "burrow": ["tests", "start.bat", "make-shortcut.bat"],
     "lens-pc": ["tests", "*.mp4", "start.bat", "make-shortcut.bat", "data"],
     "soundboard": ["config.json", "sounds/*", "CHANGES.txt", "run.bat", "requirements.txt"],
+    "remote": ["tests", "start.bat"],
     "space-manager": ["tests", "README.md", "SpaceCore.ps1", "SpaceManager.ps1", "Space Manager (classic).bat", "start.bat", "make-shortcut.bat"],
 }
 # single built files from tools that live in their own repos
@@ -39,6 +40,7 @@ PATCHES = {
         ('"reels_archive": r"D:\\20_Projects\\Curious-Orbit\\reels",', '"reels_archive": "",'),
         ('"inbox": r"D:\\00_Inbox",', '"inbox": os.path.join(HOME, "Space Manager Inbox"),'),
         ('"log_dir": r"D:\\99_System\\logs",', '"log_dir": "",'),
+        ('"roots": [TEMP], "exclude": [os.path.join(TEMP, "claude")]},', '"roots": [TEMP], "exclude": []},'),   # a dev-PC-only folder
     ],
     "space-manager/app.py": [("moves finished Curious-Orbit reel frames from C: to D:", "moves finished video-project frames to another drive")],
     "space-manager/static/space.js": [('reels_root.replace(/\\\\Curious-Orbit\\\\reels$/i, "")', 'reels_root.replace(/\\\\[^\\\\]+\\\\reels$/i, "")')],
@@ -47,7 +49,7 @@ PATCHES = {
 }
 
 LEAKS = [r"C:\\\\?Users\\\\?Admin", r"100\.98\.\d+\.\d+", r"DESKTOP-[A-Z0-9]{5,}", r"Operator007",
-         r"\d{9,10}:[A-Za-z0-9_-]{30,}", r"Curious-Orbit", r"FlameBLIZZard@", r"@gmail\.com"]
+         r"\d{9,10}:[A-Za-z0-9_-]{30,}", r"Curious-Orbit", r"FlameBLIZZard@", r"@gmail\.com", r"claude", r"anthropic"]
 # words that must never ship but shouldn't be written in a public file either (names, labels): one per line, kept out of git
 PRIVATE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "private-words.txt")
 if os.path.isfile(PRIVATE):
