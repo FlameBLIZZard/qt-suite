@@ -68,7 +68,7 @@ kbd { border: 2px solid var(--qt-dim); font-family: var(--qt-mono); }
 .card .fav-mark { background: var(--qt-soundboard); color: var(--qt-on-accent); border: 2px solid var(--qt-ink); backdrop-filter: none; }
 .card .run-mark { background: var(--qt-ok); color: var(--qt-on-accent); border: 2px solid var(--qt-ink); backdrop-filter: none; }
 .card-play { background: var(--a1); color: var(--qt-on-accent); border: var(--B); box-shadow: var(--s); }
-.gen-cover .gen-title { font: 400 26px/1 var(--display); letter-spacing: 0; }
+.gen-cover .gen-title { font: 400 calc(26px * var(--fit, 1))/1 var(--display); letter-spacing: 0; }
 .gen-cover .gen-icon { border: 2px solid var(--qt-ink); }
 .card.drop .card-inner { box-shadow: 0 0 0 3px var(--qt-launchpad), 8px 8px 0 var(--qt-ink); }
 
@@ -246,3 +246,11 @@ body:has(.drawer.open) #btn-settings svg { transform: rotate(120deg) scale(1.1);
 .trow:hover .thumb { transform: rotate(-6deg) scale(1.08); transition: transform .35s var(--qt-spring); }
 .kpi .val { transform-origin: left bottom; }
 .empty { animation: slap .45s var(--qt-spring); }
+
+/* loop 30 motion: games without cover art still feel alive: on hover the icon hops, the title lifts and the ring turns */
+.gen-cover .gen-title, .gen-cover .gen-icon { transition: transform .4s var(--qt-spring, cubic-bezier(.34,1.8,.5,1)); }
+.card:hover .gen-cover .gen-title { transform: translateY(-6px) rotate(-1.5deg); }
+.card:hover .gen-cover .gen-icon { transform: translateY(-3px) rotate(-8deg) scale(1.08); }
+.gen-cover .gen-ring { transition: transform 1.2s cubic-bezier(.22,1,.36,1); }
+.card:hover .gen-cover .gen-ring { transform: rotate(40deg) scale(1.06); }
+@media (prefers-reduced-motion: reduce) { .card:hover .gen-cover .gen-title, .card:hover .gen-cover .gen-icon, .card:hover .gen-cover .gen-ring { transform: none; } }

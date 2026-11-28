@@ -160,6 +160,8 @@
         const t = document.createElement("textarea"); t.value = b.dataset.copy; document.body.append(t); t.select();
         try { await navigator.clipboard.writeText(b.dataset.copy); } catch (_) { document.execCommand("copy"); }
         t.remove(); toast("Copied");
+        stamp(b, "Copied ✓");
+        return;   // nothing changed on the PC: no re-render (it would wipe the stamp)
       }
       else if (b.dataset.open) { await post("/api/local/open", { url: b.dataset.open }); toast("Opening..."); }
       else if (b.id === "rescan") { $("#peers").innerHTML = `<div class="empty"><span class="spin"></span> Looking...</div>`; await peers(); }
@@ -169,6 +171,22 @@
       refresh();
     } catch (err) { toast(err.message || "That didn't work", true); }
   });
+
+  // loop 30 motion: a copied button stamps "Copied" with a squash, then springs back
+  function stamp(b, text) {
+    if (b._stamp) return;
+    const was = b.textContent; b._stamp = 1;
+    b.classList.add("stamped"); b.textContent = text;
+    setTimeout(() => { b.textContent = was; b.classList.remove("stamped"); b._stamp = 0; }, 1300);
+  }
+  // rows that arrive (devices, other PCs, sessions) deal in one after another
+  const dealt = new WeakSet();
+  new MutationObserver(() => {
+    document.querySelectorAll("#devices > *, #peers > *, #sessions > *, #addrs > *").forEach((el, i, all) => {
+      if (dealt.has(el)) return; dealt.add(el);
+      el.classList.add("deal"); el.style.setProperty("--k", [...el.parentElement.children].indexOf(el));
+    });
+  }).observe(document.body, { childList: true, subtree: true });
 
   refresh();
   peers();

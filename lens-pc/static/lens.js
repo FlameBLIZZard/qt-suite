@@ -360,7 +360,7 @@ async function renderAlbums() {
     b.className = "album";
     b.style.setProperty("--d", Math.min(n, 24) * 25 + "ms");
     b.innerHTML = `<span class="cov" style="background-image:url('/api/thumb/${a.cover}')"><span class="pill ${a.src}">${a.src === "pc" ? "PC" : "Phone"}</span></span>` +
-      `<b>${esc(a.name)}</b><small>${a.count.toLocaleString()} items</small>`;
+      `<b>${esc(a.name)}</b><small>${a.count.toLocaleString()} item${a.count === 1 ? "" : "s"}</small>`;
     b.onclick = () => { S.album = a.id; S.albumName = a.name; go("photos", true); };
     box.append(b);
   }
@@ -587,6 +587,10 @@ function go(view, keepFilters) {
   S.view = view;
   if (!keepFilters) { S.album = null; S.person = null; S.like = null; }
   for (const b of $$("#views button")) b.classList.toggle("on", b.dataset.view === view && !S.album && !S.person);
+  if (matchMedia("(max-width: 900px)").matches) {   // narrow strip: glide the picked view into sight
+    const on = $("#views button.on");
+    if (on) on.scrollIntoView({ inline: "center", block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }
   $("#scroller").scrollTop = 0;
   S.sel.clear(); syncSel();
   if (view === "people" && !S.q) return renderPeople().catch(e => toast(e.message, true));
@@ -762,10 +766,10 @@ async function poll() {
     if (!ph.beam) dot($("#stPhone"), "bad", "Phone", "Beam is off on this PC");
     else if (ph.old) dot($("#stPhone"), "bad", "Phone", "Restart Beam on this PC to turn on the Lens link");
     else if (!ph.last_sync) dot($("#stPhone"), "warn", "Phone", c.phone ? `${c.phone.toLocaleString()} items, syncing…` : "Waiting for the Beam app");
-    else dot($("#stPhone"), "on", ph.device || "Phone", `${c.phone.toLocaleString()} items · synced ${ago(ph.last_sync)}` + (ph.wants ? ` · ${ph.wants} waiting` : ""));
+    else dot($("#stPhone"), "on", ph.device || "Phone", `${c.phone.toLocaleString()} item${c.phone === 1 ? "" : "s"} · synced ${ago(ph.last_sync)}` + (ph.wants ? ` · ${ph.wants} waiting` : ""));
     const running = prog.running && prog.todo;
     dot($("#stPc"), running ? "warn" : b.pc.folders.length ? "on" : "", "PC folders",
-      running ? `Looking through ${prog.done.toLocaleString()} of ${prog.todo.toLocaleString()}` : `${c.pc.toLocaleString()} items in ${b.pc.folders.length} folder${b.pc.folders.length === 1 ? "" : "s"}`);
+      running ? `Looking through ${prog.done.toLocaleString()} of ${prog.todo.toLocaleString()}` : `${c.pc.toLocaleString()} item${c.pc === 1 ? "" : "s"} in ${b.pc.folders.length} folder${b.pc.folders.length === 1 ? "" : "s"}`);
     $("#pcBar").hidden = !running;
     if (running) $("#pcBar i").style.width = (100 * prog.done / prog.todo).toFixed(1) + "%";
     dot($("#stClip"), b.clip === "ready" ? "on" : b.clip === "loading" ? "warn" : "bad", "Word search",

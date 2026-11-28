@@ -119,3 +119,24 @@ body.viewonly #screen { cursor: default; }
   .con { padding: 16px 14px 50px; }
   .con-head h1 { font-size: 30px; }
 }
+
+/* loop 30: in a narrow card the QR sits above steps 3-4 instead of squeezing them into a ribbon */
+.qr-row { flex-wrap: wrap; }
+.qr-row .steps.grow { min-width: 190px; flex: 1 1 190px; }
+
+/* ============ loop 30 motion (Ink Arcade): stamps, dealt rows, logo blink, master switch glow ============ */
+.qt-btn.stamped { background: var(--qt-accent); color: var(--qt-on-accent); animation: rmStamp .45s var(--qt-spring); }
+@keyframes rmStamp { 0% { transform: scale(1); } 30% { transform: scale(1.18, .82) rotate(-3deg); } 60% { transform: scale(.94, 1.06) rotate(1deg); } 100% { transform: none; } }
+.deal { animation: rmDeal .5s var(--qt-spring) both; animation-delay: calc(var(--k, 0) * 60ms); }
+@keyframes rmDeal { from { opacity: 0; transform: translate(-14px, 8px) rotate(-2.5deg) scale(.96); } }
+.con-head .logo { animation: rmBlink 1.1s var(--qt-ease) .25s both; transform-origin: 50% 60%; }
+@keyframes rmBlink { 0% { transform: scale(.4) rotate(-12deg); opacity: 0; } 45% { transform: scale(1.12) rotate(4deg); opacity: 1; } 60% { filter: brightness(1.9); } 70% { filter: none; transform: scale(.97); } 100% { transform: none; } }
+.qr { animation: rmQr .7s var(--qt-spring) .2s both; }
+@keyframes rmQr { from { transform: perspective(500px) rotateY(80deg) scale(.8); opacity: 0; } }
+.qt-switch[aria-checked="true"] { animation: rmOn .5s var(--qt-spring); }
+@keyframes rmOn { 40% { transform: scale(1.12, .9); } }
+@media (prefers-reduced-motion: reduce) { .qt-btn.stamped, .deal, .con-head .logo, .qr, .qt-switch[aria-checked="true"] { animation: none !important; } }
+/* the pairing code drops in digit by digit, like tiles landing (easy to read out, fun to watch) */
+.code-big .cd { display: inline-block; animation: rmDigit .5s var(--qt-spring) both; animation-delay: calc(.15s + var(--i) * 70ms); }
+@keyframes rmDigit { from { opacity: 0; transform: translateY(-22px) rotate(-14deg) scale(.6); } 60% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .code-big .cd { animation: none !important; } }

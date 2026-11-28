@@ -97,7 +97,7 @@
     let left = d.ttl;
     gate(`Allow on ${hello.pc}`, `
       <p>A prompt opened on the PC. Check it shows this code, then press <b>Allow</b> there:</p>
-      <div class="code-big">${esc(d.code.slice(0, 3))} ${esc(d.code.slice(3))}</div>
+      <div class="code-big" aria-label="${esc(d.code)}">${[...String(d.code)].map((ch, i) => `${i === 3 ? " " : ""}<span class="cd" style="--i:${i}">${esc(ch)}</span>`).join("")}</div>
       <p class="small"><span class="spin"></span> Waiting · <span id="left">${left}</span>s</p>
       <p class="small">Not at the PC? Someone can allow it from QT Suite > Remote, or from another device you already trust.</p>
       <button class="qt-btn ghost" id="cancel">Cancel</button>`);

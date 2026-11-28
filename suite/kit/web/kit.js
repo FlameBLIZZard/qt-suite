@@ -97,16 +97,29 @@
     el.innerHTML = `<header class="kit-head"><div><div class="qt-eyebrow">QT Suite</div><h1 class="qt-display">Toolkit</h1>
         <p class="qt-muted">32 extra tools. Press Ctrl+K and type a name to jump straight to one. Ctrl+Alt+Q opens this page from any app.</p></div>
         <div class="kit-xp" id="kit-xp"></div></header>
+      <div id="kit-broken"></div>
       <div class="kit-link qt-card" id="kit-link"><div class="kl-txt"><b>Phone link</b><span class="qt-muted">Loading...</span></div></div>
       ${groups}`;
-    paintXp(); paintLink();
+    paintXp(); paintLink(); paintBroken();
+  }
+  // a Toolkit module that failed to import only shows as dead buttons; say which and why
+  async function paintBroken() {
+    try {
+      const st = await api("/api/kit/status"), box = $("#kit-broken", el), bad = Object.entries(st.errors || {});
+      if (!box || !bad.length) return;
+      const last = t => (String(t).trim().split(/\r?\n/).pop() || "").slice(0, 160);
+      box.innerHTML = `<div class="kit-broken qt-card"><b>${bad.length} Toolkit part${bad.length > 1 ? "s" : ""} didn't load</b>
+        <span class="qt-muted">Their tools won't answer until this is fixed. Restart QT Suite; if it stays, the line below says what broke.</span>
+        ${bad.map(([m, t]) => `<code title="${esc(String(t))}">${esc(m)}: ${esc(last(t))}</code>`).join("")}</div>`;
+    } catch {}
   }
   async function paintXp() {
     try {
       const p = await api("/api/kit/progress"), box = $("#kit-xp", el);
       if (!box) return;
       box.innerHTML = `<button class="kxp qt-card" data-kf="xp" title="Achievements"><b class="qt-display">LV ${p.level}</b>
-        <span class="bar"><i style="width:${Math.round(100 * p.into / Math.max(1, p.need))}%"></i></span><span>${p.xp} XP · 🔥 ${p.streak} day${p.streak === 1 ? "" : "s"}</span></button>`;
+        <span class="bar"><i style="width:0" data-w="${Math.round(100 * p.into / Math.max(1, p.need))}%"></i></span><span>${p.xp} XP · 🔥 ${p.streak} day${p.streak === 1 ? "" : "s"}</span></button>`;
+      requestAnimationFrame(() => requestAnimationFrame(() => box.querySelectorAll("[data-w]").forEach(i => { i.style.width = i.dataset.w; })));   // fill from empty
     } catch {}
   }
   KIT.phoneLink = async function (box) {
@@ -176,20 +189,27 @@
     foot.prepend(b);
   }
   const prevPal = window.qtPalExtra;
-  let searchSeq = 0, lastSearch = { q: "", items: [] };
+  let searchSeq = 0, lastSearch = { q: "", items: [] }, searchT = 0, searchAbort = null, pendingQ = "";
   window.qtPalExtra = q => {
     const base = prevPal ? prevPal(q) : [];
     const ql = (q || "").toLowerCase().trim();
     const feats = !ql ? [] : F.filter(f => (f[2] + " " + f[4] + " " + f[0]).toLowerCase().includes(ql)).slice(0, 6)
       .map(f => ({ label: f[2], sub: f[4], glyph: f[3], head: "Toolkit", fixed: 50, run: () => show("kit/" + f[0]), words: f[4] }));
     if (!ql || "toolkit extras".includes(ql)) feats.unshift({ label: "Toolkit", sub: "32 extra tools", glyph: "🧰", run: () => show("kit"), words: "toolkit extras more tools", hint: "Ctrl+Alt+Q" });
-    if (ql.length >= 3 && ql !== lastSearch.q) {
-      const my = ++searchSeq;
-      api("/api/kit/search?q=" + encodeURIComponent(ql)).then(r => {
+    if (ql.length >= 3 && ql !== lastSearch.q && ql !== pendingQ) {
+      // one search at a time: wait for a typing pause and drop the stale one, so keystrokes can't
+      // pile up requests that hold all of the browser's connections to the hub
+      const my = ++searchSeq; pendingQ = ql;
+      clearTimeout(searchT); if (searchAbort) searchAbort.abort();
+      searchT = setTimeout(() => {
         if (my !== searchSeq) return;
-        lastSearch = { q: ql, items: r.groups.flatMap(g => g.items.slice(0, 3).map(it => ({ label: it.title, sub: it.sub || "", head: g.name, fixed: 20, run: () => KIT.runHit(it) }))) };
-        window.qtPalRender && window.qtPalRender();
-      }).catch(() => {});
+        searchAbort = new AbortController();
+        fetch("/api/kit/search?q=" + encodeURIComponent(ql), { signal: searchAbort.signal }).then(r => r.json()).then(r => {
+          if (my !== searchSeq) return;
+          lastSearch = { q: ql, items: (r.groups || []).flatMap(g => g.items.slice(0, 3).map(it => ({ label: it.title, sub: it.sub || "", head: g.name, fixed: 20, run: () => KIT.runHit(it) }))) };
+          window.qtPalRender && window.qtPalRender();
+        }).catch(() => {}).finally(() => { if (my === searchSeq) pendingQ = ""; });
+      }, 220);
     }
     return base.concat(feats, lastSearch.q === ql ? lastSearch.items : []);
   };

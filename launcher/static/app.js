@@ -33,6 +33,11 @@ const colors = store.get('colors', {});
 const cards = new Map();
 
 // ------------------------------------------------------------ helpers ---
+// a long single word (VALORANT) shrinks to fit the card instead of breaking mid-word
+function genFit(name) {
+  const longest = Math.max(...String(name).split(/\s+/).map(w => w.length), 1);
+  return Math.min(1, 6.5 / longest).toFixed(2);
+}
 async function api(path, body) {
   const r = await fetch(path, body === undefined ? {} : {
     method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Launchpad': '1' },
@@ -248,7 +253,7 @@ function moveInk(instant) {
 function coverHTML(g) {
   if (g.art.portrait) return `<img class="cover" src="${g.art.portrait}" alt="" draggable="false" crossorigin="anonymous">`;
   const p = paletteOf(g);
-  return `<div class="gen-cover" style="background-image:${p[2]}"><span class="gen-ring"></span>${g.art.icon ? `<img class="gen-icon" src="${g.art.icon}" alt="">` : ''}<div class="gen-title">${esc(g.name)}</div></div>`;
+  return `<div class="gen-cover" style="background-image:${p[2]}"><span class="gen-ring"></span>${g.art.icon ? `<img class="gen-icon" src="${g.art.icon}" alt="">` : ''}<div class="gen-title" style="--fit:${genFit(g.name)}">${esc(g.name)}</div></div>`;
 }
 function cardSub(g) {
   return `<span>${g.running ? 'Playing now' : fmtTime(g.minutes, true)}</span><span>${esc(g.source)}</span>`;

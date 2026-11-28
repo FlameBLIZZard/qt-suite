@@ -510,6 +510,27 @@ def _sh_set(b):
 
 
 # ============================================================ 20. universal search ===
+_GLIB = {"at": 0, "lib": {}}
+
+
+def _games_lib(games):
+    """Launchpad's library for search, cached 30 s. A stopped Launchpad answers in 0.3 s, not a 2 s timeout
+    per keystroke (those piled up and stalled every other request from the hub page)."""
+    import socket
+    import time as _t
+    if _t.time() - _GLIB["at"] < 30:
+        return _GLIB["lib"]
+    lib = {}
+    try:
+        with socket.create_connection(("127.0.0.1", 7790), timeout=0.3):
+            pass
+        lib = games._lp("/api/library", timeout=2)
+    except Exception:
+        pass
+    _GLIB.update(at=_t.time(), lib=lib)
+    return lib
+
+
 @kit.hub_get("/api/kit/search")
 def _search(q):
     term = (q.get("q") or [""])[0].strip().lower()
@@ -547,7 +568,7 @@ def _search(q):
                        for f in (os.listdir(media.VIDS) if os.path.isdir(media.VIDS) else []) if hit(f)])
     try:
         from kit import games
-        lib = games._lp("/api/library", timeout=2)
+        lib = _games_lib(games)
         add("Games", [{"title": g["name"], "sub": f"{g.get('source')} · {round((g.get('minutes') or 0) / 60, 1)} h played", "go": "kit/games",
                        "game": g["id"]} for g in lib.get("games", []) if g.get("kind") == "game" and hit(g["name"])])
     except Exception:

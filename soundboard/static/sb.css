@@ -134,13 +134,13 @@ body.remote .pc-only { display: none !important; }
 
 /* ---------------- added 2026-11-22 (enhancement loop) ---------------- */
 /* device warning banner */
-.warn { display: flex; align-items: center; gap: 10px; margin: 4px max(18px, env(safe-area-inset-right)) 12px max(18px, env(safe-area-inset-left)); padding: 10px 12px;
+div.warn { display: flex; align-items: center; gap: 10px; margin: 4px max(18px, env(safe-area-inset-right)) 12px max(18px, env(safe-area-inset-left)); padding: 10px 12px;
   border: var(--qt-border); border-radius: var(--qt-r); background: color-mix(in srgb, var(--qt-warn) 22%, var(--qt-card)); box-shadow: var(--qt-shadow-sm);
   font-size: 13.5px; font-weight: 600; animation: warnIn .5s var(--qt-spring) both; }
-.warn svg { color: var(--qt-warn); width: 22px; height: 22px; animation: qt-wiggle 1.2s ease-in-out 2 .4s; }
-.warn span { flex: 1; min-width: 0; }
+div.warn svg { color: var(--qt-warn); width: 22px; height: 22px; animation: qt-wiggle 1.2s ease-in-out 2 .4s; }
+div.warn span { flex: 1; min-width: 0; }
 @keyframes warnIn { from { opacity: 0; transform: translateY(-12px) scale(.97); } }
-@media (max-width: 520px) { .warn { flex-wrap: wrap; } .warn .qt-btn { margin-left: 32px; } }
+@media (max-width: 520px) { div.warn { flex-wrap: wrap; } div.warn .qt-btn { margin-left: 32px; } }
 .devs select.bad { border-color: var(--qt-warn); box-shadow: 0 0 0 3px color-mix(in srgb, var(--qt-warn) 30%, transparent); }
 details.panel.flash { animation: panelFlash 1s var(--qt-ease); }
 @keyframes panelFlash { 30% { box-shadow: var(--qt-shadow), 0 0 0 6px color-mix(in srgb, var(--qt-accent) 55%, transparent); transform: translate(-2px, -2px); } }
@@ -247,3 +247,6 @@ body:has(.stopall.live) .brand .mark { animation: markBeat .5s ease-in-out infin
 @media (prefers-reduced-motion: reduce) {
   .pad.playing::after, .pad.playing .eq i, .empty-art i, .stopall.live, body:has(.stopall.live) .brand .mark { animation: none !important; }
 }
+
+/* loop 30: a closed panel is just its title bar (the hidden content slot still took a flex gap) */
+details.panel:not([open]) { gap: 0; }

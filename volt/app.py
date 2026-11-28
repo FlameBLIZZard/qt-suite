@@ -43,8 +43,10 @@ except Exception:
     pass
 
 def save_settings():
-    with open(CFG_FILE, "w", encoding="utf-8") as f:
+    tmp = CFG_FILE + ".tmp"   # write then swap: a crash mid-save can't leave a half-written settings file
+    with open(tmp, "w", encoding="utf-8") as f:
         json.dump(SETTINGS, f, indent=2)
+    os.replace(tmp, CFG_FILE)
 
 def dl_dir():
     os.makedirs(SETTINGS["folder"], exist_ok=True)
@@ -55,6 +57,15 @@ app = Flask(__name__, static_folder=os.path.join(BASE, "static"), static_url_pat
 # Only answer requests addressed to this machine. Stops other web pages from talking to
 # VOLT through DNS rebinding (they could otherwise change settings or start downloads).
 ALLOWED_HOSTS = {f"127.0.0.1:{PORT}", f"localhost:{PORT}", f"[::1]:{PORT}"}
+
+@app.before_request
+def _json_object_only():
+    """Bodies are always JSON objects here; a list or a scalar is a bad request, not a crash."""
+    if request.method == "POST" and request.is_json:
+        d = request.get_json(silent=True)
+        if request.content_length and not isinstance(d, dict):
+            return jsonify(error="Expected a JSON object"), 400
+
 
 @app.errorhandler(Exception)
 def log_crash(e):

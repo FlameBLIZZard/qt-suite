@@ -66,6 +66,19 @@ def tailscale_ips():
         return []
 
 
+def looks_like_audio(b):
+    """Cheap header check for the formats the board plays (wav/aiff, mp3, ogg/opus, flac)."""
+    if len(b) < 64:
+        return False
+    if b[:4] == b"RIFF" and b[8:12] == b"WAVE":
+        return True
+    if b[:4] == b"FORM" and b[8:12] in (b"AIFF", b"AIFC"):
+        return True
+    if b[:4] in (b"OggS", b"fLaC") or b[:3] == b"ID3":
+        return True
+    return b[0] == 0xFF and (b[1] & 0xE0) == 0xE0   # bare MPEG audio frame
+
+
 class Web:
     def __init__(self, app):
         self.app = app
@@ -255,6 +268,8 @@ class Web:
         stem, ext = os.path.splitext(base)
         if ext.lower() not in (".wav", ".mp3", ".ogg", ".flac", ".aif", ".aiff", ".opus"):
             raise ValueError("Not an audio file: " + base)
+        if not looks_like_audio(data):   # an empty or garbled upload would only make a pad that can't play
+            raise ValueError(base + " isn't a sound file this board can play")
         path, n = os.path.join(SOUNDS, base), 1
         while os.path.exists(path):
             n += 1

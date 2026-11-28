@@ -458,22 +458,23 @@ document.addEventListener("visibilitychange", () => { if (!document.hidden) poll
 /* ---------------- adding sounds ---------------- */
 async function upload(files) {
   const list = [...files].filter(f => /\.(wav|mp3|ogg|flac|aiff?|opus)$/i.test(f.name) || f.type.startsWith("audio/"));
-  if (!list.length) return toast("Those aren't audio files", true);
+  if (!list.length) { nope($("#uploadBtn")); return toast("Those aren't audio files", true); }
   const lbl = $("#uploadBtn span"), btn = $("#uploadBtn");
   btn.classList.add("busy");
-  let ok = 0;
+  let ok = 0, bad = 0, lastName = "";
   for (let i = 0; i < list.length; i++) {
     lbl.textContent = `Adding ${i + 1}/${list.length}…`;
     btn.style.setProperty("--up", (i / list.length * 100) + "%");
     try {
       const r = await fetch("/api/upload?name=" + encodeURIComponent(list[i].name), { method: "POST", body: list[i] });
       const j = await r.json(); if (!r.ok) throw new Error(j.error);
-      ok++;
-    } catch (e) { toast(e.message, true); }
+      ok++; lastName = list[i].name;
+    } catch (e) { bad++; toast(e.message, true); }
   }
   btn.classList.remove("busy"); btn.style.removeProperty("--up");
   lbl.textContent = "Add sounds";
-  if (ok) toast(ok === 1 ? "Added " + list[0].name : `Added ${ok} sounds`);
+  if (ok) toast(ok === 1 ? "Added " + lastName : `Added ${ok} sounds`);
+  if (bad) nope(btn);
   poll(true);
 }
 $("#upload").addEventListener("change", e => { upload(e.target.files); e.target.value = ""; });
@@ -555,3 +556,11 @@ async function showLink() {
 }
 showLink();
 $("#morePanel").addEventListener("toggle", () => setSeg($("#tapMode"), S?.tap_mode || "restart"));
+
+// loop 30: a refused file shakes the button "no" (the server checks the file really is audio)
+function nope(el) {
+  if (!el || matchMedia("(prefers-reduced-motion: reduce)").matches || !el.animate) return;
+  el.animate([{ transform: "none" }, { transform: "translateX(-7px) rotate(-3deg)" }, { transform: "translateX(6px) rotate(2deg)" },
+    { transform: "translateX(-4px)" }, { transform: "translateX(2px)" }, { transform: "none" }], { duration: 420, easing: "ease-out" });
+  el.animate([{ boxShadow: "0 0 0 0 transparent" }, { boxShadow: "0 0 0 5px var(--qt-bad)" }, { boxShadow: "0 0 0 0 transparent" }], { duration: 600 });
+}

@@ -113,6 +113,19 @@ def port_up(port, timeout=0.25):
         return False
 
 
+def ports_up(ports):
+    """Check many ports at once. A closed localhost port costs the whole timeout on Windows,
+    so one-by-one checks made /api/tools take ~2 s when the tools were stopped."""
+    ports = sorted(set(ports))
+    out, ths = {}, []
+    for pt in ports:
+        th = threading.Thread(target=lambda q=pt: out.__setitem__(q, port_up(q)), daemon=True)
+        th.start(); ths.append(th)
+    for th in ths:
+        th.join(1)
+    return {pt: out.get(pt, False) for pt in ports}
+
+
 STARTUP_LNK = os.path.join(os.environ.get("APPDATA", ""), r"Microsoft\Windows\Start Menu\Programs\Startup", "QT Suite.lnk")
 
 
@@ -156,9 +169,9 @@ def window_open(title):
         return False
 
 
-def status(t):
+def status(t, up=None):
     if t["kind"] == "web":
-        return "on" if port_up(t["port"]) else "off"
+        return "on" if (up[t["port"]] if up and t["port"] in up else port_up(t["port"])) else "off"
     if t["kind"] == "app":
         p = STARTED.get(t["id"])
         return "on" if (p and p.poll() is None) or window_open(t.get("title", t["name"])) else "idle"
@@ -284,8 +297,9 @@ class H(BaseHTTPRequestHandler):
         if r:
             return self._send(*r)
         if p == "/api/tools":
+            up = ports_up(t["port"] for t in TOOLS if t["kind"] == "web")
             return self._send(200, shell.arrange([dict({k: v for k, v in t.items() if k in ("id", "name", "kind", "port", "path", "tag", "blurb")},
-                                         status=status(t), **extra(t)) for t in TOOLS], "all=1" in u.query))
+                                         status=status(t, up), **extra(t)) for t in TOOLS], "all=1" in u.query))
         if p.startswith("/tool/"):  # file-based tools served from the hub (Inkmotion)
             t = BY_ID.get(p.split("/")[2])
             if t and t["kind"] == "file":
